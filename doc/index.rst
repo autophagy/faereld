@@ -24,4 +24,5 @@ Contents
    :caption: Usage
 
    usage/modes
+   usage/areas
    usage/configuration

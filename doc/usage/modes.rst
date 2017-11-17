@@ -15,10 +15,13 @@ Summary mode can be used via:
 
     Days 153 // Entries 234
 
-    Design :: 23 hours
-    Development :: 57 hours
-    Documentation :: 12 hours
-    Reading :: 42 hours
+    RES [1h0m]  | //////////
+    DES [1h20m] | ////////////////
+    DEV [3h30m] | ////////////////////////////////////
+    DOC [0h45m] | ///////
+    TST [0h30m] | /////
+    RDG [4h30m] | //////////////////////////////////////////////////
+    BKG [1h20m] | ////////////////
 
 This produces a summary of recorded entries that includes the number of days
 and entries recorded, as well as the amount recorded for each type of task.
@@ -32,19 +35,24 @@ Insert mode can be used via:
 
     $ faereld insert
 
-    Type :: project
-    Project name :: aerende
-    Task :: documentation
+    (Valid Areas :: RES // DES // DEV // DOC // TST // RDG // BKG)
+    Area :: DOC
+
+    (Valid Objects :: aerende // antimber // faereld // hraew // insegel)
+    Object :: aerende
+
     From :: 24 Mist 226 // 12:00
     To :: 24 Mist 226 // 13:30
 
-    Is this correct?
-    On [24 Mist 226] I worked on [aerende (documentation) ] for [1 hour, 30 minutes]
+    On 24 Mist 226 I worked on Ærende (documentation) for 1h30m
+    Is this correct? :: y
 
     Entry added.
 
 Insert mode prompts the user to fill in information about the task being 
-performed.
+performed. The valid areas are pre-defined, and map to :doc:`areas` I wish to
+track. The valid objects for project based areas are defined in the
+:doc:`configuration`.
 
 Sync Mode
 =========
