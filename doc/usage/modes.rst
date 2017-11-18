@@ -20,6 +20,7 @@ Summary mode can be used via:
     DEV [3h30m] | ////////////////////////////////////
     DOC [0h45m] | ///////
     TST [0h30m] | /////
+    IRL [2h0m]  | /////////////////////////
     RDG [4h30m] | //////////////////////////////////////////////////
     BKG [1h20m] | ////////////////
 
@@ -35,7 +36,7 @@ Insert mode can be used via:
 
     $ faereld insert
 
-    (Valid Areas :: RES // DES // DEV // DOC // TST // RDG // BKG)
+    (Valid Areas :: RES // DES // DEV // DOC // TST // IRL // RDG // BKG)
     Area :: DOC
 
     (Valid Objects :: aerende // antimber // faereld // hraew // insegel)
