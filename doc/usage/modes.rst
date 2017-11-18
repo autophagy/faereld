@@ -22,6 +22,7 @@ Summary mode can be used via:
     TST [0h30m] | /////
     IRL [2h0m]  | /////////////////////////
     RDG [4h30m] | //////////////////////////////////////////////////
+    LNG [2h10m] | /////////////////////////////
     BKG [1h20m] | ////////////////
 
 This produces a summary of recorded entries that includes the number of days
@@ -50,7 +51,7 @@ Insert mode can be used via:
 
     Entry added.
 
-Insert mode prompts the user to fill in information about the task being 
+Insert mode prompts the user to fill in information about the task being
 performed. The valid areas are pre-defined, and map to :doc:`areas` I wish to
 track. The valid objects for project based areas are defined in the
 :doc:`configuration`.
