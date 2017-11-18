@@ -8,6 +8,7 @@ faereld.cli
 import argparse
 
 from .configuration import Configuration
+from .controller import Controller
 
 
 def parse_args():
@@ -29,6 +30,7 @@ def main():
     try:
         args = parse_args()
         config = Configuration(args.config)
+        controller = Controller(config)
 
     except KeyboardInterrupt:
         exit(0)
