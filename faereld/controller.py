@@ -34,11 +34,11 @@ class Controller(object):
     areas.update(misc_areas)
 
     rendering_strings = {
-        'projects': 'On {0} I worked on {1} ({2}) for {3}',
-        'IRL': 'On {0} I was at {1} for {2}',
-        'RDG': 'On {0} I read {1} for {2}',
-        'LNG': 'On {0} I learned {1} for {2}',
-        'BKG': 'On {0} I made {1} for {2}'
+        'projects': 'On \033[94m{0}\033[0m I worked on \033[94m{1}\033[0m (\033[94m{2}\033[0m) for \033[94m{3}\033[0m',
+        'IRL': 'On \033[94m{0}\033[0m I was at \033[94m{1}\033[0m for \033[94m{2}\033[0m',
+        'RDG': 'On \033[94m{0}\033[0m I read \033[94m{1}\033[0m for \033[94m{2}\033[0m',
+        'LNG': 'On \033[94m{0}\033[0m I learned \033[94m{1}\033[0m for \033[94m{2}\033[0m',
+        'BKG': 'On \033[94m{0}\033[0m I made \033[94m{1}\033[0m for \033[94m{2}\033[0m'
     }
 
 
