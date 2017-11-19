@@ -7,11 +7,13 @@ faereld.controller
 """
 
 from . import models
+from .graph import SummaryGraph
 from os import path
 import sqlalchemy
 import datarum
 import datetime
 import math
+from os import get_terminal_size
 
 class Controller(object):
 
@@ -63,25 +65,29 @@ class Controller(object):
     def print_brief_summary(self):
         entries = self.session.query(models.FaereldEntry).count()
 
-        days = self.session.query(models.FaereldEntry.start, models.FaereldEntry.end) \
+        days = self.session.query(models.FaereldEntry.area, models.FaereldEntry.start, models.FaereldEntry.end) \
                     .order_by(models.FaereldEntry.start) \
                     .all()
 
         total_time = datetime.timedelta(0)
+        area_time_map = dict(map(lambda x: (x, datetime.timedelta(0)), self.areas.keys()))
 
         for index, result in enumerate(days):
             if index == 0:
-                first_day = result[0]
+                first_day = result[1]
 
             if index == len(days)-1:
-                last_day = result[1]
+                last_day = result[2]
 
-            total_time += result[1] - result[0]
+            total_time += result[2] - result[1]
+            area_time_map[result[0]] += result[2] - result[1]
 
-        formatted_time = self._format_time_delta(total_time)
+        formatted_time = format_time_delta(total_time)
 
         days = (last_day - first_day).days + 1
         print("\n{0} Days // {1} Entries // {2}".format(days, entries, formatted_time))
+        print("")
+        SummaryGraph(area_time_map, get_terminal_size().columns)
 
     # Insert Mode
 
@@ -161,15 +167,15 @@ class Controller(object):
 
     def _time_diff(self, from_date, to_date):
         diff_delta = to_date - from_date
-        return self._format_time_delta(diff_delta)
-
-    def _format_time_delta(self, time_delta):
-        hours, remainder = divmod(time_delta.seconds, 3600)
-        minutes = math.floor(remainder/60)
-
-        return "{0}h{1}m".format(hours, minutes)
+        return format_time_delta(diff_delta)
 
     # Sync Mode
 
     def sync(self):
         print("Sync mode is currently not enabled.")
+
+def format_time_delta(time_delta):
+    hours, remainder = divmod(time_delta.seconds, 3600)
+    minutes = math.floor(remainder/60)
+
+    return "{0}h{1}m".format(hours, minutes)
