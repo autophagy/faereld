@@ -58,11 +58,28 @@ class Controller(object):
     # Summary Mode
 
     def summary(self):
-        return True
+        self.print_brief_summary()
+
+    def print_brief_summary(self):
+        entries = self.session.query(models.FaereldEntry).count()
+
+        first_day = self.session.query(models.FaereldEntry.start) \
+                    .order_by(models.FaereldEntry.start) \
+                    .first()
+
+        last_day = self.session.query(models.FaereldEntry.start) \
+                   .order_by(sqlalchemy.sql.desc(models.FaereldEntry.start)) \
+                   .first()
+
+        days = (last_day[0] - first_day[0]).days + 1
+        print("\n{0} Days // {1} Entries".format(days, entries))
 
     # Insert Mode
 
     def insert(self):
+
+        self.print_brief_summary()
+
         print("\n[ Areas :: {0} ]".format(' // '.join(self.areas.keys())))
         area = input('Area :: ').upper()
 
