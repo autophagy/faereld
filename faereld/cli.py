@@ -32,6 +32,13 @@ def main():
         config = Configuration(args.config)
         controller = Controller(config)
 
+        if args.mode == 'summary':
+            controller.summary()
+        elif args.mode == 'insert':
+            controller.insert()
+        elif args.mode == 'sync':
+            controller.sync()
+
     except KeyboardInterrupt:
         exit(0)
 

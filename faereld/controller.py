@@ -9,8 +9,29 @@ faereld.controller
 from . import models
 from os import path
 import sqlalchemy
+import datarum
+import datetime
+import math
 
 class Controller(object):
+
+    project_areas = {
+        'RES': 'Research',
+        'DES': 'Design',
+        'DEV': 'Development',
+        'DOC': 'Documentation',
+        'TST': 'Testing',
+    }
+
+    misc_areas = {
+        'IRL': 'Real life engagements (confs/talks/meetups)',
+        'RDG': 'Reading',
+        'LNG': 'Languages',
+        'BKG': 'Baking'
+    }
+
+    areas = project_areas.copy()
+    areas.update(misc_areas)
 
     def __init__(self, config):
         self.config = config
@@ -24,3 +45,73 @@ class Controller(object):
         models.FaereldEntry.metadata.create_all(engine)
         return sqlalchemy.orm.sessionmaker(bind=engine)()
 
+
+    # Summary Mode
+
+    def summary(self):
+        return True
+
+    # Insert Mode
+
+    def insert(self):
+        print("\n[ Areas :: {0} ]".format(' // '.join(self.areas.keys())))
+        area = input('Area :: ').upper()
+
+        if area in self.project_areas:
+            object, link = self._project_object()
+        else:
+            object, link = self._non_project_object()
+
+        # Assume to be in the form [date // time]
+        from_date = input('From :: ')
+        wending_date, from_date_gregorian = self.convert_input_date(from_date)
+
+        to_date = input('To :: ')
+        _, to_date_gregorian = self.convert_input_date(to_date)
+
+        time_diff = self._time_diff(from_date_gregorian, to_date_gregorian)
+
+        print('On {0} I worked on {1} ({2}) for {3}'.format(wending_date.formatted(),
+                                                            self.config.get_projects()[object]['name'],
+                                                            self.areas[area],
+                                                            time_diff))
+
+
+    def _project_object(self):
+        projects = self.config.get_projects()
+
+        print("\n[ Objects :: {0} ]".format(' // '.join(projects.keys())))
+        object = input('Object :: ')
+
+        while object not in projects:
+            print("\nInvalid Project :: {0}".format(object))
+            object = input('Object :: ')
+
+        link = projects[object]['link']
+        return (object, link)
+
+    def _non_project_object(self):
+        object = input('Object :: ')
+
+        return (Object, None)
+
+    def convert_input_date(self, date_string):
+        date, time = date_string.split(' // ')
+        wending_date = datarum.wending.from_date_string(date)
+        gregorian_date = datarum.to_gregorian(wending_date)
+        time = datetime.datetime.strptime(time, '%H.%M')
+
+        return (wending_date,
+                gregorian_date.replace(hour=time.hour, minute=time.minute))
+
+    def _time_diff(self, from_date, to_date):
+        diff_delta = to_date - from_date
+        hours, remainder = divmod(diff_delta.seconds, 3600)
+        minutes = math.floor(remainder/60)
+
+        return "{0}h{1}m".format(hours, minutes)
+
+    # Sync Mode
+
+    def sync(self):
+        print("Sync mode is currently not enabled.")
