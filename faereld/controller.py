@@ -33,6 +33,15 @@ class Controller(object):
     areas = project_areas.copy()
     areas.update(misc_areas)
 
+    rendering_strings = {
+        'projects': 'On {0} I worked on {1} ({2}) for {3}',
+        'IRL': 'On {0} I was at {1} for {2}',
+        'RDG': 'On {0} I read {1} for {2}',
+        'LNG': 'On {0} I learned {1} for {2}',
+        'BKG': 'On {0} I made {1} for {2}'
+    }
+
+
     def __init__(self, config):
         self.config = config
         self.data_path = path.expanduser(self.config.get_data_path())
@@ -71,11 +80,16 @@ class Controller(object):
 
         time_diff = self._time_diff(from_date_gregorian, to_date_gregorian)
 
-        print('On {0} I worked on {1} ({2}) for {3}'.format(wending_date.formatted(),
-                                                            self.config.get_projects()[object]['name'],
-                                                            self.areas[area],
-                                                            time_diff))
-
+        if area in self.project_areas:
+            project_name = self.config.get_projects()[object]['name']
+            print(self.rendering_strings['projects'].format(wending_date.formatted(),
+                                                       project_name,
+                                                       self.areas[area],
+                                                       time_diff))
+        else:
+            print(self.rendering_strings[area].format(wending_date.formatted(),
+                                                 object,
+                                                 time_diff))
 
     def _project_object(self):
         projects = self.config.get_projects()
@@ -93,7 +107,7 @@ class Controller(object):
     def _non_project_object(self):
         object = input('Object :: ')
 
-        return (Object, None)
+        return (object, None)
 
     def convert_input_date(self, date_string):
         date, time = date_string.split(' // ')
