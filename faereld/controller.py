@@ -91,6 +91,21 @@ class Controller(object):
                                                  object,
                                                  time_diff))
 
+        confirmation = input("Is this correct? (y/n) :: ")
+
+        if confirmation.lower() == 'y':
+            entry = models.FaereldEntry(area=area,
+                                        object=object,
+                                        link=link,
+                                        start=from_date_gregorian,
+                                        end=to_date_gregorian)
+
+            self.session.add(entry)
+            self.session.commit()
+            print("Færeld entry added")
+        else:
+            print("Færeld entry cancelled")
+
     def _project_object(self):
         projects = self.config.get_projects()
 
