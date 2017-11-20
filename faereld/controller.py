@@ -23,14 +23,11 @@ class Controller(object):
     # Summary Mode
 
     def summary(self):
-        summary = self.db.get_summary()
+        summary = self.db.get_summary(detailed=True)
 
         print()
         print(utils.header.format("SUMMARY"))
-        summary.print_short_summary()
-
-        print()
-        summary.print_detailed_summary()
+        summary.print()
 
     # Insert Mode
 
@@ -39,7 +36,7 @@ class Controller(object):
 
         print()
         print(utils.header.format("INSERT"))
-        summary.print_short_summary()
+        summary.print()
 
         print()
         print("[ Areas :: {0} ]".format(' // '.join(utils.areas.keys())))

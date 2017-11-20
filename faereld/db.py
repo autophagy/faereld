@@ -23,10 +23,10 @@ class FaereldData(object):
         FaereldEntry.metadata.create_all(engine)
         return sqlalchemy.orm.sessionmaker(bind=engine)()
 
-    def get_summary(self):
-        entries = self.session.query(FaereldEntry).count()
+    def get_summary(self, detailed=False):
+        entries_count = self.session.query(FaereldEntry).count()
 
-        days = self.session.query(FaereldEntry.area,
+        entries = self.session.query(FaereldEntry.area,
                                   FaereldEntry.start,
                                   FaereldEntry.end) \
                 .order_by(FaereldEntry.start) \
@@ -35,20 +35,44 @@ class FaereldData(object):
         total_time = datetime.timedelta(0)
         area_time_map = dict(map(lambda x: (x, datetime.timedelta(0)),
                                  utils.areas.keys()))
+        min_time = None
+        max_time = None
 
-        for index, result in enumerate(days):
+        for index, result in enumerate(entries):
             if index == 0:
                 first_day = result[1]
 
-            if index == len(days)-1:
+            if index == len(entries)-1:
                 last_day = result[2]
 
-            total_time += result[2] - result[1]
-            area_time_map[result[0]] += result[2] - result[1]
+            result_time = result[2] - result[1]
+            total_time += result_time
+
+            if detailed:
+                if min_time is None or max_time is None:
+                    min_time = result_time
+                    max_time = result_time
+
+                if result_time < min_time:
+                    min_time = result_time
+                elif result_time > max_time:
+                    max_time = result_time
+
+                area_time_map[result[0]] += result_time
+
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
-        return FaereldSummary(days, entries, formatted_time, area_time_map)
+
+        simple_summary = FaereldSimpleSummary(days, entries_count, formatted_time)
+
+        if detailed:
+            avg_time = utils.format_time_delta(total_time/len(entries))
+            min_time = utils.format_time_delta(min_time)
+            max_time = utils.format_time_delta(max_time)
+            return FaereldDetailedSummary(simple_summary, area_time_map, min_time, max_time, avg_time)
+        else:
+            return simple_summary
 
     def create_entry(self, area, object, link, start, end):
         entry = FaereldEntry(area=area,
@@ -60,24 +84,34 @@ class FaereldData(object):
         self.session.add(entry)
         self.session.commit()
 
-class FaereldSummary(object):
+class FaereldSimpleSummary(object):
 
-        def __init__(self, days, entries, formatted_time, area_time_map):
+        def __init__(self, days, entries, formatted_time):
             self.days = days
             self.entries = entries
             self.formatted_time = formatted_time
-            self.area_time_map = area_time_map
 
-        def print_short_summary(self):
+        def print(self):
             print("{0} Days // {1} Entries // {2}".format(self.days,
                                                           self.entries,
                                                           self.formatted_time))
 
-        def print_detailed_summary(self):
+class FaereldDetailedSummary(object):
+
+        def __init__(self, simple_summary, area_time_map, min_time, max_time, avg_time):
+            self.simple_summary = simple_summary
+            self.area_time_map = area_time_map
+            self.min_time = min_time
+            self.max_time = max_time
+            self.avg_time = avg_time
+
+        def print(self):
+            self.simple_summary.print()
+            print()
             graph = SummaryGraph().generate(self.area_time_map,
                                             get_terminal_size().columns)
-
             for row in graph:
                 print(row)
 
-
+            print()
+            print("MIN {0} // MAX {1} // AVG {2}".format(self.min_time, self.max_time, self.avg_time))
