@@ -92,7 +92,7 @@ class FaereldSimpleSummary(object):
             self.formatted_time = formatted_time
 
         def print(self):
-            print("{0} Days // {1} Entries // {2}".format(self.days,
+            print("{0} DAYS // {1} ENTRIES // TOTAL {2}".format(self.days,
                                                           self.entries,
                                                           self.formatted_time))
 
