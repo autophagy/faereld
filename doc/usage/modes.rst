@@ -13,7 +13,8 @@ Summary mode can be used via:
 
     $ faereld summary
 
-    Days 153 // Entries 234
+    FÆRELD :: SUMMARY MODE
+    153 DAYS // 425 ENTRIES // TOTAL 17h05m
 
     RES [1h0m]  | //////////
     DES [1h20m] | ////////////////
@@ -24,6 +25,8 @@ Summary mode can be used via:
     RDG [4h30m] | //////////////////////////////////////////////////
     LNG [2h10m] | /////////////////////////////
     BKG [1h20m] | ////////////////
+
+    MIN 0h14m // MAX 2h41m // AVG 1h20
 
 This produces a summary of recorded entries that includes the number of days
 and entries recorded, as well as the amount recorded for each type of task.
@@ -37,19 +40,21 @@ Insert mode can be used via:
 
     $ faereld insert
 
-    (Valid Areas :: RES // DES // DEV // DOC // TST // IRL // RDG // BKG)
-    Area :: DOC
+    FÆRELD :: INSERT MODE
+    153 DAYS // 425 ENTRIES // TOTAL 17h05m
 
-    (Valid Objects :: aerende // antimber // faereld // hraew // insegel)
-    Object :: aerende
+    [ Areas :: RES // DES // DEV // DOC // TST // IRL // RDG // LNG ]
+    Area :: DEV
 
-    From :: 24 Mist 226 // 12:00
-    To :: 24 Mist 226 // 13:30
+    [ Objects :: faereld // insegel // datarum // aerende // antimber // hraew ]
+    Object :: faereld
 
-    On 24 Mist 226 I worked on Ærende (documentation) for 1h30m
-    Is this correct? :: y
+    From :: 30 mist 226 // 04.30
+    To :: 30 mist 226 // 04.50
 
-    Entry added.
+    On 30 Mist 226 I worked on Færeld (Development) for 0h20m
+    Is this correct? (y/n) :: y
+    Færeld entry added
 
 Insert mode prompts the user to fill in information about the task being
 performed. The valid areas are pre-defined, and map to :doc:`areas` I wish to
@@ -67,8 +72,8 @@ Sync mode can be used via:
 
     Batch (01 / 01) :: 24 entries synced to Hrǽw
 
-The syncs any unsynced entries to the Hrǽw database, which can then be used for
-visualisation. The endpoint to sync to as well as the username and password
-used for authentication can be defined in the :doc:`configuration`.
+This syncs any unsynced entries to the Hrǽw database, which can then be used for
+visualisation. The endpoint to sync to as API key used for authentication can
+be defined in the :doc:`configuration`.
 
-
+.. note:: Sync mode is currently not implemented.

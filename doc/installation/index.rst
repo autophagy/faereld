@@ -14,8 +14,8 @@ with ``virtualenv``: ::
     virtualenv .venv -p python3.6
     source .venv/bin/activate
 
-Then, install the ``faereld`` package: ::
+Then, install the requirements: ::
 
-    pip install -e .
+    pip install -r requirements.txt
 
-You can now run ``faereld``.
+You can now run Færeld via ``python -m faereld insert``.
