@@ -1,2 +1,2 @@
 Sphinx==1.6.5
-insegel
+insegel>=0.2.0
