@@ -3,8 +3,12 @@ Overview
 ========
 
 Færeld is a tool to facilitate time tracking of what I'm working on.
-The goal is to then visualise this data in Hrǽw and use that to examine and 
+The goal is to then visualise this data in Hrǽw and use that to examine and
 optimise what I spend my time on.
+
+.. image:: _static/faereld.png
+    :alt: faereld-screenshot
+    :align: center
 
 Contents
 --------

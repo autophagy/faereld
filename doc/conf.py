@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 extensions = []
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 
-project = u'Faereld'
+project = u'Færeld'
 
 exclude_patterns = ['_build']
 
