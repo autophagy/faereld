@@ -5,21 +5,17 @@ faereld.cli
 -----------
 """
 
-from . import controller as c
+from . import utils
 
 class SummaryGraph(object):
 
     bar_character = '/'
     label_seperator = ' | '
 
-    # Expects a dictionary of [area: timedelta]
-    def __init__(self, area_time_dict, max_width):
-        self._print_graph(area_time_dict, max_width)
-
-    def _print_graph(self, area_time_dict, max_width):
+    def generate(self, area_time_dict, max_width):
 
         # First, create the graph labels
-        labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(x[0], c.format_time_delta(x[1]))), area_time_dict.items()))
+        labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(x[0], utils.format_time_delta(x[1]))), area_time_dict.items()))
 
         # Get the length of the longest label
         longest_label = len(max(labels.values(), key=len))
@@ -42,6 +38,6 @@ class SummaryGraph(object):
 
         bars = dict(map(lambda x: (x[0], round(max_width*x[1]) * self.bar_character), percentages.items()))
 
-        # Print the labels and bars
-        for k, v in labels.items():
-            print('{0}{1}'.format(v, bars[k]))
+        # Merge the labels and bars
+
+        return list(map(lambda t: "{0}{1}".format(t[1], bars[t[0]]), labels.items()))
