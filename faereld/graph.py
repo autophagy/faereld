@@ -9,7 +9,7 @@ from . import utils
 
 class SummaryGraph(object):
 
-    bar_character = '/'
+    bar_character = '|'
     label_seperator = ' | '
 
     def generate(self, area_time_dict, max_width):
