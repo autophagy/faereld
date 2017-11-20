@@ -111,9 +111,8 @@ class Controller(object):
         time_diff = self._time_diff(from_date_gregorian, to_date_gregorian)
 
         if area in self.project_areas:
-            project_name = self.config.get_projects()[object]['name']
             print(self.rendering_strings['projects'].format(wending_date.formatted(),
-                                                       project_name,
+                                                       object,
                                                        self.areas[area],
                                                        time_diff))
         else:
@@ -146,8 +145,10 @@ class Controller(object):
             print("\nInvalid Project :: {0}".format(object))
             object = input('Object :: ')
 
+        object_name = projects[object]['name']
         link = projects[object]['link']
-        return (object, link)
+
+        return (object_name, link)
 
     def _non_project_object(self):
         object = input('Object :: ')
