@@ -36,8 +36,23 @@ rendering_strings = {
 
 header = "FÆRELD :: {0} MODE"
 
+def time_diff(from_date, to_date):
+    diff_delta = to_date - from_date
+    return format_time_delta(diff_delta)
+
 def format_time_delta(time_delta):
     hours, remainder = divmod(time_delta.seconds, 3600)
     minutes = floor(remainder/60)
 
     return "{0}h{1}m".format(hours, minutes)
+
+def print_rendered_string(area, wending_date, object, time_diff):
+    if area in project_areas:
+        print(rendering_strings['projects'].format(wending_date.formatted(),
+                                                   object,
+                                                   areas[area],
+                                                   time_diff))
+    else:
+        print(rendering_strings[area].format(wending_date.formatted(),
+                                             object,
+                                             time_diff))

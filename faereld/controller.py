@@ -55,18 +55,10 @@ class Controller(object):
         to_date = input('To :: ')
         _, to_date_gregorian = self.convert_input_date(to_date)
 
-        time_diff = self._time_diff(from_date_gregorian, to_date_gregorian)
+        time_diff = utils.time_diff(from_date_gregorian, to_date_gregorian)
 
         print()
-        if area in utils.project_areas:
-            print(utils.rendering_strings['projects'].format(wending_date.formatted(),
-                                                       object,
-                                                       utils.areas[area],
-                                                       time_diff))
-        else:
-            print(utils.rendering_strings[area].format(wending_date.formatted(),
-                                                 object,
-                                                 time_diff))
+        utils.print_rendered_string(area, wending_date, object, time_diff)
 
         confirmation = input("Is this correct? (y/n) :: ")
 
@@ -111,10 +103,6 @@ class Controller(object):
 
         return (wending_date,
                 gregorian_date.replace(hour=time.hour, minute=time.minute))
-
-    def _time_diff(self, from_date, to_date):
-        diff_delta = to_date - from_date
-        return utils.format_time_delta(diff_delta)
 
     # Sync Mode
 

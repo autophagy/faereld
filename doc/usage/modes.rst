@@ -28,6 +28,18 @@ Summary mode can be used via:
 
     MIN 0h14m // MAX 2h41m // AVG 1h20
 
+    LAST 10 ENTRIES
+    On 2 Forst 226 I worked on Færeld (Development) for 0h22m
+    On 2 Forst 226 I was at Edible Alchemy Ginger Beer Workshop for 1h30m
+    On 1 Forst 226 I read Jorge Luis Borges' Fictions for 0h25m
+    On 1 Forst 226 I studied German for 0h30m
+    On 1 Forst 226 I worked on Færeld (Documentation) for 0h12m
+    On 1 Forst 226 I worked on Datárum (Documentation) for 0h58m
+    On 30 Mist 226 I worked on Færeld (Documentation) for 0h15m
+    On 30 Mist 226 I worked on Færeld (Development) for 0h15m
+    On 30 Mist 226 I worked on Færeld (Documentation) for 0h40m
+    On 30 Mist 226 I worked on Færeld (Development) for 0h20m
+
 This produces a summary of recorded entries that includes the number of days
 and entries recorded, as well as the amount recorded for each type of task.
 

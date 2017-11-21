@@ -12,6 +12,7 @@ from . import utils
 from os import get_terminal_size
 import sqlalchemy
 import datetime
+import datarum
 
 class FaereldData(object):
 
@@ -26,9 +27,7 @@ class FaereldData(object):
     def get_summary(self, detailed=False):
         entries_count = self.session.query(FaereldEntry).count()
 
-        entries = self.session.query(FaereldEntry.area,
-                                  FaereldEntry.start,
-                                  FaereldEntry.end) \
+        entries = self.session.query(FaereldEntry) \
                 .order_by(FaereldEntry.start) \
                 .all()
 
@@ -37,15 +36,17 @@ class FaereldData(object):
                                  utils.areas.keys()))
         min_time = None
         max_time = None
+        last_entries = entries[-10:]
+        last_entries.reverse()
 
         for index, result in enumerate(entries):
             if index == 0:
-                first_day = result[1]
+                first_day = result.start
 
             if index == len(entries)-1:
-                last_day = result[2]
+                last_day = result.end
 
-            result_time = result[2] - result[1]
+            result_time = result.end - result.start
             total_time += result_time
 
             if detailed:
@@ -58,7 +59,7 @@ class FaereldData(object):
                 elif result_time > max_time:
                     max_time = result_time
 
-                area_time_map[result[0]] += result_time
+                area_time_map[result.area] += result_time
 
 
         formatted_time = utils.format_time_delta(total_time)
@@ -70,7 +71,7 @@ class FaereldData(object):
             avg_time = utils.format_time_delta(total_time/len(entries))
             min_time = utils.format_time_delta(min_time)
             max_time = utils.format_time_delta(max_time)
-            return FaereldDetailedSummary(simple_summary, area_time_map, min_time, max_time, avg_time)
+            return FaereldDetailedSummary(simple_summary, area_time_map, min_time, max_time, avg_time, last_entries)
         else:
             return simple_summary
 
@@ -98,12 +99,13 @@ class FaereldSimpleSummary(object):
 
 class FaereldDetailedSummary(object):
 
-        def __init__(self, simple_summary, area_time_map, min_time, max_time, avg_time):
+        def __init__(self, simple_summary, area_time_map, min_time, max_time, avg_time, last_entries):
             self.simple_summary = simple_summary
             self.area_time_map = area_time_map
             self.min_time = min_time
             self.max_time = max_time
             self.avg_time = avg_time
+            self.last_entries = last_entries
 
         def print(self):
             self.simple_summary.print()
@@ -115,3 +117,8 @@ class FaereldDetailedSummary(object):
 
             print()
             print("MIN {0} // MAX {1} // AVG {2}".format(self.min_time, self.max_time, self.avg_time))
+
+            print()
+            print("LAST {0} ENTRIES".format(len(self.last_entries)))
+            for entry in self.last_entries:
+                utils.print_rendered_string(entry.area, datarum.from_date(entry.start), entry.object, utils.time_diff(entry.start, entry.end))
