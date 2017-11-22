@@ -42,6 +42,11 @@ class Controller(object):
         print("[ Areas :: {0} ]".format(' // '.join(utils.areas.keys())))
         area = input('Area :: ').upper()
 
+        while area not in utils.areas:
+            print()
+            print("Invalid Area :: {0}".format(area))
+            area = input('Area :: ').upper()
+
         if area in utils.project_areas:
             object, link = self._project_object()
         else:
