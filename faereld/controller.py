@@ -26,7 +26,7 @@ class Controller(object):
         summary = self.db.get_summary(detailed=True)
 
         print()
-        print(utils.header.format("SUMMARY"))
+        utils.print_header(utils.header.format("SUMMARY"))
         summary.print()
 
     # Insert Mode
@@ -35,7 +35,7 @@ class Controller(object):
         summary = self.db.get_summary()
 
         print()
-        print(utils.header.format("INSERT"))
+        utils.print_header(utils.header.format("INSERT"))
         summary.print()
 
         print()
@@ -109,5 +109,5 @@ class Controller(object):
     def sync(self):
 
         print()
-        print(utils.header.format("SYNC"))
+        utils.print_header(utils.header.format("SYNC"))
         print("Sync mode is currently not enabled.")

@@ -8,6 +8,7 @@ Various useful static functions and variables for use within Færeld.
 """
 
 from math import floor
+from os import get_terminal_size
 
 
 project_areas = {
@@ -56,3 +57,7 @@ def print_rendered_string(area, wending_date, object, time_diff):
         print(rendering_strings[area].format(wending_date.formatted(),
                                              object,
                                              time_diff))
+
+def print_header(string):
+    width = get_terminal_size().columns
+    print("\033[91m{0} {1}\033[0m".format(string, "─"*(width - len(string) - 3)))

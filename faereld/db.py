@@ -93,7 +93,7 @@ class FaereldSimpleSummary(object):
             self.formatted_time = formatted_time
 
         def print(self):
-            print("{0} DAYS // {1} ENTRIES // TOTAL {2}".format(self.days,
+            utils.print_header("{0} DAYS // {1} ENTRIES // TOTAL {2}".format(self.days,
                                                           self.entries,
                                                           self.formatted_time))
 
@@ -117,8 +117,9 @@ class FaereldDetailedSummary(object):
 
             print()
             print("MIN {0} // MAX {1} // AVG {2}".format(self.min_time, self.max_time, self.avg_time))
-
             print()
-            print("LAST {0} ENTRIES".format(len(self.last_entries)))
+
+            utils.print_header("LAST {0} ENTRIES".format(len(self.last_entries)))
+            print()
             for entry in self.last_entries:
                 utils.print_rendered_string(entry.area, datarum.from_date(entry.start), entry.object, utils.time_diff(entry.start, entry.end))
