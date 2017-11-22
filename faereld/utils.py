@@ -60,4 +60,4 @@ def print_rendered_string(area, wending_date, object, time_diff):
 
 def print_header(string):
     width = get_terminal_size().columns
-    print("\033[91m{0} {1}\033[0m".format(string, "─"*(width - len(string) - 3)))
+    print("\033[91m{0} {1}\033[0m".format(string, "─"*(width - len(string) - 1)))
