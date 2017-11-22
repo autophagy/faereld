@@ -6,7 +6,7 @@ faereld.db
 """
 
 from .models import FaereldEntry
-from .graph import SummaryGraph
+from .graph import SummaryGraph, BoxPlot
 from . import utils
 
 from os import get_terminal_size
@@ -32,10 +32,7 @@ class FaereldData(object):
                 .all()
 
         total_time = datetime.timedelta(0)
-        area_time_map = dict(map(lambda x: (x, datetime.timedelta(0)),
-                                 utils.areas.keys()))
-        min_time = None
-        max_time = None
+        area_time_map = dict(map(lambda x: (x, []), utils.areas.keys()))
         last_entries = entries[-10:]
         last_entries.reverse()
 
@@ -50,17 +47,7 @@ class FaereldData(object):
             total_time += result_time
 
             if detailed:
-                if min_time is None or max_time is None:
-                    min_time = result_time
-                    max_time = result_time
-
-                if result_time < min_time:
-                    min_time = result_time
-                elif result_time > max_time:
-                    max_time = result_time
-
-                area_time_map[result.area] += result_time
-
+                area_time_map[result.area].append(result_time)
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
@@ -68,10 +55,7 @@ class FaereldData(object):
         simple_summary = FaereldSimpleSummary(days, entries_count, formatted_time)
 
         if detailed:
-            avg_time = utils.format_time_delta(total_time/len(entries))
-            min_time = utils.format_time_delta(min_time)
-            max_time = utils.format_time_delta(max_time)
-            return FaereldDetailedSummary(simple_summary, area_time_map, min_time, max_time, avg_time, last_entries)
+            return FaereldDetailedSummary(simple_summary, area_time_map, last_entries)
         else:
             return simple_summary
 
@@ -99,26 +83,31 @@ class FaereldSimpleSummary(object):
 
 class FaereldDetailedSummary(object):
 
-        def __init__(self, simple_summary, area_time_map, min_time, max_time, avg_time, last_entries):
+        def __init__(self, simple_summary, area_time_map, last_entries):
             self.simple_summary = simple_summary
             self.area_time_map = area_time_map
-            self.min_time = min_time
-            self.max_time = max_time
-            self.avg_time = avg_time
             self.last_entries = last_entries
 
         def print(self):
             self.simple_summary.print()
+            print()
+
+            utils.print_header("TOTAL TIME LOGGED PER AREA")
             print()
             graph = SummaryGraph().generate(self.area_time_map,
                                             get_terminal_size().columns)
             for row in graph:
                 print(row)
 
+            box = BoxPlot().generate(self.area_time_map, get_terminal_size().columns)
             print()
-            print("MIN {0} // MAX {1} // AVG {2}".format(self.min_time, self.max_time, self.avg_time))
+            utils.print_header("ENTRY TIME DISTRIBUTION PER AREA")
             print()
 
+            for row in box:
+                print(row)
+
+            print()
             utils.print_header("LAST {0} ENTRIES".format(len(self.last_entries)))
             print()
             for entry in self.last_entries:
