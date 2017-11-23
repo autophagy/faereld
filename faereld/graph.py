@@ -14,10 +14,14 @@ class SummaryGraph(object):
     bar_character = '|'
     label_seperator = ' | '
 
-    def generate(self, area_time_dict, max_width):
+    def __init__(self, area_values_map, max_width):
+        self.area_values_map = area_values_map
+        self.max_width = max_width
+
+    def generate(self):
 
         # Total up the values
-        area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), area_time_dict.items()))
+        area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), self.area_values_map.items()))
 
         # First, create the graph labels
         labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(x[0], utils.format_time_delta(x[1]))), area_total_dict.items()))
@@ -32,7 +36,7 @@ class SummaryGraph(object):
                 labels[k] = v + self.label_seperator
 
         # Update the max width with the longest label
-        max_width -= longest_label + len(self.label_seperator)
+        self.max_width -= longest_label + len(self.label_seperator)
 
         # Convert the timedeltas into percentages
         largest_delta = max(area_total_dict.values())
@@ -41,7 +45,7 @@ class SummaryGraph(object):
 
         # Create the bars based on the percentages and max max_width
 
-        bars = dict(map(lambda x: (x[0], round(max_width*x[1]) * self.bar_character), percentages.items()))
+        bars = dict(map(lambda x: (x[0], round(self.max_width*x[1]) * self.bar_character), percentages.items()))
 
         # Merge the labels and bars
 
@@ -57,10 +61,14 @@ class BoxPlot(object):
     median = "#"
     formatted_median = "\033[91m█\033[0m"
 
-    def generate(self, area_values_map, max_width):
+    def __init__(self, area_values_map, max_width):
+        self.area_values_map = area_values_map
+        self.max_width = max_width
+
+    def generate(self):
 
         # First, filter out any areas that have no values.
-        area_values = dict(filter(lambda x: len(x[1]) > 0, area_values_map.items()))
+        area_values = dict(filter(lambda x: len(x[1]) > 0, self.area_values_map.items()))
 
         # Convert the timedeltas into ints
         for key, value in area_values.items():
@@ -93,7 +101,7 @@ class BoxPlot(object):
 
         # Transform the values to character positions from the minimum
         # Max width is reduced by 7 for 'KEY :: '
-        max_width_bar = max_width - len('KEY :: ')
+        max_width_bar = self.max_width - len('KEY :: ')
 
         for key, values in box_plot_tuples.items():
             positions = list(map(lambda x: int(round(max_width_bar*((x - overall_min) / (overall_max-overall_min)))), values))
