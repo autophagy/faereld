@@ -2,9 +2,13 @@
 Færeld
 ======
 
-.. image:: https://readthedocs.org/projects/faereld/badge/?version=latest
+.. image:: http://scieldas.autophagy.io/rtd/faereld.svg
     :target: http://faereld.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
+
+.. image:: http://scieldas.autophagy.io/licenses/MIT.svg
+   :target: LICENSE
+   :alt: MIT License
 
 Færeld is a tool to facilitate time tracking of what I'm working on.
 Goal is to then visualise this data in Hrǽw and use that to examine and
