@@ -70,6 +70,9 @@ class BoxPlot(object):
         # First, filter out any areas that have no values.
         area_values = dict(filter(lambda x: len(x[1]) > 0, self.area_values_map.items()))
 
+        # Filter out areas that are invalid for this analysis
+        area_values = dict(filter(lambda x: x[0] is not 'IRL', area_values.items()))
+
         # Convert the timedeltas into ints
         for key, value in area_values.items():
             area_values[key] = list(map(lambda x: x.seconds, value))
