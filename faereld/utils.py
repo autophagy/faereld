@@ -42,10 +42,10 @@ def time_diff(from_date, to_date):
     return format_time_delta(diff_delta)
 
 def format_time_delta(time_delta):
-    hours, remainder = divmod(time_delta.seconds, 3600)
+    hours, remainder = divmod(time_delta.total_seconds(), 3600)
     minutes = floor(remainder/60)
 
-    return "{0}h{1}m".format(hours, minutes)
+    return "{0}h{1}m".format(floor(hours), minutes)
 
 def print_rendered_string(area, wending_date, object, time_diff):
     if area in project_areas:
