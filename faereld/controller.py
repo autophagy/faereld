@@ -58,12 +58,12 @@ class Controller(object):
             object, link = self._non_project_object()
 
         # Assume to be in the form [date // time]
-        wending_date = None
+        date_to_display = None
         from_date_gregorian = None
         print()
-        while wending_date is None and from_date_gregorian is None:
+        while date_to_display is None and from_date_gregorian is None:
             from_date = input('From :: ')
-            wending_date, from_date_gregorian = self.convert_input_date(from_date)
+            date_to_display, from_date_gregorian = self.convert_input_date(from_date)
 
         to_date_gregorian = None
         while to_date_gregorian is None:
@@ -73,7 +73,7 @@ class Controller(object):
         time_diff = utils.time_diff(from_date_gregorian, to_date_gregorian)
 
         print()
-        utils.print_rendered_string(area, wending_date, object, time_diff)
+        utils.print_rendered_string(area, date_to_display, object, time_diff)
 
         confirmation = input("Is this correct? (y/n) :: ")
 
@@ -111,6 +111,12 @@ class Controller(object):
         return (object, None)
 
     def convert_input_date(self, date_string):
+        if self.config.get_use_wending():
+            return self._convert_wending_date(date_string)
+        else:
+            return self._convert_gregorian_date(date_string)
+
+    def _convert_wending_date(self, date_string):
         try:
             date, time = date_string.split(' // ')
             wending_date = datarum.wending.from_date_string(date)
@@ -124,6 +130,18 @@ class Controller(object):
 
         return (wending_date,
                 gregorian_date.replace(hour=time.hour, minute=time.minute))
+
+    def _convert_gregorian_date(self, date_string):
+        try:
+            gregorian_date = datetime.datetime.strptime(date_string,
+                                                        "%d %b %Y // %H.%M")
+        except TypeError:
+            print()
+            print("{} is an invalid date string. For example, it must be of"
+                  " the form: 3 Dec 226 // 16.15".format(date_string))
+            return (None, None)
+
+        return (gregorian_date, gregorian_date)
 
     # Sync Mode
 

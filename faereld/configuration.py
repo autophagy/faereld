@@ -15,7 +15,8 @@ class Configuration(object):
     # Default Configuration Options
 
     DEFAULT_DATA_OPTIONS = {
-        'data_path': '~/.andgeloman/faereld/data.db'
+        'data_options': '~/.andgeloman/faereld/data.db',
+        'use_wending': False
     }
 
     # Default Sync Options
@@ -55,7 +56,7 @@ class Configuration(object):
         """ On initialisation, preload the configuration options from the
         defaults.
         """
-        self.data_path = self.DEFAULT_DATA_OPTIONS
+        self.data_options = self.DEFAULT_DATA_OPTIONS
         self.sync_options = self.DEFAULT_SYNC_OPTIONS
         self.projects = self.DEFAULT_PROJECTS
         self.__load_configuration(configuration_path)
@@ -73,7 +74,7 @@ class Configuration(object):
                 config_file.write(self.CONFIG_BANNER)
                 yaml.dump(self.DEFAULT_CONFIG, config_file,
                           default_flow_style=False, allow_unicode=True)
-            self.data_path = self.DEFAULT_DATA_OPTIONS
+            self.data_options = self.DEFAULT_DATA_OPTIONS
             self.sync_options = self.DEFAULT_SYNC_OPTIONS
             self.projects = self.DEFAULT_PROJECTS
         else:
@@ -87,7 +88,7 @@ class Configuration(object):
             config_dict = yaml.load(config_file)
 
             config_variables = {
-                'data_options': self.data_path,
+                'data_options': self.data_options,
                 'sync_options': self.sync_options,
                 'projects': self.projects
             }
@@ -102,7 +103,10 @@ class Configuration(object):
             var.update(config_dict[config_key])
 
     def get_data_path(self):
-        return self.data_path['data_path']
+        return self.data_options['data_path']
+
+    def get_use_wending(self):
+        return self.data_options['use_wending']
 
     def get_sync_options(self):
         return self.sync_options

@@ -9,6 +9,7 @@ Various useful static functions and variables for use within Færeld.
 
 from math import floor
 from os import get_terminal_size
+from datetime import datetime
 
 
 project_areas = {
@@ -47,14 +48,20 @@ def format_time_delta(time_delta):
 
     return "{0}h{1}m".format(floor(hours), minutes)
 
-def print_rendered_string(area, wending_date, object, time_diff):
+def print_rendered_string(area, date_to_display, object, time_diff):
+
+    if type(date_to_display) is datetime:
+        formatted_date = date_to_display.strftime("%d %b %Y")
+    else:
+        formatted_date = date_to_display.formatted()
+
     if area in project_areas:
-        print(rendering_strings['projects'].format(wending_date.formatted(),
+        print(rendering_strings['projects'].format(formatted_date,
                                                    object,
                                                    areas[area],
                                                    time_diff))
     else:
-        print(rendering_strings[area].format(wending_date.formatted(),
+        print(rendering_strings[area].format(formatted_date,
                                              object,
                                              time_diff))
 
