@@ -24,7 +24,7 @@ setup(
     install_requires=[
         'PyYAML==3.12',
         'SQLAlchemy==1.1.15',
-        'datarum>=0.1.1',
+        'datarum>=0.2.0',
         'numpy==1.13.3'
     ],
     python_requires='>=3.6',

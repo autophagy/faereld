@@ -58,12 +58,17 @@ class Controller(object):
             object, link = self._non_project_object()
 
         # Assume to be in the form [date // time]
+        wending_date = None
+        from_date_gregorian = None
         print()
-        from_date = input('From :: ')
-        wending_date, from_date_gregorian = self.convert_input_date(from_date)
+        while wending_date is None and from_date_gregorian is None:
+            from_date = input('From :: ')
+            wending_date, from_date_gregorian = self.convert_input_date(from_date)
 
-        to_date = input('To :: ')
-        _, to_date_gregorian = self.convert_input_date(to_date)
+        to_date_gregorian = None
+        while to_date_gregorian is None:
+            to_date = input('To :: ')
+            _, to_date_gregorian = self.convert_input_date(to_date)
 
         time_diff = utils.time_diff(from_date_gregorian, to_date_gregorian)
 
@@ -106,10 +111,16 @@ class Controller(object):
         return (object, None)
 
     def convert_input_date(self, date_string):
-        date, time = date_string.split(' // ')
-        wending_date = datarum.wending.from_date_string(date)
-        gregorian_date = datarum.to_gregorian(wending_date)
-        time = datetime.datetime.strptime(time, '%H.%M')
+        try:
+            date, time = date_string.split(' // ')
+            wending_date = datarum.wending.from_date_string(date)
+            gregorian_date = datarum.to_gregorian(wending_date)
+            time = datetime.datetime.strptime(time, '%H.%M')
+        except ValueError:
+            print()
+            print("{} is an invalid date string. For example, it must be of"
+                  " the form: 13 Forst 226 // 16.15".format(date_string))
+            return (None, None)
 
         return (wending_date,
                 gregorian_date.replace(hour=time.hour, minute=time.minute))
