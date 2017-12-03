@@ -31,6 +31,9 @@ class FaereldData(object):
                 .order_by(FaereldEntry.start) \
                 .all()
 
+        if len(entries) == 0:
+            return FaereldEmptySummary()
+
         total_time = datetime.timedelta(0)
         area_time_map = dict(map(lambda x: (x, []), utils.areas.keys()))
         last_entries = entries[-10:]
@@ -68,6 +71,11 @@ class FaereldData(object):
 
         self.session.add(entry)
         self.session.commit()
+
+class FaereldEmptySummary(object):
+
+    def print(self):
+        print("No Færeld entries found!")
 
 class FaereldSimpleSummary(object):
 
