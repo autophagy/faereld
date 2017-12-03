@@ -135,7 +135,7 @@ class Controller(object):
         try:
             gregorian_date = datetime.datetime.strptime(date_string,
                                                         "%d %b %Y // %H.%M")
-        except TypeError:
+        except (ValueError, TypeError):
             print()
             print("{} is an invalid date string. For example, it must be of"
                   " the form: 3 Dec 226 // 16.15".format(date_string))
