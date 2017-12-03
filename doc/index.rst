@@ -2,9 +2,12 @@
 Overview
 ========
 
-Færeld is a tool to facilitate time tracking of what I'm working on.
-The goal is to then visualise this data in Hrǽw and use that to examine and
-optimise what I spend my time on.
+Færeld is a tool to track time spent on projects/tasks, split into specific
+areas. The tool also outputs summary visualisations of the data, and will
+eventually implement POSTing this data as JSON to an endpoint.
+
+The production of this tool was motivated by a desire to track, visualise and
+optimise the amount of focused time I spend on various projects/areas.
 
 .. image:: _static/faereld.png
     :alt: faereld-screenshot

@@ -9,11 +9,13 @@ The configuration file for Færeld is located in `~/.andgeloman/faereld/config.y
 Data Path Options
 -----------------
 
-========= ======================= =============================
-Option    Description                Default
-========= ======================= =============================
-data_path Path to note sqllite db ~/.andgeloman/faereld/data.db
-========= ======================= =============================
+=========== ======================= =============================
+Option      Description             Default
+=========== ======================= =============================
+data_path   Path to note sqllite db ~/.andgeloman/faereld/data.db
+use_wending Use Wending date format
+            instead of Gregorian    False
+=========== ======================= =============================
 
 Sync Options
 ------------

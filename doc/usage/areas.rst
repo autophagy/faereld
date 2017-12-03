@@ -2,6 +2,8 @@
 Areas
 =====
 
+.. _configuration:
+
 Areas in Færeld are predefined, and are used in ``insert`` mode via the use
 of the following codes.
 

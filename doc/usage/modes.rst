@@ -13,35 +13,14 @@ Summary mode can be used via:
 
     $ faereld summary
 
-    FÆRELD :: SUMMARY MODE
-    153 DAYS // 425 ENTRIES // TOTAL 17h05m
+Summary mode will print several summaries of the available Færeld data
+including:
 
-    RES [1h0m]  | ||||||||||
-    DES [1h20m] | ||||||||||||||||
-    DEV [3h30m] | ||||||||||||||||||||||||||||||||||||
-    DOC [0h45m] | |||||||
-    TST [0h30m] | |||||
-    IRL [2h0m]  | |||||||||||||||||||||||||
-    RDG [4h30m] | ||||||||||||||||||||||||||||||||||||||||||||||||||
-    LNG [2h10m] | |||||||||||||||||||||||||||||
-    BKG [1h20m] | ||||||||||||||||
+- Summary of total days, entries and hours logged.
+- Bar graph of total time logged per area.
+- Box plot diagram of entry time distribution per area (except ``IRL``).
+- The last 10 entries logged.
 
-    MIN 0h14m // MAX 2h41m // AVG 1h20
-
-    LAST 10 ENTRIES
-    On 2 Forst 226 I worked on Færeld (Development) for 0h22m
-    On 2 Forst 226 I was at Edible Alchemy Ginger Beer Workshop for 1h30m
-    On 1 Forst 226 I read Jorge Luis Borges' Fictions for 0h25m
-    On 1 Forst 226 I studied German for 0h30m
-    On 1 Forst 226 I worked on Færeld (Documentation) for 0h12m
-    On 1 Forst 226 I worked on Datárum (Documentation) for 0h58m
-    On 30 Mist 226 I worked on Færeld (Documentation) for 0h15m
-    On 30 Mist 226 I worked on Færeld (Development) for 0h15m
-    On 30 Mist 226 I worked on Færeld (Documentation) for 0h40m
-    On 30 Mist 226 I worked on Færeld (Development) for 0h20m
-
-This produces a summary of recorded entries that includes the number of days
-and entries recorded, as well as the amount recorded for each type of task.
 
 Insert Mode
 ===========
@@ -52,26 +31,33 @@ Insert mode can be used via:
 
     $ faereld insert
 
-    FÆRELD :: INSERT MODE
-    153 DAYS // 425 ENTRIES // TOTAL 17h05m
+Færeld will first ask you to choose the area that the current task belongs to.
+For a list of areas and their explainations, see the :doc:`areas` documentation.
+
+.. code-block:: bash
 
     [ Areas :: RES // DES // DEV // DOC // TST // IRL // RDG // LNG ]
     Area :: DEV
 
+If the chosen area is a project specific one (``RES``, ``DES``, ``DEV``, ``DOC``
+or ``TST``) then you will be asked to enter the project that this task belongs
+to. These projects can be defined in the :doc:`configuration`.
+
+.. code-block:: bash
+
     [ Objects :: faereld // insegel // datarum // aerende // antimber // hraew ]
     Object :: faereld
 
-    From :: 30 mist 226 // 04.30
-    To :: 30 mist 226 // 04.50
+If the area is a non-project specific one, then you will be prompted to just
+fill out the name of whatever the task is.
 
-    On 30 Mist 226 I worked on Færeld (Development) for 0h20m
-    Is this correct? (y/n) :: y
-    Færeld entry added
+You will then be asked to enter the start and end datetime of the task. This
+task must be in form ``Day Short-Month Year // 24H.M``. For example, a task
+beginning on the 3rd of December 2017 at 10pm should be entered as::
 
-Insert mode prompts the user to fill in information about the task being
-performed. The valid areas are pre-defined, and map to :doc:`areas` I wish to
-track. The valid objects for project based areas are defined in the
-:doc:`configuration`.
+    From :: 03 Dec 2017 // 22.00
+
+Similar rules apply if using Wending mode dates, which are disabled by default.
 
 Sync Mode
 =========
@@ -84,8 +70,8 @@ Sync mode can be used via:
 
     Batch (01 / 01) :: 24 entries synced to Hrǽw
 
-This syncs any unsynced entries to the Hrǽw database, which can then be used for
-visualisation. The endpoint to sync to as API key used for authentication can
-be defined in the :doc:`configuration`.
+Sync mode will POST any unsynced Færeld entries as JSON data to an endpoint.
+The endpoint to sync to as API key used for authentication can be defined in
+the :doc:`configuration`.
 
 .. note:: Sync mode is currently not implemented.
