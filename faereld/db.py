@@ -62,6 +62,16 @@ class FaereldData(object):
         else:
             return simple_summary
 
+    def get_last_objects(self, area, limit):
+        objects = self.session.query(FaereldEntry.object) \
+                  .filter(FaereldEntry.area == area) \
+                  .distinct(FaereldEntry.object) \
+                  .order_by(FaereldEntry.start.desc()) \
+                  .limit(limit) \
+                  .all()
+
+        return objects
+
     def create_entry(self, area, object, link, start, end):
         entry = FaereldEntry(area=area,
                              object=object,

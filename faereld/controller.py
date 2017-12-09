@@ -55,7 +55,7 @@ class Controller(object):
         if area in utils.project_areas:
             object, link = self._project_object()
         else:
-            object, link = self._non_project_object()
+            object, link = self._non_project_object(area)
 
         # Assume to be in the form [date // time]
         date_to_display = None
@@ -105,8 +105,25 @@ class Controller(object):
 
         return (object_name, link)
 
-    def _non_project_object(self):
+    def _non_project_object(self, area):
+
+        last_objects = self.db.get_last_objects(area, self.config.get_num_last_objects())
+
+        last_objects_dict = {'[{0}]'.format(x): k[0] for x, k in enumerate(last_objects)}
+
+        # Transform last objects into [x]: object tags
+        if len(last_objects) > 0:
+            last_objects_dict = {'[{0}]'.format(x): k[0] for x, k in enumerate(last_objects)}
+
+            print()
+            print("Last {0} {1} Objects :: ".format(len(last_objects), area))
+            for k, v in sorted(last_objects_dict.items()):
+                print("{0} {1}".format(k, v))
+
         object = input('Object :: ')
+
+        if object in last_objects_dict:
+            return (last_objects_dict[object], None)
 
         return (object, None)
 

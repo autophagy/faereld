@@ -16,7 +16,8 @@ class Configuration(object):
 
     DEFAULT_DATA_OPTIONS = {
         'data_options': '~/.andgeloman/faereld/data.db',
-        'use_wending': False
+        'use_wending': False,
+        'num_last_objects': 5,
     }
 
     # Default Sync Options
@@ -107,6 +108,9 @@ class Configuration(object):
 
     def get_use_wending(self):
         return self.data_options['use_wending']
+
+    def get_num_last_objects(self):
+        return self.data_options['num_last_objects']
 
     def get_sync_options(self):
         return self.sync_options

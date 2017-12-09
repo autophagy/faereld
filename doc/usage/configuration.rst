@@ -6,16 +6,21 @@ Configuration
 The configuration file for Færeld is located in `~/.andgeloman/faereld/config.yml`.
 
 
-Data Path Options
------------------
+Data Options
+------------
 
-=========== ======================= =============================
-Option      Description             Default
-=========== ======================= =============================
-data_path   Path to note sqllite db ~/.andgeloman/faereld/data.db
-use_wending Use Wending date format
-            instead of Gregorian    False
-=========== ======================= =============================
+================ ======================= =============================
+Option           Description             Default
+================ ======================= =============================
+data_path        Path to note sqllite db ~/.andgeloman/faereld/data.db
+
+use_wending      Use Wending date format
+                 instead of Gregorian    False
+
+num_last_objects The number of objects   5
+                 return when adding a
+                 non-project task.
+================ ======================= =============================
 
 Sync Options
 ------------
