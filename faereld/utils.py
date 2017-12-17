@@ -11,6 +11,7 @@ from math import floor
 from shutil import get_terminal_size
 from datetime import datetime
 from textwrap import fill
+import re
 
 
 project_areas = {
@@ -57,14 +58,14 @@ def print_rendered_string(area, date_to_display, object, time_diff):
         formatted_date = date_to_display.formatted()
 
     if area in project_areas:
-        print(rendering_strings['projects'].format(formatted_date,
-                                                   object,
-                                                   areas[area],
-                                                   time_diff))
+        print_wordwrap(rendering_strings['projects'].format(formatted_date,
+                                                            object,
+                                                            areas[area],
+                                                            time_diff))
     else:
-        print(rendering_strings[area].format(formatted_date,
-                                             object,
-                                             time_diff))
+        print_wordwrap(rendering_strings[area].format(formatted_date,
+                                                      object,
+                                                      time_diff))
 
 def print_header(string):
     print("\033[91m{0} {1}\033[0m".format(string, "─"*(terminal_width() - len(string) - 1)))
@@ -73,4 +74,8 @@ def terminal_width():
     return get_terminal_size().columns
 
 def print_wordwrap(string):
-    print(fill(string, terminal_width()))
+    stripped_len = len(strip_colour_codes(string))
+    print(fill(string, terminal_width() + (len(string) - stripped_len)))
+
+def strip_colour_codes(string):
+    return re.sub('\x1b\[[0-9;]*m', '', string)

@@ -58,8 +58,7 @@ class BoxPlot(object):
     right_whisker = "┫"
     whisker = "━"
     box_body = "█"
-    median = "#"
-    formatted_median = "\033[91m█\033[0m"
+    median = "\033[91m█\033[0m"
 
     def __init__(self, area_values_map, max_width):
         self.area_values_map = area_values_map
@@ -134,12 +133,10 @@ class BoxPlot(object):
         # Add the second quartile
         box_string += self.median
         # Pad until the third quartile
-        box_string += self.box_body*(third_pos-len(box_string))
+        box_string += self.box_body*(third_pos-len(utils.strip_colour_codes(box_string)))
         # Pad until the max
-        box_string += self.whisker*((max_pos-1)-len(box_string))
+        box_string += self.whisker*((max_pos-1)-len(utils.strip_colour_codes(box_string)))
         # Add the whisker
         box_string += self.right_whisker
 
-        # Format out the median character now we've created it
-        box_string = box_string.replace(self.median, self.formatted_median)
         return box_string
