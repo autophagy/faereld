@@ -92,7 +92,7 @@ class Controller(object):
         projects = self.config.get_projects()
 
         print()
-        utils.print_wordwrap("[ Objects :: {0} ]".format(' // '.join(projects.keys())))
+        utils.print_wordwrap("[ Objects :: {0} ]".format(' // '.join(sorted(projects.keys()))))
         object = input('Object :: ')
 
         while object not in projects:
