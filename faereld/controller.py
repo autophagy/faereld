@@ -44,7 +44,7 @@ class Controller(object):
         summary.print()
 
         print()
-        print("[ Areas :: {0} ]".format(' // '.join(utils.areas.keys())))
+        utils.print_wordwrap("[ Areas :: {0} ]".format(' // '.join(utils.areas.keys())))
         area = input('Area :: ').upper()
 
         while area not in utils.areas:
@@ -92,7 +92,7 @@ class Controller(object):
         projects = self.config.get_projects()
 
         print()
-        print("[ Objects :: {0} ]".format(' // '.join(projects.keys())))
+        utils.print_wordwrap("[ Objects :: {0} ]".format(' // '.join(projects.keys())))
         object = input('Object :: ')
 
         while object not in projects:
@@ -118,7 +118,7 @@ class Controller(object):
             print()
             print("Last {0} {1} Objects :: ".format(len(last_objects), area))
             for k, v in sorted(last_objects_dict.items()):
-                print("{0} {1}".format(k, v))
+                utils.print_wordwrap("{0} {1}".format(k, v))
 
         object = input('Object :: ')
 

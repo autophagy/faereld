@@ -9,7 +9,6 @@ from .models import FaereldEntry
 from .graph import SummaryGraph, BoxPlot
 from . import utils
 
-from os import get_terminal_size
 import sqlalchemy
 import datetime
 import datarum
@@ -112,8 +111,7 @@ class FaereldDetailedSummary(object):
 
             utils.print_header("TOTAL TIME LOGGED PER AREA")
             print()
-            graph = SummaryGraph(self.area_time_map,
-                                 get_terminal_size().columns) \
+            graph = SummaryGraph(self.area_time_map, utils.terminal_width()) \
                     .generate()
             for row in graph:
                 print(row)
@@ -121,8 +119,7 @@ class FaereldDetailedSummary(object):
             print()
             utils.print_header("ENTRY TIME DISTRIBUTION PER AREA")
             print()
-            box = BoxPlot(self.area_time_map,
-                          get_terminal_size().columns) \
+            box = BoxPlot(self.area_time_map, utils.terminal_width()) \
                          .generate()
             for row in box:
                 print(row)
