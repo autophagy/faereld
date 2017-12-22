@@ -59,18 +59,25 @@ class Controller(object):
 
         # Assume to be in the form [date // time]
         date_to_display = None
+
         from_date_gregorian = None
-        print()
-        while date_to_display is None and from_date_gregorian is None:
-            from_date = input('From :: ')
-            date_to_display, from_date_gregorian = self.convert_input_date(from_date)
-
         to_date_gregorian = None
-        while to_date_gregorian is None:
-            to_date = input('To :: ')
-            _, to_date_gregorian = self.convert_input_date(to_date)
+        while from_date_gregorian is None and to_date_gregorian is None:
+            print()
+            while from_date_gregorian is None:
+                from_date = input('From :: ')
+                date_to_display, from_date_gregorian = self.convert_input_date(from_date)
 
-        time_diff = utils.time_diff(from_date_gregorian, to_date_gregorian)
+            while to_date_gregorian is None:
+                to_date = input('To :: ')
+                _, to_date_gregorian = self.convert_input_date(to_date)
+
+            time_diff = utils.time_diff(from_date_gregorian, to_date_gregorian)
+
+            if from_date_gregorian >= to_date_gregorian:
+                print("Invalid Duration :: {0}".format(time_diff))
+                from_date_gregorian = None
+                to_date_gregorian = None
 
         print()
         utils.print_rendered_string(area, date_to_display, object, time_diff)
