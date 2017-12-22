@@ -75,6 +75,13 @@ beginning on the 3rd of December 2017 at 10pm should be entered as:
     From :: 03 Dec 2017 // 22.00
 
 Similar rules apply if using Wending mode dates, which are disabled by default.
+To quickly input the current date and time, regardless of which date mode you
+are using, enter ``now``:
+
+.. code-block:: none
+
+    From :: now
+
 
 Sync Mode
 =========

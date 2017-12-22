@@ -135,10 +135,15 @@ class Controller(object):
 
     def _convert_wending_date(self, date_string):
         try:
-            date, time = date_string.split(' // ')
-            wending_date = datarum.wending.from_date_string(date)
-            gregorian_date = datarum.to_gregorian(wending_date)
-            time = datetime.datetime.strptime(time, '%H.%M')
+            if date_string.lower() == "now":
+                gregorian_now = datetime.datetime.now()
+                wending_now = datarum.from_date(gregorian_now)
+                return (wending_now, gregorian_now)
+            else:
+                date, time = date_string.split(' // ')
+                wending_date = datarum.wending.from_date_string(date)
+                gregorian_date = datarum.to_gregorian(wending_date)
+                time = datetime.datetime.strptime(time, '%H.%M')
         except ValueError:
             print()
             print("{} is an invalid date string. For example, it must be of"
