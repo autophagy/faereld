@@ -11,8 +11,8 @@ from datetime import timedelta
 
 class SummaryGraph(object):
 
-    bar_character = '|'
-    label_seperator = ' | '
+    bar_character = '━'
+    label_seperator = '  '
 
     def __init__(self, area_values_map, max_width):
         self.area_values_map = area_values_map
