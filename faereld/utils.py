@@ -81,3 +81,7 @@ def print_wordwrap(string):
 
 def strip_colour_codes(string):
     return re.sub('\x1b\[[0-9;]*m', '', string)
+
+def print_areas_help():
+    for area, desc in areas.items():
+        print('{0} :: {1}'.format(area, desc))

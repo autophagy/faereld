@@ -49,7 +49,10 @@ class Controller(object):
 
         while area not in utils.areas:
             print()
-            print("Invalid Area :: {0}".format(area))
+            if area == '?':
+                utils.print_areas_help()
+            else:
+                print("Invalid Area :: {0}".format(area))
             area = input('Area :: ').upper()
 
         if area in utils.project_areas:
