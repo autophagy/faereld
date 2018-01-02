@@ -25,7 +25,8 @@ project_areas = {
 misc_areas = {
     'IRL': 'Real life engagements (confs/talks/meetups)',
     'RDG': 'Reading',
-    'LNG': 'Languages'
+    'LNG': 'Languages',
+    'TSK': 'Tasks'
 }
 
 areas = project_areas.copy()
@@ -35,7 +36,8 @@ rendering_strings = {
     'projects': 'On \033[94m{0}\033[0m I worked on \033[94m{1}\033[0m (\033[94m{2}\033[0m) for \033[94m{3}\033[0m',
     'IRL': 'On \033[94m{0}\033[0m I was at \033[94m{1}\033[0m for \033[94m{2}\033[0m',
     'RDG': 'On \033[94m{0}\033[0m I read \033[94m{1}\033[0m for \033[94m{2}\033[0m',
-    'LNG': 'On \033[94m{0}\033[0m I studied \033[94m{1}\033[0m for \033[94m{2}\033[0m'
+    'LNG': 'On \033[94m{0}\033[0m I studied \033[94m{1}\033[0m for \033[94m{2}\033[0m',
+    'TSK': 'On \033[94m{0}\033[0m I worked on \033[94m{1}\033[0m for \033[94m{2}\033[0m'
 }
 
 header = "FÆRELD :: {0} MODE"
