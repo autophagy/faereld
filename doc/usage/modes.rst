@@ -2,7 +2,7 @@
 Modes
 =====
 
-Færeld has 3 usage modes: ``summary``, ``insert`` and ``sync``.
+Færeld has 4 usage modes: ``summary``, ``projects``, ``insert`` and ``sync``.
 
 Summary Mode
 ============
@@ -21,6 +21,16 @@ including:
 - Box plot diagram of entry time distribution per area (except ``IRL``).
 - The last 10 entries logged.
 
+Projects Mode
+=============
+
+Projects mode can be used via:
+
+.. code-block:: bash
+
+    $ faereld projects
+
+Projects mode will print a summary of the total time logged per project.
 
 Insert Mode
 ===========

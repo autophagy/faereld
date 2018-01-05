@@ -24,11 +24,11 @@ class FaereldData(object):
         return sqlalchemy.orm.sessionmaker(bind=engine)()
 
     def get_summary(self, detailed=False):
-        entries_count = self.session.query(FaereldEntry).count()
-
         entries = self.session.query(FaereldEntry) \
                 .order_by(FaereldEntry.start) \
                 .all()
+
+        entries_count = len(entries)
 
         if len(entries) == 0:
             return FaereldEmptySummary()
@@ -60,6 +60,42 @@ class FaereldData(object):
             return FaereldDetailedSummary(simple_summary, area_time_map, last_entries)
         else:
             return simple_summary
+
+    def get_projects_summary(self):
+        entries = self.session.query(FaereldEntry) \
+                .filter(FaereldEntry.area.in_(list(utils.project_areas.keys()))) \
+                .order_by(FaereldEntry.start) \
+                .all()
+
+        entries_count = len(entries)
+
+        if len(entries) == 0:
+            return FaereldEmptySummary()
+
+        total_time = datetime.timedelta(0)
+        project_time_map = {}
+
+        for index, result in enumerate(entries):
+            if index == 0:
+                first_day = result.start
+
+            if index == len(entries)-1:
+                last_day = result.end
+
+            result_time = result.end - result.start
+            total_time += result_time
+
+            if result.object not in project_time_map:
+                project_time_map[result.object] = [result_time]
+            else:
+                project_time_map[result.object].append(result_time)
+
+        formatted_time = utils.format_time_delta(total_time)
+        days = (last_day - first_day).days + 1
+
+        simple_summary = FaereldSimpleSummary(days, entries_count, formatted_time)
+
+        return FaereldProjectsSummary(simple_summary, project_time_map)
 
     def get_last_objects(self, area, limit):
         objects = self.session.query(FaereldEntry.object) \
@@ -129,3 +165,21 @@ class FaereldDetailedSummary(object):
             print()
             for entry in self.last_entries:
                 utils.print_rendered_string(entry.area, datarum.from_date(entry.start), entry.object, utils.time_diff(entry.start, entry.end))
+
+
+class FaereldProjectsSummary(object):
+
+        def __init__(self, simple_summary, project_time_map):
+            self.simple_summary = simple_summary
+            self.project_time_map = project_time_map
+
+        def print(self):
+            self.simple_summary.print()
+            print()
+
+            utils.print_header("TOTAL TIME LOGGED PER PROJECT")
+            print()
+            graph = SummaryGraph(self.project_time_map, utils.terminal_width()) \
+                    .generate()
+            for row in graph:
+                print(row)

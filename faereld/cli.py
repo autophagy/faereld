@@ -19,7 +19,8 @@ def parse_args():
                         help='The faereld config file to use.')
     parser.add_argument('mode', metavar='mode', choices=['summary',
                                                       'insert',
-                                                      'sync'],
+                                                      'sync',
+                                                      'projects'],
                         help='Mode to run faereld in.')
 
 
@@ -34,6 +35,8 @@ def main():
 
         if args.mode == 'summary':
             controller.summary()
+        if args.mode == 'projects':
+            controller.projects()
         elif args.mode == 'insert':
             controller.insert()
         elif args.mode == 'sync':

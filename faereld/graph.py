@@ -24,7 +24,8 @@ class SummaryGraph(object):
         area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), self.area_values_map.items()))
 
         # First, create the graph labels
-        labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(x[0], utils.format_time_delta(x[1]))), area_total_dict.items()))
+        longest_key = len(max(list(area_total_dict.keys())))
+        labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(self._pad_key(x[0], longest_key), utils.format_time_delta(x[1]))), area_total_dict.items()))
 
         # Get the length of the longest label
         longest_label = len(max(labels.values(), key=len))
@@ -50,6 +51,12 @@ class SummaryGraph(object):
         # Merge the labels and bars
 
         return list(map(lambda t: "{0}{1}".format(t[1], bars[t[0]]), labels.items()))
+
+    def _pad_key(self, key, length):
+        if len(key) < length:
+            return key + ' '*(length - len(key))
+        else:
+            return key
 
 
 class BoxPlot(object):

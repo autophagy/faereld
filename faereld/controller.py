@@ -34,6 +34,19 @@ class Controller(object):
 
         print("\n[ {}ms ]".format(round((summary_end-summary_begin)*100)))
 
+    # Projects Summary Mode
+
+    def projects(self):
+        summary_begin = time.time()
+        projects_summary = self.db.get_projects_summary()
+
+        print()
+        utils.print_header(utils.header.format("PROJECTS SUMMARY"))
+        projects_summary.print()
+        summary_end = time.time()
+
+        print("\n[ {} ms]".format(round((summary_end-summary_begin)*100)))
+
     # Insert Mode
 
     def insert(self):
