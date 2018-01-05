@@ -13,6 +13,8 @@ from os import path
 import datarum
 import datetime
 import time
+from functools import wraps
+
 
 class Controller(object):
 
@@ -21,31 +23,36 @@ class Controller(object):
         self.data_path = path.expanduser(self.config.get_data_path())
         self.db = FaereldData(self.data_path)
 
+    def _time_function(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            begin = time.time()
+            result = func(*args, **kwargs)
+            end = time.time()
+
+            print("\n[ {}ms ]".format(round((end-begin)*100)))
+            return result
+        return wrapper
+
     # Summary Mode
 
+    @_time_function
     def summary(self):
-        summary_begin = time.time()
         summary = self.db.get_summary(detailed=True)
 
         print()
         utils.print_header(utils.header.format("SUMMARY"))
         summary.print()
-        summary_end = time.time()
-
-        print("\n[ {}ms ]".format(round((summary_end-summary_begin)*100)))
 
     # Projects Summary Mode
 
+    @_time_function
     def projects(self):
-        summary_begin = time.time()
         projects_summary = self.db.get_projects_summary()
 
         print()
         utils.print_header(utils.header.format("PROJECTS SUMMARY"))
         projects_summary.print()
-        summary_end = time.time()
-
-        print("\n[ {} ms]".format(round((summary_end-summary_begin)*100)))
 
     # Insert Mode
 
