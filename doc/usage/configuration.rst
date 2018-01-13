@@ -33,6 +33,18 @@ api_key    API key to use to authenticate with the endpoint.
 batch_size The number of entries to post to the endpoint at a time. 50
 ========== ======================================================== =======
 
+Summary Options
+---------------
+
+==================================== ========================================================= =======
+Option                               Description                                               Default
+==================================== ========================================================= =======
+exclude_from_total_time              List of areas to exclude from the total time graph in     - TSK
+                                     summary mode.
+exclude_from_entry_time_distribution List of areas to exclude from the entry time distribution - IRL
+                                     graph in summary mode.
+==================================== ========================================================= =======
+
 Project Areas
 -------------
 

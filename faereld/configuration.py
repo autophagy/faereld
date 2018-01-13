@@ -87,17 +87,25 @@ class Configuration(object):
         },
     }
 
+    # Default Summary Options
+
+    DEFAULT_SUMMARY_OPTIONS = {
+        'exclude_from_total_time': ['TSK'],
+        'exclude_from_entry_time_distribution': ['IRL']
+    }
+
     DEFAULT_CONFIG = {
         'data_options': DEFAULT_DATA_OPTIONS,
         'sync_options': DEFAULT_SYNC_OPTIONS,
+        'summary_options': DEFAULT_SUMMARY_OPTIONS,
         'project_areas': DEFAULT_PROJECT_AREAS,
         'projects': DEFAULT_PROJECTS,
-        'general_areas': DEFAULT_GENERAL_AREAS
+        'general_areas': DEFAULT_GENERAL_AREAS,
     }
 
     # The configs defined here must have values set for their defaults.
     # For configs excluded from this group, the defaults are just examples.
-    MUST_BE_PRESENT_CONFIGS = ['data_options', 'sync_options']
+    MUST_BE_PRESENT_CONFIGS = ['data_options', 'sync_options', 'summary_options']
 
     # Banner to prepend to the default configuration if it does not exist.
 
@@ -117,6 +125,8 @@ class Configuration(object):
         'sync_options': """# sync_options :: Settings For Sync Mode
 #
 # NOTE: Sync mode is currently not implemented, these settings do nothing.""",
+
+        'summary_options': """# summary_options :: Settings For Summary Mode""",
 
         'project_areas': """# project_areas :: Definitions For Project-Specific Areas
 #
@@ -154,6 +164,7 @@ class Configuration(object):
         self.project_areas = self.DEFAULT_PROJECT_AREAS
         self.projects = self.DEFAULT_PROJECTS
         self.general_areas = self.DEFAULT_GENERAL_AREAS
+        self.summary_options = self.DEFAULT_SUMMARY_OPTIONS
         self.__load_configuration(configuration_path)
 
     def __load_configuration(self, configuration_path):
@@ -177,6 +188,7 @@ class Configuration(object):
         config_variables = {
                 'data_options': self.data_options,
                 'sync_options': self.sync_options,
+                'summary_options': self.summary_options,
                 'project_areas': self.project_areas,
                 'projects': self.projects,
                 'general_areas': self.general_areas
@@ -227,6 +239,13 @@ class Configuration(object):
 
     def get_num_last_objects(self):
         return self.data_options['num_last_objects']
+
+    def get_exclude_from_total_time(self):
+        return self.__validate_list(self.summary_options['exclude_from_total_time'])
+
+
+    def get_exclude_from_entry_time_distribution(self):
+        return self.__validate_list(self.summary_options['exclude_from_entry_time_distribution'])
 
     def get_sync_options(self):
         return self.sync_options

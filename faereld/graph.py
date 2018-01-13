@@ -14,14 +14,18 @@ class SummaryGraph(object):
     bar_character = '━'
     label_seperator = '  '
 
-    def __init__(self, area_values_map, max_width):
+    def __init__(self, area_values_map, max_width, exclude_list=[]):
         self.area_values_map = area_values_map
         self.max_width = max_width
+        self.exclude_list = exclude_list
 
     def generate(self):
 
+        # Filter out areas that are invalid for this analysis
+        area_values = dict(filter(lambda x: x[0] not in self.exclude_list, self.area_values_map.items()))
+
         # Total up the values
-        area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), self.area_values_map.items()))
+        area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), area_values.items()))
 
         # First, create the graph labels
         longest_key = len(max(list(area_total_dict.keys())))
@@ -67,9 +71,10 @@ class BoxPlot(object):
     box_body = "█"
     median = "\033[91m█\033[0m"
 
-    def __init__(self, area_values_map, max_width):
+    def __init__(self, area_values_map, max_width, exclude_list):
         self.area_values_map = area_values_map
         self.max_width = max_width
+        self.exclude_list = exclude_list
 
     def generate(self):
 
@@ -77,7 +82,7 @@ class BoxPlot(object):
         area_values = dict(filter(lambda x: len(x[1]) > 0, self.area_values_map.items()))
 
         # Filter out areas that are invalid for this analysis
-        area_values = dict(filter(lambda x: x[0] is not 'IRL', area_values.items()))
+        area_values = dict(filter(lambda x: x[0] not in self.exclude_list, area_values.items()))
 
         # Convert the timedeltas into ints
         for key, value in area_values.items():

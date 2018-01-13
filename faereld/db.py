@@ -149,7 +149,7 @@ class FaereldDetailedSummary(object):
 
             utils.print_header("TOTAL TIME LOGGED PER AREA")
             print()
-            graph = SummaryGraph(self.area_time_map, utils.terminal_width()) \
+            graph = SummaryGraph(self.area_time_map, utils.terminal_width(), self.config.get_exclude_from_total_time()) \
                     .generate()
             for row in graph:
                 print(row)
@@ -157,7 +157,7 @@ class FaereldDetailedSummary(object):
             print()
             utils.print_header("ENTRY TIME DISTRIBUTION PER AREA")
             print()
-            box = BoxPlot(self.area_time_map, utils.terminal_width()) \
+            box = BoxPlot(self.area_time_map, utils.terminal_width(), self.config.get_exclude_from_entry_time_distribution()) \
                          .generate()
             for row in box:
                 print(row)
