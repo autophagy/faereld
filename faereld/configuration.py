@@ -87,7 +87,6 @@ class Configuration(object):
         },
     }
 
-
     DEFAULT_CONFIG = {
         'data_options': DEFAULT_DATA_OPTIONS,
         'sync_options': DEFAULT_SYNC_OPTIONS,
@@ -95,6 +94,10 @@ class Configuration(object):
         'projects': DEFAULT_PROJECTS,
         'general_areas': DEFAULT_GENERAL_AREAS
     }
+
+    # The configs defined here must have values set for their defaults.
+    # For configs excluded from this group, the defaults are just examples.
+    MUST_BE_PRESENT_CONFIGS = ['data_options', 'sync_options']
 
     # Banner to prepend to the default configuration if it does not exist.
 
@@ -192,7 +195,16 @@ class Configuration(object):
         """ Update a config dictionary given a category key
         """
         if config_key in config_dict:
-            var.update(config_dict[config_key])
+            if config_key in self.MUST_BE_PRESENT_CONFIGS:
+                # The values defined in the defaults must be present for these
+                # config options.
+                var.update(config_dict[config_key])
+            else:
+                # The values defined in the defaults are just examples, and do
+                # not need to be present.
+                var.clear()
+                var.update(config_dict[config_key])
+
 
     def __write_config_file(self, path, config):
         with open(path, 'w') as config_file:
