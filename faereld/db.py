@@ -58,7 +58,7 @@ class FaereldData(object):
         simple_summary = FaereldSimpleSummary(days, entries_count, formatted_time)
 
         if detailed:
-            return FaereldDetailedSummary(simple_summary, area_time_map, last_entries, self.config.get_areas())
+            return FaereldDetailedSummary(simple_summary, area_time_map, last_entries, self.config)
         else:
             return simple_summary
 
@@ -137,11 +137,11 @@ class FaereldSimpleSummary(object):
 
 class FaereldDetailedSummary(object):
 
-        def __init__(self, simple_summary, area_time_map, last_entries, areas):
+        def __init__(self, simple_summary, area_time_map, last_entries, config):
             self.simple_summary = simple_summary
             self.area_time_map = area_time_map
             self.last_entries = last_entries
-            self.areas = areas
+            self.config = config
 
         def print(self):
             self.simple_summary.print()
@@ -166,9 +166,14 @@ class FaereldDetailedSummary(object):
             utils.print_header("LAST {0} ENTRIES".format(len(self.last_entries)))
             print()
             for entry in self.last_entries:
+                if self.config.get_use_wending():
+                    start_date = datarum.from_date(entry.start)
+                else:
+                    start_date = entry.start
+
                 utils.print_rendered_string(entry.area,
-                                            self.areas[entry.area],
-                                            datarum.from_date(entry.start),
+                                            self.config.get_areas()[entry.area],
+                                            start_date,
                                             entry.object,
                                             utils.time_diff(entry.start, entry.end))
 
