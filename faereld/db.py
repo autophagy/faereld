@@ -15,8 +15,9 @@ import datarum
 
 class FaereldData(object):
 
-    def __init__(self, data_path):
+    def __init__(self, data_path, config):
         self.session = self._create_session(data_path)
+        self.config = config
 
     def _create_session(self, data_path):
         engine = sqlalchemy.create_engine('sqlite:///{0}'.format(data_path))
@@ -34,7 +35,7 @@ class FaereldData(object):
             return FaereldEmptySummary()
 
         total_time = datetime.timedelta(0)
-        area_time_map = dict(map(lambda x: (x, []), utils.areas.keys()))
+        area_time_map = dict(map(lambda x: (x, []), self.config.get_areas().keys()))
         last_entries = entries[-10:]
         last_entries.reverse()
 
@@ -57,13 +58,13 @@ class FaereldData(object):
         simple_summary = FaereldSimpleSummary(days, entries_count, formatted_time)
 
         if detailed:
-            return FaereldDetailedSummary(simple_summary, area_time_map, last_entries)
+            return FaereldDetailedSummary(simple_summary, area_time_map, last_entries, self.config.get_areas())
         else:
             return simple_summary
 
     def get_projects_summary(self):
         entries = self.session.query(FaereldEntry) \
-                .filter(FaereldEntry.area.in_(list(utils.project_areas.keys()))) \
+                .filter(FaereldEntry.area.in_(list(self.config.get_project_areas().keys()))) \
                 .order_by(FaereldEntry.start) \
                 .all()
 
@@ -136,10 +137,11 @@ class FaereldSimpleSummary(object):
 
 class FaereldDetailedSummary(object):
 
-        def __init__(self, simple_summary, area_time_map, last_entries):
+        def __init__(self, simple_summary, area_time_map, last_entries, areas):
             self.simple_summary = simple_summary
             self.area_time_map = area_time_map
             self.last_entries = last_entries
+            self.areas = areas
 
         def print(self):
             self.simple_summary.print()
@@ -164,7 +166,11 @@ class FaereldDetailedSummary(object):
             utils.print_header("LAST {0} ENTRIES".format(len(self.last_entries)))
             print()
             for entry in self.last_entries:
-                utils.print_rendered_string(entry.area, datarum.from_date(entry.start), entry.object, utils.time_diff(entry.start, entry.end))
+                utils.print_rendered_string(entry.area,
+                                            self.areas[entry.area],
+                                            datarum.from_date(entry.start),
+                                            entry.object,
+                                            utils.time_diff(entry.start, entry.end))
 
 
 class FaereldProjectsSummary(object):

@@ -21,7 +21,7 @@ class Controller(object):
     def __init__(self, config):
         self.config = config
         self.data_path = path.expanduser(self.config.get_data_path())
-        self.db = FaereldData(self.data_path)
+        self.db = FaereldData(self.data_path, self.config)
 
     def _time_function(func):
         @wraps(func)
@@ -64,18 +64,18 @@ class Controller(object):
         summary.print()
 
         print()
-        utils.print_wordwrap("[ Areas :: {0} ]".format(' // '.join(utils.areas.keys())))
+        utils.print_wordwrap("[ Areas :: {0} ]".format(' // '.join(self.config.get_areas().keys())))
         area = input('Area :: ').upper()
 
-        while area not in utils.areas:
+        while area not in self.config.get_areas():
             print()
             if area == '?':
-                utils.print_areas_help()
+                utils.print_areas_help(self.config.get_areas())
             else:
                 print("Invalid Area :: {0}".format(area))
             area = input('Area :: ').upper()
 
-        if area in utils.project_areas:
+        if area in self.config.get_project_areas():
             object, link = self._project_object()
         else:
             object, link = self._non_project_object(area)
@@ -103,7 +103,11 @@ class Controller(object):
                 to_date_gregorian = None
 
         print()
-        utils.print_rendered_string(area, date_to_display, object, time_diff)
+        utils.print_rendered_string(area,
+                                    self.config.get_areas()[area],
+                                    date_to_display,
+                                    object,
+                                    time_diff)
 
         confirmation = input("Is this correct? (y/n) :: ")
 
@@ -137,23 +141,26 @@ class Controller(object):
 
     def _non_project_object(self, area):
 
-        last_objects = self.db.get_last_objects(area, self.config.get_num_last_objects())
+        use_last_objects = self.config.get_areas()[area]['use_last_objects']
+        print()
 
-        last_objects_dict = {'[{0}]'.format(x): k[0] for x, k in enumerate(last_objects)}
+        if use_last_objects:
+            last_objects = self.db.get_last_objects(area, self.config.get_num_last_objects())
 
-        # Transform last objects into [x]: object tags
-        if len(last_objects) > 0:
             last_objects_dict = {'[{0}]'.format(x): k[0] for x, k in enumerate(last_objects)}
 
-            print()
-            print("Last {0} {1} Objects :: ".format(len(last_objects), area))
-            for k, v in sorted(last_objects_dict.items()):
-                utils.print_wordwrap("{0} {1}".format(k, v))
+            # Transform last objects into [x]: object tags
+            if len(last_objects) > 0:
+                last_objects_dict = {'[{0}]'.format(x): k[0] for x, k in enumerate(last_objects)}
+                print("Last {0} {1} Objects :: ".format(len(last_objects), area))
+                for k, v in sorted(last_objects_dict.items()):
+                    utils.print_wordwrap("{0} {1}".format(k, v))
 
         object = input('Object :: ')
 
-        if object in last_objects_dict:
-            return (last_objects_dict[object], None)
+        if use_last_objects:
+            if object in last_objects_dict:
+                return (last_objects_dict[object], None)
 
         return (object, None)
 

@@ -13,33 +13,6 @@ from datetime import datetime
 from textwrap import fill
 import re
 
-
-project_areas = {
-    'RES': 'Research',
-    'DES': 'Design',
-    'DEV': 'Development',
-    'DOC': 'Documentation',
-    'TST': 'Testing',
-}
-
-misc_areas = {
-    'IRL': 'Real life engagements (confs/talks/meetups)',
-    'RDG': 'Reading',
-    'LNG': 'Languages',
-    'TSK': 'Tasks'
-}
-
-areas = project_areas.copy()
-areas.update(misc_areas)
-
-rendering_strings = {
-    'projects': 'On \033[94m{0}\033[0m I worked on \033[94m{1}\033[0m (\033[94m{2}\033[0m) for \033[94m{3}\033[0m',
-    'IRL': 'On \033[94m{0}\033[0m I was at \033[94m{1}\033[0m for \033[94m{2}\033[0m',
-    'RDG': 'On \033[94m{0}\033[0m I read \033[94m{1}\033[0m for \033[94m{2}\033[0m',
-    'LNG': 'On \033[94m{0}\033[0m I studied \033[94m{1}\033[0m for \033[94m{2}\033[0m',
-    'TSK': 'On \033[94m{0}\033[0m I worked on \033[94m{1}\033[0m for \033[94m{2}\033[0m'
-}
-
 header = "FÆRELD :: {0} MODE"
 
 def time_diff(from_date, to_date):
@@ -52,22 +25,22 @@ def format_time_delta(time_delta):
 
     return "{0}h{1}m".format(floor(hours), minutes)
 
-def print_rendered_string(area, date_to_display, object, time_diff):
-
+def print_rendered_string(area_code, area, date_to_display, object_name, duration):
     if type(date_to_display) is datetime:
         formatted_date = date_to_display.strftime("%d %b %Y")
     else:
         formatted_date = date_to_display.formatted()
 
-    if area in project_areas:
-        print_wordwrap(rendering_strings['projects'].format(formatted_date,
-                                                            object,
-                                                            areas[area],
-                                                            time_diff))
-    else:
-        print_wordwrap(rendering_strings[area].format(formatted_date,
-                                                      object,
-                                                      time_diff))
+    rendering_string = area['rendering_string'].format(area=highlight(area_code),
+                                                       area_name=highlight(area['name']),
+                                                       object=highlight(object_name),
+                                                       date=highlight(formatted_date),
+                                                       duration=highlight(duration))
+
+    print_wordwrap(rendering_string)
+
+def highlight(item):
+    return "\033[94m{0}\033[0m".format(item)
 
 def print_header(string):
     print("\033[91m{0} {1}\033[0m".format(string, "─"*(terminal_width() - len(string) - 1)))
@@ -82,6 +55,6 @@ def print_wordwrap(string):
 def strip_colour_codes(string):
     return re.sub('\x1b\[[0-9;]*m', '', string)
 
-def print_areas_help():
-    for area, desc in areas.items():
-        print('{0} :: {1}'.format(area, desc))
+def print_areas_help(areas):
+    for area_code, area in areas.items():
+        print('{0} :: {1}'.format(area_code, area['name']))

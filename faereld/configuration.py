@@ -15,7 +15,7 @@ class Configuration(object):
     # Default Configuration Options
 
     DEFAULT_DATA_OPTIONS = {
-        'data_options': '~/.andgeloman/faereld/data.db',
+        'data_path': '~/.andgeloman/faereld/data.db',
         'use_wending': False,
         'num_last_objects': 5,
     }
@@ -28,6 +28,31 @@ class Configuration(object):
         'batch_size': 50
     }
 
+    # Default Project Areas
+
+    DEFAULT_PROJECT_AREAS = {
+        'RES': {
+            'name': 'Research',
+            'rendering_string': 'On {date} I worked on {object} ({area_name}) for {duration}',
+        },
+        'DES': {
+            'name': 'Design',
+            'rendering_string': 'On {date} I worked on {object} ({area_name}) for {duration}',
+        },
+        'DEV': {
+            'name': 'Development',
+            'rendering_string': 'On {date} I worked on {object} ({area_name}) for {duration}',
+        },
+        'DOC': {
+            'name': 'Documentation',
+            'rendering_string': 'On {date} I worked on {object} ({area_name}) for {duration}',
+        },
+        'TST': {
+            'name': 'Testing',
+            'rendering_string': 'On {date} I worked on {object} ({area_name}) for {duration}',
+        },
+    }
+
     # Default Projects
 
     DEFAULT_PROJECTS = {
@@ -37,10 +62,38 @@ class Configuration(object):
         }
     }
 
+    # Default General Areas
+
+    DEFAULT_GENERAL_AREAS = {
+        'IRL': {
+            'name': 'Real life engagements (confs/talks/meetups)',
+            'rendering_string': 'On {date} I was at {object} for {duration}',
+            'use_last_objects': False
+        },
+        'RDG': {
+            'name': 'Reading',
+            'rendering_string': 'On {date} I read {object} for {duration}',
+            'use_last_objects': True
+        },
+        'LNG': {
+            'name': 'Languages',
+            'rendering_string': 'On {date} I studied {object} for {duration}',
+            'use_last_objects': True
+        },
+        'TSK': {
+            'name': 'Tasks',
+            'rendering_string': 'On {date} I worked on {object} for {duration}',
+            'use_last_objects': False
+        },
+    }
+
+
     DEFAULT_CONFIG = {
         'data_options': DEFAULT_DATA_OPTIONS,
         'sync_options': DEFAULT_SYNC_OPTIONS,
-        'projects': DEFAULT_PROJECTS
+        'project_areas': DEFAULT_PROJECT_AREAS,
+        'projects': DEFAULT_PROJECTS,
+        'general_areas': DEFAULT_GENERAL_AREAS
     }
 
     # Banner to prepend to the default configuration if it does not exist.
@@ -53,13 +106,51 @@ class Configuration(object):
 
 """
 
+    # Headers to prepend each config section
+
+    CONFIG_AREA_HEADERS = {
+        'data_options': """# data_options :: Settings For Data Options""",
+
+        'sync_options': """# sync_options :: Settings For Sync Mode
+#
+# NOTE: Sync mode is currently not implemented, these settings do nothing.""",
+
+        'project_areas': """# project_areas :: Definitions For Project-Specific Areas
+#
+# Project area definitions should be in the form:
+# code:
+#   name: Area Name
+#   rendering_string: On {date} I worked on {object} for {duration}
+#
+# See https://faereld.readthedocs.io/en/latest/usage/configuration.html#project-areas for more information.""",
+
+        'projects': """# projects :: Project Object Definitions
+#
+# A project definition should be of the form
+# code:
+#   link: <link to project homepage>
+#   name: Project Name""",
+
+        'general_areas': """# general_areas :: Definitions For General Areas
+#
+# Area definitions should be in the form:
+# code:
+#   name: Area Name
+#   rendering_string: On {date} I worked on {object} for {duration}
+#   use_last_objects: false
+#
+# See https://faereld.readthedocs.io/en/latest/usage/configuration.html#general-areas for more information."""
+    }
+
     def __init__(self, configuration_path):
         """ On initialisation, preload the configuration options from the
         defaults.
         """
         self.data_options = self.DEFAULT_DATA_OPTIONS
         self.sync_options = self.DEFAULT_SYNC_OPTIONS
+        self.project_areas = self.DEFAULT_PROJECT_AREAS
         self.projects = self.DEFAULT_PROJECTS
+        self.general_areas = self.DEFAULT_GENERAL_AREAS
         self.__load_configuration(configuration_path)
 
     def __load_configuration(self, configuration_path):
@@ -71,13 +162,7 @@ class Configuration(object):
             makedirs(path.dirname(expanded_path))
 
         if not path.exists(expanded_path):
-            with open(expanded_path, 'w') as config_file:
-                config_file.write(self.CONFIG_BANNER)
-                yaml.dump(self.DEFAULT_CONFIG, config_file,
-                          default_flow_style=False, allow_unicode=True)
-            self.data_options = self.DEFAULT_DATA_OPTIONS
-            self.sync_options = self.DEFAULT_SYNC_OPTIONS
-            self.projects = self.DEFAULT_PROJECTS
+            self.__write_config_file(expanded_path, self.DEFAULT_CONFIG)
         else:
             self.__load_configuration_values(expanded_path)
 
@@ -85,23 +170,42 @@ class Configuration(object):
         """ Load the configuration file, update the config values from this
         file.
         """
+
+        config_variables = {
+                'data_options': self.data_options,
+                'sync_options': self.sync_options,
+                'project_areas': self.project_areas,
+                'projects': self.projects,
+                'general_areas': self.general_areas
+            }
+
         with open(path, 'r') as config_file:
             config_dict = yaml.load(config_file)
 
-            config_variables = {
-                'data_options': self.data_options,
-                'sync_options': self.sync_options,
-                'projects': self.projects
-            }
-
             for key, value in config_variables.items():
                 self.__update_configuration(key, config_dict, value)
+
+        self.__write_config_file(path, config_variables)
+
 
     def __update_configuration(self, config_key, config_dict, var):
         """ Update a config dictionary given a category key
         """
         if config_key in config_dict:
             var.update(config_dict[config_key])
+
+    def __write_config_file(self, path, config):
+        with open(path, 'w') as config_file:
+
+            config_file.write(self.CONFIG_BANNER)
+
+            for key, value in config.items():
+                config_file.write(self.CONFIG_AREA_HEADERS[key])
+                config_file.write("\n")
+                yaml.dump({key: value}, config_file, default_flow_style=False,
+                          allow_unicode=True)
+                config_file.write("\n")
+
 
     def get_data_path(self):
         return self.data_options['data_path']
@@ -115,5 +219,15 @@ class Configuration(object):
     def get_sync_options(self):
         return self.sync_options
 
+    def get_project_areas(self):
+        return self.project_areas
+
     def get_projects(self):
         return self.projects
+
+    def get_general_areas(self):
+        return self.general_areas
+
+    def get_areas(self):
+        return {**self.project_areas, **self.general_areas}
+
