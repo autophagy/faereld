@@ -6,7 +6,7 @@ faereld.db
 """
 
 from .models import FaereldEntry
-from .graph import SummaryGraph, BoxPlot
+from .graphs import SummaryGraph, BoxPlot
 from . import utils
 
 import sqlalchemy
