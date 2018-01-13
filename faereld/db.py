@@ -50,7 +50,10 @@ class FaereldData(object):
             total_time += result_time
 
             if detailed:
-                area_time_map[result.area].append(result_time)
+                if result.area not in area_time_map:
+                    area_time_map[result.area] = [result_time]
+                else:
+                    area_time_map[result.area].append(result_time)
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
@@ -172,7 +175,7 @@ class FaereldDetailedSummary(object):
                     start_date = entry.start
 
                 utils.print_rendered_string(entry.area,
-                                            self.config.get_areas()[entry.area],
+                                            self.config.get_area(entry.area),
                                             start_date,
                                             entry.object,
                                             utils.time_diff(entry.start, entry.end))

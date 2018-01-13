@@ -215,7 +215,7 @@ class Configuration(object):
                 # The values defined in the defaults are just examples, and do
                 # not need to be present.
                 var.clear()
-                var.update(config_dict[config_key])
+                var.update(self.__validate_dict(config_dict[config_key]))
 
 
     def __write_config_file(self, path, config):
@@ -251,14 +251,37 @@ class Configuration(object):
         return self.sync_options
 
     def get_project_areas(self):
-        return self.project_areas
+        return self.__validate_list(self.project_areas)
 
     def get_projects(self):
-        return self.projects
+        return self.__validate_list(self.projects)
 
     def get_general_areas(self):
-        return self.general_areas
+        return self.__validate_list(self.general_areas)
 
     def get_areas(self):
         return {**self.project_areas, **self.general_areas}
+
+    def get_area(self, area):
+        areas = self.get_areas()
+        if area in areas:
+            return areas[area]
+        else:
+            return {
+                'name': area,
+                'rendering_string': 'On {date} I worked on {object} ({area_name}) for {duration}',
+                'use_last_objects': False
+            }
+
+    def __validate_list(self, config_list):
+        if config_list is None:
+            return []
+        else:
+            return config_list
+
+    def __validate_dict(self, config_dict):
+        if config_dict is None:
+            return {}
+        else:
+            return config_dict
 
