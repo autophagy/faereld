@@ -192,7 +192,10 @@ class Controller(object):
 
     def _convert_gregorian_date(self, date_string):
         try:
-            gregorian_date = datetime.datetime.strptime(date_string,
+            if date_string.lower() == "now":
+                gregorian_date = datetime.datetime.now()
+            else:
+                gregorian_date = datetime.datetime.strptime(date_string,
                                                         "%d %b %Y // %H.%M")
         except (ValueError, TypeError):
             print()
