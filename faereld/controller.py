@@ -131,7 +131,10 @@ class Controller(object):
 
         while object not in projects:
             print()
-            print("Invalid Project :: {0}".format(object))
+            if object == '?':
+                utils.print_projects_help(self.config.get_projects())
+            else:
+                print("Invalid Project :: {0}".format(object))
             object = input('Object :: ')
 
         object_name = projects[object]['name']

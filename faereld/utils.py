@@ -61,3 +61,7 @@ def strip_colour_codes(string):
 def print_areas_help(areas):
     for area_code, area in areas.items():
         print('{0} :: {1}'.format(area_code, area['name']))
+
+def print_projects_help(projects):
+    for project_code, project in projects.items():
+        print('{0} :: {1} [{2}]'.format(project_code, project['name'], project['link']))
