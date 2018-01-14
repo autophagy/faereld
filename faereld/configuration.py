@@ -7,6 +7,7 @@ faereld.configuration
 """
 
 from os import path, makedirs
+from collections import OrderedDict
 import yaml
 
 
@@ -165,6 +166,9 @@ class Configuration(object):
         self.projects = self.DEFAULT_PROJECTS
         self.general_areas = self.DEFAULT_GENERAL_AREAS
         self.summary_options = self.DEFAULT_SUMMARY_OPTIONS
+
+        yaml.SafeDumper.add_representer(OrderedDict, self.__rep_odict)
+
         self.__load_configuration(configuration_path)
 
     def __load_configuration(self, configuration_path):
@@ -217,6 +221,19 @@ class Configuration(object):
                 var.clear()
                 var.update(self.__validate_dict(config_dict[config_key]))
 
+    def __rep_odict(self, dumper, data):
+        """ Allows the yaml dumper to represent a OrderedDict, so that config
+        item ordering is preserved."""
+
+        v = []
+
+        for k, val in data.items():
+            item_key = dumper.represent_data(k)
+            item_val = dumper.represent_data(val)
+            v.append((item_key, item_val))
+
+        return yaml.nodes.MappingNode(u'tag:yaml.org,2002:map', v)
+
 
     def __write_config_file(self, path, config):
         with open(path, 'w') as config_file:
@@ -226,7 +243,7 @@ class Configuration(object):
             for key, value in config.items():
                 config_file.write(self.CONFIG_AREA_HEADERS[key])
                 config_file.write("\n")
-                yaml.dump({key: value}, config_file, default_flow_style=False,
+                yaml.safe_dump({key: OrderedDict(value)}, config_file, default_flow_style=False,
                           allow_unicode=True)
                 config_file.write("\n")
 
