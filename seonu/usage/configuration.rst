@@ -39,6 +39,9 @@ Summary Options
 ==================================== ========================================================= =======
 Option                               Description                                               Default
 ==================================== ========================================================= =======
+max_graph_width                      The maximum character width that the summary graphs       100
+                                     should display. Useful if running in a large terminal
+                                     window.
 exclude_from_total_time              List of areas to exclude from the total time graph in     - TSK
                                      summary mode.
 exclude_from_entry_time_distribution List of areas to exclude from the entry time distribution - IRL

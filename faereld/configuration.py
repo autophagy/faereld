@@ -91,6 +91,7 @@ class Configuration(object):
     # Default Summary Options
 
     DEFAULT_SUMMARY_OPTIONS = {
+        'max_graph_width': 100,
         'exclude_from_total_time': ['TSK'],
         'exclude_from_entry_time_distribution': ['IRL']
     }
@@ -260,9 +261,11 @@ class Configuration(object):
     def get_num_last_objects(self):
         return self.data_options['num_last_objects']
 
+    def get_max_graph_width(self):
+        return self.summary_options['max_graph_width']
+
     def get_exclude_from_total_time(self):
         return self.__validate_list(self.summary_options['exclude_from_total_time'])
-
 
     def get_exclude_from_entry_time_distribution(self):
         return self.__validate_list(self.summary_options['exclude_from_entry_time_distribution'])

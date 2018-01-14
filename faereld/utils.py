@@ -48,6 +48,9 @@ def print_header(string):
 def terminal_width():
     return get_terminal_size().columns
 
+def max_width(max_config_width):
+    return min(terminal_width(), max_config_width)
+
 def print_wordwrap(string):
     stripped_len = len(strip_colour_codes(string))
     print(fill(string, terminal_width() + (len(string) - stripped_len)))
