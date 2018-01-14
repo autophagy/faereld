@@ -16,7 +16,7 @@ optimise what I spend my time on.
 
 Documentation is available on `ReadTheDocs`_.
 
-.. image:: doc/_static/faereld.png
+.. image:: seonu/_static/faereld.png
     :alt: faereld-screenshot
     :align: center
 

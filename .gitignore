@@ -101,4 +101,4 @@ ENV/
 .mypy_cache/
 
 # sphinx stuff
-doc/_build/
+seonu/_build/
