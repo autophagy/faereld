@@ -10,41 +10,50 @@ import argparse
 from .configuration import Configuration
 from .controller import Controller
 
+class Faereld(object):
+    def __init__(self):
+        parser = argparse.ArgumentParser(
+            add_help=False,
+            description="Færeld :: A time tracking utility for effort optimisation and visualisation",
+            usage='''faereld [-c CONFIG] mode
 
-def parse_args():
-    parser = argparse.ArgumentParser(description=('faereld :: personal project'
-                                                 ' time tracker.'))
-    parser.add_argument('-c', '--config',
-                        default='~/.andgeloman/faereld/config.yml',
-                        help='The faereld config file to use.')
-    parser.add_argument('mode', metavar='mode', choices=['summary',
-                                                      'insert',
-                                                      'sync',
-                                                      'projects'],
-                        help='Mode to run faereld in.')
+Færeld has 4 modes:
+   insert       Insert a time tracking record into Færeld
+   summary      Produce a summary of time spent on all areas
+   projects     Produce a summary of time spent on project specific areas
+   sync         POST all local unsynced Færeld data to a remote endpoint
+''')
+
+        parser.add_argument('-c', '--config', default='~/.andgeloman/faereld/config.yml')
+        parser.add_argument('mode', help="Mode to run")
+        args = parser.parse_args()
+        if not hasattr(self, args.mode):
+            print(parser.description)
+            print()
+            print("\033[91m{0}\033[0m is an unrecognised mode.\n".format(args.mode))
+            print(parser.usage)
+            exit(1)
+        else:
+            config = Configuration(args.config)
+            controller = Controller(config)
+            getattr(self, args.mode)(controller)
 
 
-    return parser.parse_args()
+    def insert(self, controller):
+        controller.insert()
 
+    def summary(self, controller):
+        controller.summary()
+
+    def projects(self, controller):
+        controller.projects()
+
+    def sync(self, controller):
+        controller.sync()
 
 def main():
     try:
-        args = parse_args()
-        config = Configuration(args.config)
-        controller = Controller(config)
-
-        if args.mode == 'summary':
-            controller.summary()
-        if args.mode == 'projects':
-            controller.projects()
-        elif args.mode == 'insert':
-            controller.insert()
-        elif args.mode == 'sync':
-            controller.sync()
-
+        Faereld()
     except KeyboardInterrupt:
+        print("\n\nExiting...\n")
         exit(0)
-
-
-if __name__ == '__main__':
-    main()
