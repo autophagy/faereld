@@ -99,7 +99,7 @@ class FaereldData(object):
 
         simple_summary = FaereldSimpleSummary(days, entries_count, formatted_time)
 
-        return FaereldProjectsSummary(simple_summary, project_time_map)
+        return FaereldProjectsSummary(simple_summary, project_time_map, self.config)
 
     def get_last_objects(self, area, limit):
         objects = self.session.query(FaereldEntry.object) \
@@ -183,9 +183,10 @@ class FaereldDetailedSummary(object):
 
 class FaereldProjectsSummary(object):
 
-        def __init__(self, simple_summary, project_time_map):
+        def __init__(self, simple_summary, project_time_map, config):
             self.simple_summary = simple_summary
             self.project_time_map = project_time_map
+            self.config = config
 
         def print(self):
             self.simple_summary.print()
