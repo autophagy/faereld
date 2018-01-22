@@ -2,7 +2,7 @@
 Modes
 =====
 
-Færeld has 4 usage modes: ``summary``, ``projects``, ``insert`` and ``sync``.
+Færeld has 3 usage modes: ``summary``, ``projects`` and ``insert``.
 
 Summary Mode
 ============
@@ -91,21 +91,3 @@ are using, enter ``now``:
 .. code-block:: none
 
     From :: now
-
-
-Sync Mode
-=========
-
-Sync mode can be used via:
-
-.. code-block:: bash
-
-    $ faereld sync
-
-    Batch (01 / 01) :: 24 entries synced to Hrǽw
-
-Sync mode will POST any unsynced Færeld entries as JSON data to an endpoint.
-The endpoint to sync to as API key used for authentication can be defined in
-the :doc:`configuration`.
-
-.. note:: Sync mode is currently not implemented.

@@ -22,17 +22,6 @@ num_last_objects The number of objects   5
                  non-project task.
 ================ ======================= =============================
 
-Sync Options
-------------
-
-========== ======================================================== =======
-Option     Description                                              Default
-========== ======================================================== =======
-endpoint   The HTTP endpoint to post Færeld data to.
-api_key    API key to use to authenticate with the endpoint.
-batch_size The number of entries to post to the endpoint at a time. 50
-========== ======================================================== =======
-
 Summary Options
 ---------------
 

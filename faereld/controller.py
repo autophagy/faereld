@@ -207,11 +207,3 @@ class Controller(object):
             return (None, None)
 
         return (gregorian_date, gregorian_date)
-
-    # Sync Mode
-
-    def sync(self):
-
-        print()
-        utils.print_header(utils.header.format("SYNC"))
-        print("Sync mode is currently not enabled.")

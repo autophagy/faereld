@@ -21,14 +21,6 @@ class Configuration(object):
         'num_last_objects': 5,
     }
 
-    # Default Sync Options
-
-    DEFAULT_SYNC_OPTIONS = {
-        'endpoint': None,
-        'api_key': None,
-        'batch_size': 50
-    }
-
     # Default Project Areas
 
     DEFAULT_PROJECT_AREAS = {
@@ -98,7 +90,6 @@ class Configuration(object):
 
     DEFAULT_CONFIG = {
         'data_options': DEFAULT_DATA_OPTIONS,
-        'sync_options': DEFAULT_SYNC_OPTIONS,
         'summary_options': DEFAULT_SUMMARY_OPTIONS,
         'project_areas': DEFAULT_PROJECT_AREAS,
         'projects': DEFAULT_PROJECTS,
@@ -107,7 +98,7 @@ class Configuration(object):
 
     # The configs defined here must have values set for their defaults.
     # For configs excluded from this group, the defaults are just examples.
-    MUST_BE_PRESENT_CONFIGS = ['data_options', 'sync_options', 'summary_options']
+    MUST_BE_PRESENT_CONFIGS = ['data_options', 'summary_options']
 
     # Banner to prepend to the default configuration if it does not exist.
 
@@ -123,10 +114,6 @@ class Configuration(object):
 
     CONFIG_AREA_HEADERS = {
         'data_options': """# data_options :: Settings For Data Options""",
-
-        'sync_options': """# sync_options :: Settings For Sync Mode
-#
-# NOTE: Sync mode is currently not implemented, these settings do nothing.""",
 
         'summary_options': """# summary_options :: Settings For Summary Mode""",
 
@@ -162,7 +149,6 @@ class Configuration(object):
         defaults.
         """
         self.data_options = self.DEFAULT_DATA_OPTIONS
-        self.sync_options = self.DEFAULT_SYNC_OPTIONS
         self.project_areas = self.DEFAULT_PROJECT_AREAS
         self.projects = self.DEFAULT_PROJECTS
         self.general_areas = self.DEFAULT_GENERAL_AREAS
@@ -192,7 +178,6 @@ class Configuration(object):
 
         config_variables = {
                 'data_options': self.data_options,
-                'sync_options': self.sync_options,
                 'summary_options': self.summary_options,
                 'project_areas': self.project_areas,
                 'projects': self.projects,
@@ -269,9 +254,6 @@ class Configuration(object):
 
     def get_exclude_from_entry_time_distribution(self):
         return self.__validate_list(self.summary_options['exclude_from_entry_time_distribution'])
-
-    def get_sync_options(self):
-        return self.sync_options
 
     def get_project_areas(self):
         return self.__validate_list(self.project_areas)

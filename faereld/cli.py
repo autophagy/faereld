@@ -21,7 +21,6 @@ Færeld has 4 modes:
    insert       Insert a time tracking record into Færeld
    summary      Produce a summary of time spent on all areas
    projects     Produce a summary of time spent on project specific areas
-   sync         POST all local unsynced Færeld data to a remote endpoint
 ''')
 
         parser.add_argument('-c', '--config', default='~/.andgeloman/faereld/config.yml')
@@ -47,9 +46,6 @@ Færeld has 4 modes:
 
     def projects(self, controller):
         controller.projects()
-
-    def sync(self, controller):
-        controller.sync()
 
 def main():
     try:
