@@ -106,7 +106,7 @@ class Controller(object):
         utils.print_rendered_string(area,
                                     self.config.get_areas()[area],
                                     date_to_display,
-                                    object,
+                                    self.config.get_object_name(area, object),
                                     time_diff)
 
         confirmation = input("Is this correct? (y/n) :: ")
@@ -137,10 +137,9 @@ class Controller(object):
                 print("Invalid Project :: {0}".format(object))
             object = input('Object :: ')
 
-        object_name = projects[object]['name']
         link = projects[object]['link']
 
-        return (object_name, link)
+        return (object, link)
 
     def _non_project_object(self, area):
 

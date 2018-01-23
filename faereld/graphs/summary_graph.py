@@ -13,10 +13,11 @@ class SummaryGraph(object):
     bar_character = '━'
     label_seperator = '  '
 
-    def __init__(self, area_values_map, max_width, exclude_list=[]):
+    def __init__(self, area_values_map, max_width, exclude_list=[], key_transform_func=None):
         self.area_values_map = area_values_map
         self.max_width = max_width
         self.exclude_list = exclude_list
+        self.key_transform_func = key_transform_func
 
     def generate(self):
 
@@ -27,6 +28,10 @@ class SummaryGraph(object):
         area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), area_values.items()))
 
         # First, create the graph labels
+        if self.key_transform_func is not None:
+            # If a key transform func is given, then transform the keys
+            area_total_dict = dict(map(lambda x: (self.key_transform_func(x[0]), x[1]), area_total_dict.items()))
+
         longest_key = len(max(list(area_total_dict.keys())))
         labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(self._pad_key(x[0], longest_key), utils.format_time_delta(x[1]))), area_total_dict.items()))
 

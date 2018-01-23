@@ -278,6 +278,18 @@ class Configuration(object):
                 'use_last_objects': False
             }
 
+    def get_object_name(self, area, obj):
+        if area in self.project_areas:
+            if obj in self.projects:
+                return self.get_project_name(obj)
+
+        return obj
+
+    def get_project_name(self, obj):
+        if obj in self.projects:
+            return self.projects[obj]['name']
+        return obj
+
     def __validate_list(self, config_list):
         if config_list is None:
             return []

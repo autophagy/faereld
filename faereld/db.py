@@ -177,7 +177,7 @@ class FaereldDetailedSummary(object):
                 utils.print_rendered_string(entry.area,
                                             self.config.get_area(entry.area),
                                             start_date,
-                                            entry.object,
+                                            self.config.get_object_name(entry.area, entry.object),
                                             utils.time_diff(entry.start, entry.end))
 
 
@@ -194,7 +194,8 @@ class FaereldProjectsSummary(object):
 
             utils.print_header("TOTAL TIME LOGGED PER PROJECT")
             print()
-            graph = SummaryGraph(self.project_time_map, utils.max_width(self.config.get_max_graph_width())) \
+            graph = SummaryGraph(self.project_time_map, utils.max_width(self.config.get_max_graph_width()),
+                                 key_transform_func = self.config.get_project_name) \
                     .generate()
             for row in graph:
                 print(row)
