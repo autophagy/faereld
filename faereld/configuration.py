@@ -9,6 +9,7 @@ faereld.configuration
 from os import path, makedirs
 from collections import OrderedDict
 import yaml
+from .utils import print_wordwrap, print_header, highlight
 
 
 class Configuration(object):
@@ -168,6 +169,14 @@ class Configuration(object):
 
         if not path.exists(expanded_path):
             self.__write_config_file(expanded_path, self.DEFAULT_CONFIG)
+            print()
+            print_header('Wilcume on Færeld')
+            print_wordwrap('This looks like it is your first time running Færeld.')
+            print_wordwrap('A config file has been created at {0}. '.format(highlight(expanded_path)),
+                'This contains some default values to get you started, ',
+                'but you should take a look to add your own areas and projects. ')
+            print_wordwrap('For more information, please see the configuration documentation ',
+                  'at https://faereld.readthedocs.io/en/latest/usage/configuration.html')
         else:
             self.__load_configuration_values(expanded_path)
 

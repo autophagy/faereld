@@ -43,7 +43,7 @@ def highlight(item):
     return "\033[94m{0}\033[0m".format(item)
 
 def print_header(string):
-    print("\033[91m{0} {1}\033[0m".format(string, "─"*(terminal_width() - len(string) - 1)))
+    print("\033[91m{0} {1}\033[0m".format(string.upper(), "─"*(terminal_width() - len(string) - 1)))
 
 def terminal_width():
     return get_terminal_size().columns
@@ -51,7 +51,8 @@ def terminal_width():
 def max_width(max_config_width):
     return min(terminal_width(), max_config_width)
 
-def print_wordwrap(string):
+def print_wordwrap(*strings):
+    string = ''.join(strings)
     stripped_len = len(strip_colour_codes(string))
     print(fill(string, terminal_width() + (len(string) - stripped_len)))
 
