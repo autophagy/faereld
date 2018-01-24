@@ -39,8 +39,6 @@ class Controller(object):
     @_time_function
     def summary(self):
         summary = self.db.get_summary(detailed=True)
-
-        print()
         utils.print_header(utils.header.format("SUMMARY"))
         summary.print()
 
@@ -49,8 +47,6 @@ class Controller(object):
     @_time_function
     def projects(self):
         projects_summary = self.db.get_projects_summary()
-
-        print()
         utils.print_header(utils.header.format("PROJECTS SUMMARY"))
         projects_summary.print()
 
@@ -58,8 +54,6 @@ class Controller(object):
 
     def insert(self):
         summary = self.db.get_summary()
-
-        print()
         utils.print_header(utils.header.format("INSERT"))
         summary.print()
 

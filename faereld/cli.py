@@ -35,6 +35,7 @@ Færeld has 4 modes:
         else:
             config = Configuration(args.config)
             controller = Controller(config)
+            print("\x1b[2J\x1b[H", end="")
             getattr(self, args.mode)(controller)
 
 
