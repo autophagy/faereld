@@ -53,8 +53,9 @@ def max_width(max_config_width):
 
 def print_wordwrap(*strings):
     string = ''.join(strings)
-    stripped_len = len(strip_colour_codes(string))
-    print(fill(string, terminal_width() + (len(string) - stripped_len)))
+    for s in string.split('\n'):
+        stripped_len = len(strip_colour_codes(s))
+        print(fill(s, terminal_width() + (len(s) - stripped_len)))
 
 def strip_colour_codes(string):
     return re.sub('\x1b\[[0-9;]*m', '', string)
