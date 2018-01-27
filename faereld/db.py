@@ -266,7 +266,7 @@ class FaereldProductivitySummary(object):
                 return dates[day_num]
 
             print()
-            utils.print_header("MOST PRODUCTIVE DAYS")
+            utils.print_header("total time logged per day")
             print()
             graph = SummaryGraph(self.day_delta_map, utils.max_width(self.config.get_max_graph_width()),
                                  key_transform_func = day_num_to_string) \
@@ -275,7 +275,7 @@ class FaereldProductivitySummary(object):
                 print(row)
 
             print()
-            utils.print_header("MOST PRODUCTIVE HOURS")
+            utils.print_header("Total time logged per hour")
             print()
             graph = SummaryGraph(self.hour_delta_map, utils.max_width(self.config.get_max_graph_width()),
                                  key_transform_func = str) \
