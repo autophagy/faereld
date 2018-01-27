@@ -42,6 +42,9 @@ class Faereld(object):
     def projects(self, controller):
         controller.projects()
 
+    def productivity(self, controller):
+        controller.productivity()
+
     def help(self, _):
         utils.print_header(utils.header.format("Help"))
         utils.print_wordwrap("\nFæreld (an Old English word meaning journey or ",
@@ -51,10 +54,11 @@ class Faereld(object):
         utils.print_wordwrap('''
 faereld [-c CONFIG] MODE
 
-Færeld has 4 modes:
+Færeld has 5 modes:
    INSERT       Insert a time tracking record into Færeld
    SUMMARY      Produce a summary of time spent on all areas
    PROJECTS     Produce a summary of time spent on project specific areas
+   PRODUCTIVITY Produce a summary of productivity aggregated over hours and days of the week
    HELP         Print the help''')
 
         print()

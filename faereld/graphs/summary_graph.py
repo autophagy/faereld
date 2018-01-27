@@ -32,7 +32,7 @@ class SummaryGraph(object):
             # If a key transform func is given, then transform the keys
             area_total_dict = dict(map(lambda x: (self.key_transform_func(x[0]), x[1]), area_total_dict.items()))
 
-        longest_key = len(max(list(area_total_dict.keys())))
+        longest_key = max(len(key) for key in area_total_dict.keys())
         labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(self._pad_key(x[0], longest_key), utils.format_time_delta(x[1]))), area_total_dict.items()))
 
         # Get the length of the longest label

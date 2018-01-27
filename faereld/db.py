@@ -101,6 +101,49 @@ class FaereldData(object):
 
         return FaereldProjectsSummary(simple_summary, project_time_map, self.config)
 
+    def get_productivity_summary(self):
+        def determine_dominant_hour(start_time, end_time):
+            half_delta = (end_time - start_time)/2
+            if (start_time + half_delta).hour == start_time.hour:
+                return start_time.hour
+            else:
+                return end_time.hour
+
+        entries = self.session.query(FaereldEntry) \
+                .order_by(FaereldEntry.start) \
+                .all()
+
+        entries_count = len(entries)
+
+        if len(entries) == 0:
+            return FaereldEmptySummary()
+
+        total_time = datetime.timedelta(0)
+        hour_delta_map = {k: [] for k in list(range(0,24))}
+        day_delta_map = {k: [] for k in list(range(0,7))}
+
+        for index, result in enumerate(entries):
+            if index == 0:
+                first_day = result.start
+
+            if index == len(entries)-1:
+                last_day = result.end
+
+            result_time = result.end - result.start
+            total_time += result_time
+
+            hour = determine_dominant_hour(result.start, result.end)
+            hour_delta_map[hour].append(result.end - result.start)
+            day_delta_map[result.start.weekday()].append(result.end - result.start)
+
+        formatted_time = utils.format_time_delta(total_time)
+        days = (last_day - first_day).days + 1
+
+        simple_summary = FaereldSimpleSummary(days, entries_count, formatted_time)
+
+        return FaereldProductivitySummary(simple_summary, hour_delta_map, day_delta_map, self.config)
+
+
     def get_last_objects(self, area, limit):
         objects = self.session.query(FaereldEntry.object) \
                   .filter(FaereldEntry.area == area) \
@@ -199,3 +242,44 @@ class FaereldProjectsSummary(object):
                     .generate()
             for row in graph:
                 print(row)
+
+
+class FaereldProductivitySummary(object):
+
+        def __init__(self, simple_summary, hour_delta_map, day_delta_map, config):
+            self.simple_summary = simple_summary
+            self.hour_delta_map = hour_delta_map
+            self.day_delta_map = day_delta_map
+            self.config = config
+
+        def print(self):
+            self.simple_summary.print()
+
+            def day_num_to_string(day_num):
+                dates = {0: 'MON',
+                         1: 'TUE',
+                         2: 'WED',
+                         3: 'THU',
+                         4: 'FRI',
+                         5: 'SAT',
+                         6: 'SUN'}
+                return dates[day_num]
+
+            print()
+            utils.print_header("MOST PRODUCTIVE DAYS")
+            print()
+            graph = SummaryGraph(self.day_delta_map, utils.max_width(self.config.get_max_graph_width()),
+                                 key_transform_func = day_num_to_string) \
+                    .generate()
+            for row in graph:
+                print(row)
+
+            print()
+            utils.print_header("MOST PRODUCTIVE HOURS")
+            print()
+            graph = SummaryGraph(self.hour_delta_map, utils.max_width(self.config.get_max_graph_width()),
+                                 key_transform_func = str) \
+                    .generate()
+            for row in graph:
+                print(row)
+
