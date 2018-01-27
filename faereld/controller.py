@@ -55,7 +55,7 @@ class Controller(object):
     @_time_function
     def productivity(self):
         productivity_summary = self.db.get_productivity_summary()
-        utils.print_header(utils.header.format("PRODUCTIVITY"))
+        utils.print_header(utils.header.format("PRODUCTIVITY SUMMARY"))
         productivity_summary.print()
 
     # Insert Mode
