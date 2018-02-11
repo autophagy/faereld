@@ -23,8 +23,8 @@ setup(
     packages=['faereld'],
     install_requires=[
         'PyYAML==3.12',
-        'SQLAlchemy==1.1.15',
-        'datarum>=0.2.0',
+        'datarum==0.5.0',
+        'wisdomhord==0.2.3',
         'numpy==1.13.3'
     ],
     python_requires='>=3.6',

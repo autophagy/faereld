@@ -85,29 +85,35 @@ class Controller(object):
         # Assume to be in the form [date // time]
         date_to_display = None
 
-        from_date_gregorian = None
-        to_date_gregorian = None
-        while from_date_gregorian is None and to_date_gregorian is None:
+        from_date = None
+        to_date = None
+
+        while from_date is None and to_date is None:
             print()
-            while from_date_gregorian is None:
-                from_date = input('From :: ')
-                date_to_display, from_date_gregorian = self.convert_input_date(from_date)
+            while from_date is None:
+                from_input = input('From :: ')
+                from_date = self.convert_input_date(from_input)
 
-            while to_date_gregorian is None:
-                to_date = input('To :: ')
-                _, to_date_gregorian = self.convert_input_date(to_date)
+            while to_date is None:
+                to_input = input('To :: ')
+                to_date = self.convert_input_date(to_input)
 
-            time_diff = utils.time_diff(from_date_gregorian, to_date_gregorian)
+            time_diff = utils.time_diff(from_date, to_date)
 
-            if from_date_gregorian >= to_date_gregorian:
+            if from_date >= to_date:
                 print("Invalid Duration :: {0}".format(time_diff))
-                from_date_gregorian = None
-                to_date_gregorian = None
+                from_date = None
+                to_date = None
 
         print()
+
+        if self.config.get_use_wending:
+            date_display = from_date.strftime('{daeg} {month} {gere}')
+        else:
+            date_display = from_date.strftime('%d %b %Y')
         utils.print_rendered_string(area,
                                     self.config.get_areas()[area],
-                                    date_to_display,
+                                    date_display,
                                     self.config.get_object_name(area, object),
                                     time_diff)
 
@@ -117,8 +123,8 @@ class Controller(object):
             self.db.create_entry(area,
                                  object,
                                  link,
-                                 from_date_gregorian,
-                                 to_date_gregorian)
+                                 from_date,
+                                 to_date)
 
             print("Færeld entry added")
         else:
@@ -155,7 +161,7 @@ class Controller(object):
 
             # Transform last objects into [x]: object tags
             if len(last_objects) > 0:
-                last_objects_dict = {'[{0}]'.format(x): k[0] for x, k in enumerate(last_objects)}
+                last_objects_dict = {'[{0}]'.format(x): k for x, k in enumerate(last_objects)}
                 print("Last {0} {1} Objects :: ".format(len(last_objects), area))
                 for k, v in sorted(last_objects_dict.items()):
                     utils.print_wordwrap("{0} {1}".format(k, v))
@@ -177,34 +183,25 @@ class Controller(object):
     def _convert_wending_date(self, date_string):
         try:
             if date_string.lower() == "now":
-                gregorian_now = datetime.datetime.now()
-                wending_now = datarum.from_date(gregorian_now)
-                return (wending_now, gregorian_now)
+                return datarum.wending.now().replace(second=0)
             else:
-                date, time = date_string.split(' // ')
-                wending_date = datarum.wending.from_date_string(date)
-                gregorian_date = datarum.to_gregorian(wending_date)
-                time = datetime.datetime.strptime(time, '%H.%M')
+                return datarum.wending.strptime(date_string,
+                                                "{daeg} {month} {gere} // {tid_zero}.{minute_zero}")
         except ValueError:
             print()
             print("{} is an invalid date string. For example, it must be of"
                   " the form: 13 Forst 226 // 16.15".format(date_string))
-            return (None, None)
-
-        return (wending_date,
-                gregorian_date.replace(hour=time.hour, minute=time.minute))
+            return None
 
     def _convert_gregorian_date(self, date_string):
         try:
             if date_string.lower() == "now":
-                gregorian_date = datetime.datetime.now()
+                return datetime.datetime.now().replace(second=0)
             else:
-                gregorian_date = datetime.datetime.strptime(date_string,
+                return datetime.datetime.strptime(date_string,
                                                         "%d %b %Y // %H.%M")
         except (ValueError, TypeError):
             print()
             print("{} is an invalid date string. For example, it must be of"
                   " the form: 3 Dec 226 // 16.15".format(date_string))
-            return (None, None)
-
-        return (gregorian_date, gregorian_date)
+            return None
