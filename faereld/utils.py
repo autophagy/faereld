@@ -26,15 +26,10 @@ def format_time_delta(time_delta):
     return "{0}h{1}m".format(floor(hours), minutes)
 
 def print_rendered_string(area_code, area, date_to_display, object_name, duration):
-    if type(date_to_display) is datetime:
-        formatted_date = date_to_display.strftime("%d %b %Y")
-    else:
-        formatted_date = date_to_display.formatted()
-
     rendering_string = area['rendering_string'].format(area=highlight(area_code),
                                                        area_name=highlight(area['name']),
                                                        object=highlight(object_name),
-                                                       date=highlight(formatted_date),
+                                                       date=highlight(date_to_display),
                                                        duration=highlight(duration))
 
     print_wordwrap(rendering_string)

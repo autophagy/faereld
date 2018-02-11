@@ -5,29 +5,36 @@ faereld.db
 ----------
 """
 
-from .models import FaereldEntry
+from .models import FaereldWendingEntry, FaereldDatetimeEntry
 from .graphs import SummaryGraph, BoxPlot
 from . import utils
 
-import sqlalchemy
+from os import path
+
+import wisdomhord
 import datetime
 import datarum
 
 class FaereldData(object):
 
     def __init__(self, data_path, config):
-        self.session = self._create_session(data_path)
         self.config = config
+        self.hord = self._create_session(data_path)
 
     def _create_session(self, data_path):
-        engine = sqlalchemy.create_engine('sqlite:///{0}'.format(data_path))
-        FaereldEntry.metadata.create_all(engine)
-        return sqlalchemy.orm.sessionmaker(bind=engine)()
+        hord_path = path.expanduser(data_path)
+        if self.config.get_use_wending():
+            bisen = FaereldWendingEntry
+        else:
+            bisen = FaereldDatetimeEntry
+        if not path.exists(hord_path):
+            # Init the hord
+            return wisdomhord.cenann(hord_path, bisen=bisen)
+        else:
+            return wisdomhord.hladan(hord_path, bisen=bisen)
 
     def get_summary(self, detailed=False):
-        entries = self.session.query(FaereldEntry) \
-                .order_by(FaereldEntry.start) \
-                .all()
+        entries = self.hord.get_rows()
 
         entries_count = len(entries)
 
@@ -36,24 +43,29 @@ class FaereldData(object):
 
         total_time = datetime.timedelta(0)
         area_time_map = dict(map(lambda x: (x, []), self.config.get_areas().keys()))
-        last_entries = entries[-10:]
-        last_entries.reverse()
+        last_entries = entries[:10]
+
+        first_day = None
+        last_day = None
 
         for index, result in enumerate(entries):
-            if index == 0:
-                first_day = result.start
+            if first_day == None:
+                first_day = result['START']
+                last_day = result['START']
 
-            if index == len(entries)-1:
-                last_day = result.end
+            if result['START'] < first_day:
+                first_day = result['START']
+            elif result['START'] > last_day:
+                last_day = result['START']
 
-            result_time = result.end - result.start
+            result_time = result['END'] - result['START']
             total_time += result_time
 
             if detailed:
-                if result.area not in area_time_map:
-                    area_time_map[result.area] = [result_time]
+                if result['AREA'] not in area_time_map:
+                    area_time_map[result['AREA']] = [result_time]
                 else:
-                    area_time_map[result.area].append(result_time)
+                    area_time_map[result['AREA']].append(result_time)
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
@@ -66,10 +78,8 @@ class FaereldData(object):
             return simple_summary
 
     def get_projects_summary(self):
-        entries = self.session.query(FaereldEntry) \
-                .filter(FaereldEntry.area.in_(list(self.config.get_project_areas().keys()))) \
-                .order_by(FaereldEntry.start) \
-                .all()
+        projects_filter = lambda x: x['AREA'] in list(self.config.get_project_areas().keys())
+        entries = self.hord.get_rows(filter_func=projects_filter)
 
         entries_count = len(entries)
 
@@ -79,20 +89,26 @@ class FaereldData(object):
         total_time = datetime.timedelta(0)
         project_time_map = {}
 
+        first_day = None
+        last_day = None
+
         for index, result in enumerate(entries):
-            if index == 0:
-                first_day = result.start
+            if first_day == None:
+                first_day = result['START']
+                last_day = result['START']
 
-            if index == len(entries)-1:
-                last_day = result.end
+            if result['START'] < first_day:
+                first_day = result['START']
+            elif result['START'] > last_day:
+                last_day = result['START']
 
-            result_time = result.end - result.start
+            result_time = result['END'] - result['START']
             total_time += result_time
 
-            if result.object not in project_time_map:
-                project_time_map[result.object] = [result_time]
+            if result['OBJECT'] not in project_time_map:
+                project_time_map[result['OBJECT']] = [result_time]
             else:
-                project_time_map[result.object].append(result_time)
+                project_time_map[result['OBJECT']].append(result_time)
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
@@ -109,9 +125,7 @@ class FaereldData(object):
             else:
                 return end_time.hour
 
-        entries = self.session.query(FaereldEntry) \
-                .order_by(FaereldEntry.start) \
-                .all()
+        entries = self.hord.get_rows()
 
         entries_count = len(entries)
 
@@ -122,19 +136,25 @@ class FaereldData(object):
         hour_delta_map = {k: [] for k in list(range(0,24))}
         day_delta_map = {k: [] for k in list(range(0,7))}
 
+        first_day = None
+        last_day = None
+
         for index, result in enumerate(entries):
-            if index == 0:
-                first_day = result.start
+            if first_day == None:
+                first_day = result['START']
+                last_day = result['START']
 
-            if index == len(entries)-1:
-                last_day = result.end
+            if result['START'] < first_day:
+                first_day = result['START']
+            elif result['START'] > last_day:
+                last_day = result['START']
 
-            result_time = result.end - result.start
+            result_time = result['END'] - result['START']
             total_time += result_time
 
-            hour = determine_dominant_hour(result.start, result.end)
-            hour_delta_map[hour].append(result.end - result.start)
-            day_delta_map[result.start.weekday()].append(result.end - result.start)
+            hour = determine_dominant_hour(result['START'], result['END'])
+            hour_delta_map[hour].append(result['END'] - result['START'])
+            day_delta_map[result['START'].weekday()].append(result['END'] - result['START'])
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
@@ -145,24 +165,26 @@ class FaereldData(object):
 
 
     def get_last_objects(self, area, limit):
-        objects = self.session.query(FaereldEntry.object) \
-                  .filter(FaereldEntry.area == area) \
-                  .distinct(FaereldEntry.object) \
-                  .order_by(FaereldEntry.start.desc()) \
-                  .limit(limit) \
-                  .all()
+        objects = self.hord.get_rows(filter_func=lambda x: x['AREA'] == area,
+            sort_by='START', reverse_sort=True)
 
-        return objects
+        filtered_obj = []
+
+        for obj in objects:
+            if obj['OBJECT'] not in filtered_obj:
+                filtered_obj.append(obj['OBJECT'])
+
+        return filtered_obj[:limit]
 
     def create_entry(self, area, object, link, start, end):
-        entry = FaereldEntry(area=area,
-                             object=object,
-                             link=link,
-                             start=start,
-                             end=end)
+        entry = {
+            'AREA': area,
+            'OBJECT': object,
+            'START': start,
+            'END': end,
+        }
 
-        self.session.add(entry)
-        self.session.commit()
+        self.hord.insert(entry)
 
 class FaereldEmptySummary(object):
 
@@ -213,15 +235,15 @@ class FaereldDetailedSummary(object):
             print()
             for entry in self.last_entries:
                 if self.config.get_use_wending():
-                    start_date = datarum.from_date(entry.start)
+                    start_date = entry['START'].strftime('{daeg} {month} {gere}')
                 else:
-                    start_date = entry.start
+                    start_date = entry['START'].strftime('%d %b %Y')
 
-                utils.print_rendered_string(entry.area,
-                                            self.config.get_area(entry.area),
+                utils.print_rendered_string(entry['AREA'],
+                                            self.config.get_area(entry['AREA']),
                                             start_date,
-                                            self.config.get_object_name(entry.area, entry.object),
-                                            utils.time_diff(entry.start, entry.end))
+                                            self.config.get_object_name(entry['AREA'], entry['OBJECT']),
+                                            utils.time_diff(entry['START'], entry['END']))
 
 
 class FaereldProjectsSummary(object):
