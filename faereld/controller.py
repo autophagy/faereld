@@ -190,7 +190,7 @@ class Controller(object):
             else:
                 return datarum.wending.strptime(date_string,
                                                 "{daeg} {month} {gere} // {tid_zero}.{minute_zero}")
-        except ValueError:
+        except (ValueError, AttributeError):
             print()
             print("{} is an invalid date string. For example, it must be of"
                   " the form: 13 Forst 226 // 16.15".format(date_string))
