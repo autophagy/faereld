@@ -17,7 +17,7 @@ class Configuration(object):
     # Default Configuration Options
 
     DEFAULT_DATA_OPTIONS = {
-        'data_path': '~/.andgeloman/faereld/data.db',
+        'data_path': '~/.andgeloman/faereld/faereld.hord',
         'use_wending': False,
         'num_last_objects': 5,
     }
