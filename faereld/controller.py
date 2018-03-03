@@ -183,7 +183,10 @@ class Controller(object):
     def _convert_wending_date(self, date_string):
         try:
             if date_string.lower() == "now":
-                return datarum.wending.now().replace(second=0)
+                now = datarum.wending.now().replace(second=0)
+                print("[{}]".format(now.strftime('{daeg} {month} {gere} // {tid_zero}.{minute_zero}')))
+                print()
+                return now
             else:
                 return datarum.wending.strptime(date_string,
                                                 "{daeg} {month} {gere} // {tid_zero}.{minute_zero}")
@@ -196,7 +199,10 @@ class Controller(object):
     def _convert_gregorian_date(self, date_string):
         try:
             if date_string.lower() == "now":
-                return datetime.datetime.now().replace(second=0)
+                now = datetime.datetime.now().replace(second=0)
+                print("[{}]".format(now.strftime('%d %b %Y // %H.%M')))
+                print()
+                return now
             else:
                 return datetime.datetime.strptime(date_string,
                                                         "%d %b %Y // %H.%M")
