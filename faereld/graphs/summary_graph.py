@@ -13,21 +13,37 @@ class SummaryGraph(object):
     bar_character = '━'
     label_seperator = '  '
 
-    def __init__(self, area_values_map, max_width, exclude_list=[],
-                 key_transform_func=None, sort=False):
-        self.area_values_map = area_values_map
+    def __init__(self, values_map):
+        self.values_map = values_map
+        self.max_width = utils.terminal_width()
+        self.exclude_list = []
+        self.key_transform_func = None
+        self.sort = False
+
+    def set_max_width(self, max_width):
         self.max_width = max_width
+        return self
+
+    def set_exclude_list(self, exclude_list):
         self.exclude_list = exclude_list
+        return self
+
+    def set_key_transform_function(self, key_transform_func):
         self.key_transform_func = key_transform_func
-        self.sort = sort
+        return self
+
+    def sort_graph(self, reverse=False):
+        self.sort = True
+        self.reverse_sort = reverse
+        return self
 
     def generate(self):
 
         # Filter out areas that are invalid for this analysis
-        area_values = dict(filter(lambda x: x[0] not in self.exclude_list, self.area_values_map.items()))
+        values = dict(filter(lambda x: x[0] not in self.exclude_list, self.values_map.items()))
 
         # Total up the values
-        area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), area_values.items()))
+        area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), values.items()))
 
         # First, create the graph labels
         if self.key_transform_func is not None:
@@ -61,7 +77,7 @@ class SummaryGraph(object):
         # Sort, if needed
 
         if self.sort:
-            graph_keys = sorted(bars, key=bars.get, reverse=True)
+            graph_keys = sorted(bars, key=bars.get, reverse=self.reverse_sort)
         else:
             graph_keys = list(bars.keys())
 

@@ -217,8 +217,11 @@ class FaereldDetailedSummary(object):
 
             utils.print_header("TOTAL TIME LOGGED PER AREA")
             print()
-            graph = SummaryGraph(self.area_time_map, utils.max_width(self.config.get_max_graph_width()), self.config.get_exclude_from_total_time()) \
-                    .generate()
+            graph = SummaryGraph(self.area_time_map) \
+                  .set_max_width(utils.max_width(self.config.get_max_graph_width())) \
+                  .set_exclude_list(self.config.get_exclude_from_total_time()) \
+                  .generate()
+
             for row in graph:
                 print(row)
 
@@ -259,9 +262,11 @@ class FaereldProjectsSummary(object):
 
             utils.print_header("TOTAL TIME LOGGED PER PROJECT")
             print()
-            graph = SummaryGraph(self.project_time_map, utils.max_width(self.config.get_max_graph_width()),
-                                 key_transform_func = self.config.get_project_name, sort=True) \
-                    .generate()
+            graph = SummaryGraph(self.project_time_map) \
+                  .set_max_width(utils.max_width(self.config.get_max_graph_width())) \
+                  .set_key_transform_function(self.config.get_project_name) \
+                  .sort_graph(reverse=True) \
+                  .generate()
             for row in graph:
                 print(row)
 
@@ -290,18 +295,20 @@ class FaereldProductivitySummary(object):
             print()
             utils.print_header("total time logged per day")
             print()
-            graph = SummaryGraph(self.day_delta_map, utils.max_width(self.config.get_max_graph_width()),
-                                 key_transform_func = day_num_to_string) \
-                    .generate()
+            graph = SummaryGraph(self.day_delta_map) \
+                  .set_max_width(utils.max_width(self.config.get_max_graph_width())) \
+                  .set_key_transform_function(day_num_to_string) \
+                  .generate()
             for row in graph:
                 print(row)
 
             print()
             utils.print_header("Total time logged per hour")
             print()
-            graph = SummaryGraph(self.hour_delta_map, utils.max_width(self.config.get_max_graph_width()),
-                                 key_transform_func = str) \
-                    .generate()
+            graph = SummaryGraph(self.hour_delta_map) \
+                  .set_max_width(utils.max_width(self.config.get_max_graph_width())) \
+                  .set_key_transform_function(str) \
+                  .generate()
             for row in graph:
                 print(row)
 
