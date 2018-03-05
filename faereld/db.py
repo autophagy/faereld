@@ -228,8 +228,10 @@ class FaereldDetailedSummary(object):
             print()
             utils.print_header("ENTRY TIME DISTRIBUTION PER AREA")
             print()
-            box = BoxPlot(self.area_time_map, utils.max_width(self.config.get_max_graph_width()), self.config.get_exclude_from_entry_time_distribution()) \
-                         .generate()
+            box = BoxPlot(self.area_time_map) \
+                .set_max_width(utils.max_width(self.config.get_max_graph_width())) \
+                .set_exclude_list(self.config.get_exclude_from_entry_time_distribution()) \
+                .generate()
             for row in box:
                 print(row)
 

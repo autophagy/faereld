@@ -17,22 +17,30 @@ class BoxPlot(object):
     box_body = "█"
     median = "\033[91m█\033[0m"
 
-    def __init__(self, area_values_map, max_width, exclude_list):
-        self.area_values_map = area_values_map
+    def __init__(self, values_map):
+        self.values_map = values_map
+        self.max_width = utils.terminal_width()
+        self.exclude_list = []
+
+    def set_max_width(self, max_width):
         self.max_width = max_width
+        return self
+
+    def set_exclude_list(self, exclude_list):
         self.exclude_list = exclude_list
+        return self
 
     def generate(self):
 
         # First, filter out any areas that have no values.
-        area_values = dict(filter(lambda x: len(x[1]) > 0, self.area_values_map.items()))
+        values = dict(filter(lambda x: len(x[1]) > 0, self.values_map.items()))
 
         # Filter out areas that are invalid for this analysis
-        area_values = dict(filter(lambda x: x[0] not in self.exclude_list, area_values.items()))
+        values = dict(filter(lambda x: x[0] not in self.exclude_list, values.items()))
 
         # Convert the timedeltas into ints
-        for key, value in area_values.items():
-            area_values[key] = list(map(lambda x: x.seconds, value))
+        for key, value in values.items():
+            values[key] = list(map(lambda x: x.seconds, value))
 
         # Used to determine where to place things
         overall_min = None
@@ -41,7 +49,7 @@ class BoxPlot(object):
         # Should be of the form key: (max, min, 1st quart, 2nd quart, 3rd quart)
         box_plot_tuples = { }
 
-        for key, area_value in area_values.items():
+        for key, area_value in values.items():
             min_val = min(area_value)
             max_val = max(area_value)
             first = percentile(area_value, 25)
