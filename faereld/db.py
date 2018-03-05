@@ -260,7 +260,7 @@ class FaereldProjectsSummary(object):
             utils.print_header("TOTAL TIME LOGGED PER PROJECT")
             print()
             graph = SummaryGraph(self.project_time_map, utils.max_width(self.config.get_max_graph_width()),
-                                 key_transform_func = self.config.get_project_name) \
+                                 key_transform_func = self.config.get_project_name, sort=True) \
                     .generate()
             for row in graph:
                 print(row)

@@ -13,11 +13,13 @@ class SummaryGraph(object):
     bar_character = '━'
     label_seperator = '  '
 
-    def __init__(self, area_values_map, max_width, exclude_list=[], key_transform_func=None):
+    def __init__(self, area_values_map, max_width, exclude_list=[],
+                 key_transform_func=None, sort=False):
         self.area_values_map = area_values_map
         self.max_width = max_width
         self.exclude_list = exclude_list
         self.key_transform_func = key_transform_func
+        self.sort = sort
 
     def generate(self):
 
@@ -56,9 +58,14 @@ class SummaryGraph(object):
 
         bars = dict(map(lambda x: (x[0], round(self.max_width*x[1]) * self.bar_character), percentages.items()))
 
-        # Merge the labels and bars
+        # Sort, if needed
 
-        return list(map(lambda t: "{0}{1}".format(t[1], bars[t[0]]), labels.items()))
+        if self.sort:
+            graph_keys = sorted(bars, key=bars.get, reverse=True)
+        else:
+            graph_keys = list(bars.keys())
+
+        return list(map(lambda t: "{0}{1}".format(labels[t], bars[t]), graph_keys))
 
     def _pad_key(self, key, length):
         if len(key) < length:
