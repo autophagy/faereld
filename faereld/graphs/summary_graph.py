@@ -42,16 +42,13 @@ class SummaryGraph(object):
         # Filter out areas that are invalid for this analysis
         values = dict(filter(lambda x: x[0] not in self.exclude_list, self.values_map.items()))
 
-        # Total up the values
-        area_total_dict = dict(map(lambda x: (x[0], sum(x[1], timedelta())), values.items()))
-
         # First, create the graph labels
         if self.key_transform_func is not None:
             # If a key transform func is given, then transform the keys
-            area_total_dict = dict(map(lambda x: (self.key_transform_func(x[0]), x[1]), area_total_dict.items()))
+            values = dict(map(lambda x: (self.key_transform_func(x[0]), x[1]), values.items()))
 
-        longest_key = max(len(key) for key in area_total_dict.keys())
-        labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(self._pad_key(x[0], longest_key), utils.format_time_delta(x[1]))), area_total_dict.items()))
+        longest_key = max(len(key) for key in values.keys())
+        labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(self._pad_key(x[0], longest_key), utils.format_time_delta(x[1]))), values.items()))
 
         # Get the length of the longest label
         longest_label = len(max(labels.values(), key=len))
@@ -66,9 +63,9 @@ class SummaryGraph(object):
         self.max_width -= longest_label + len(self.label_seperator)
 
         # Convert the timedeltas into percentages
-        largest_delta = max(area_total_dict.values())
+        largest_delta = max(values.values())
 
-        percentages = dict(map(lambda x: (x[0], x[1]/largest_delta), area_total_dict.items()))
+        percentages = dict(map(lambda x: (x[0], x[1]/largest_delta), values.items()))
 
         # Create the bars based on the percentages and max max_width
 

@@ -62,10 +62,7 @@ class FaereldData(object):
             total_time += result_time
 
             if detailed:
-                if result['AREA'] not in area_time_map:
-                    area_time_map[result['AREA']] = [result_time]
-                else:
-                    area_time_map[result['AREA']].append(result_time)
+                area_time_map[result['AREA']].append(result_time)
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
@@ -89,6 +86,7 @@ class FaereldData(object):
         total_time = datetime.timedelta(0)
         project_time_map = {}
 
+
         first_day = None
         last_day = None
 
@@ -106,9 +104,9 @@ class FaereldData(object):
             total_time += result_time
 
             if result['OBJECT'] not in project_time_map:
-                project_time_map[result['OBJECT']] = [result_time]
+                project_time_map[result['OBJECT']] = result_time
             else:
-                project_time_map[result['OBJECT']].append(result_time)
+                project_time_map[result['OBJECT']] += result_time
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
@@ -133,8 +131,8 @@ class FaereldData(object):
             return FaereldEmptySummary()
 
         total_time = datetime.timedelta(0)
-        hour_delta_map = {k: [] for k in list(range(0,24))}
-        day_delta_map = {k: [] for k in list(range(0,7))}
+        hour_delta_map = {k: datetime.timedelta(0) for k in list(range(0,24))}
+        day_delta_map = {k: datetime.timedelta(0) for k in list(range(0,7))}
 
         first_day = None
         last_day = None
@@ -153,8 +151,8 @@ class FaereldData(object):
             total_time += result_time
 
             hour = determine_dominant_hour(result['START'], result['END'])
-            hour_delta_map[hour].append(result['END'] - result['START'])
-            day_delta_map[result['START'].weekday()].append(result['END'] - result['START'])
+            hour_delta_map[hour] += result['END'] - result['START']
+            day_delta_map[result['START'].weekday()] += result['END'] - result['START']
 
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
@@ -217,7 +215,12 @@ class FaereldDetailedSummary(object):
 
             utils.print_header("TOTAL TIME LOGGED PER AREA")
             print()
-            graph = SummaryGraph(self.area_time_map) \
+
+            # Sum all the timedeltas for the summary graph
+            summary_time_map = dict(map(lambda x: (x[0], sum(x[1], datetime.timedelta())),
+                                        self.area_time_map.items()))
+
+            graph = SummaryGraph(summary_time_map) \
                   .set_max_width(utils.max_width(self.config.get_max_graph_width())) \
                   .set_exclude_list(self.config.get_exclude_from_total_time()) \
                   .generate()
