@@ -19,6 +19,7 @@ class SummaryGraph(object):
         self.exclude_list = []
         self.key_transform_func = None
         self.sort = False
+        self.graph_header = None
 
     def set_max_width(self, max_width):
         self.max_width = max_width
@@ -37,7 +38,15 @@ class SummaryGraph(object):
         self.reverse_sort = reverse
         return self
 
+    def set_graph_header(self, graph_header):
+        self.graph_header = graph_header
+        return self
+
     def generate(self):
+
+        def compose_row(label, bar):
+            num_spaces = self.max_width - (len(label) + len(bar))
+            return "{0}{1}{2}".format(label, bar, ' '*num_spaces)
 
         # Filter out areas that are invalid for this analysis
         values = dict(filter(lambda x: x[0] not in self.exclude_list, self.values_map.items()))
@@ -59,8 +68,7 @@ class SummaryGraph(object):
             else:
                 labels[k] = v + self.label_seperator
 
-        # Update the max width with the longest label
-        self.max_width -= longest_label + len(self.label_seperator)
+        max_bar_width = self.max_width - (longest_label + len(self.label_seperator))
 
         # Convert the timedeltas into percentages
         largest_delta = max(values.values())
@@ -69,7 +77,7 @@ class SummaryGraph(object):
 
         # Create the bars based on the percentages and max max_width
 
-        bars = dict(map(lambda x: (x[0], round(self.max_width*x[1]) * self.bar_character), percentages.items()))
+        bars = dict(map(lambda x: (x[0], round(max_bar_width*x[1]) * self.bar_character), percentages.items()))
 
         # Sort, if needed
 
@@ -78,7 +86,17 @@ class SummaryGraph(object):
         else:
             graph_keys = list(bars.keys())
 
-        return list(map(lambda t: "{0}{1}".format(labels[t], bars[t]), graph_keys))
+        graph_rows= list(map(lambda t: compose_row(labels[t], bars[t]),
+                             graph_keys))
+
+        if self.graph_header:
+            trimmed_header = self.graph_header[:self.max_width - 1]
+            header_format = "\033[91m{0} {1}\033[0m"
+            graph_rows.insert(0, '')
+            graph_rows.insert(0, header_format.format(trimmed_header,
+                                                 '─'*(self.max_width - 1 - len(trimmed_header))))
+
+        return graph_rows
 
     def _pad_key(self, key, length):
         if len(key) < length:

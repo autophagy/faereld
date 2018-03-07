@@ -6,7 +6,7 @@ faereld.db
 """
 
 from .models import FaereldWendingEntry, FaereldDatetimeEntry
-from .graphs import SummaryGraph, BoxPlot
+from .graphs import SummaryGraph, BoxPlot, SummaryMultiGraph
 from . import utils
 
 from os import path
@@ -85,6 +85,7 @@ class FaereldData(object):
 
         total_time = datetime.timedelta(0)
         project_time_map = {}
+        project_area_time_map = {}
 
 
         first_day = None
@@ -108,12 +109,26 @@ class FaereldData(object):
             else:
                 project_time_map[result['OBJECT']] += result_time
 
+            if result['OBJECT'] not in project_area_time_map:
+                    empty_map = dict(map(lambda x: (x, datetime.timedelta(0)),
+                                    self.config.get_project_areas().keys()))
+                    project_area_time_map[result['OBJECT']] = empty_map
+                    project_area_time_map[result['OBJECT']][result['AREA']] += result_time
+            else:
+                if result['AREA'] not in project_area_time_map[result['OBJECT']]:
+                    project_area_time_map[result['OBJECT']][result['AREA']] = result_time
+                else:
+                    project_area_time_map[result['OBJECT']][result['AREA']] += result_time
+
         formatted_time = utils.format_time_delta(total_time)
         days = (last_day - first_day).days + 1
 
         simple_summary = FaereldSimpleSummary(days, entries_count, formatted_time)
 
-        return FaereldProjectsSummary(simple_summary, project_time_map, self.config)
+        return FaereldProjectsSummary(simple_summary,
+                                      project_time_map,
+                                      project_area_time_map,
+                                      self.config)
 
     def get_productivity_summary(self):
         def determine_dominant_hour(start_time, end_time):
@@ -256,9 +271,11 @@ class FaereldDetailedSummary(object):
 
 class FaereldProjectsSummary(object):
 
-        def __init__(self, simple_summary, project_time_map, config):
+        def __init__(self, simple_summary, project_time_map,
+                     project_area_time_map, config):
             self.simple_summary = simple_summary
             self.project_time_map = project_time_map
+            self.project_area_time_map = project_area_time_map
             self.config = config
 
         def print(self):
@@ -273,6 +290,15 @@ class FaereldProjectsSummary(object):
                   .sort_graph(reverse=True) \
                   .generate()
             for row in graph:
+                print(row)
+
+            print()
+            utils.print_header("TOTAL TIME LOGGED PER AREA PER PROJECT")
+            print()
+            multigraph = SummaryMultiGraph(self.project_area_time_map, 30) \
+                       .set_header_transform_function(self.config.get_project_name) \
+                       .generate()
+            for row in multigraph:
                 print(row)
 
 
