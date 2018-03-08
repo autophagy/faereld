@@ -7,6 +7,7 @@ faereld.graphs.summary_multigraph
 
 from .. import utils
 from . import SummaryGraph
+from math import floor
 
 # Summary MultiGraph is a graph that expects values map of the form
 # { key:
@@ -23,7 +24,7 @@ from . import SummaryGraph
 
 class SummaryMultiGraph(object):
 
-    graph_seperator = '   '
+    minimum_seperation = 3
 
     def __init__(self, values_map, column_width):
         self.values_map = values_map
@@ -35,8 +36,8 @@ class SummaryMultiGraph(object):
         self.reverse_sort = None
         self.header_transform_func = str
 
-    def set_max_width(self, max_width):
-        self.max_width = max_width
+    def set_column_width(self, column_width):
+        self.column_width = column_width
         return self
 
     def set_exclude_list(self, exclude_list):
@@ -57,22 +58,33 @@ class SummaryMultiGraph(object):
         return self
 
     def generate(self):
+        # Calculate the number of graphs that should appear on each row
+        n, r = divmod(self.max_width, self.column_width + self.minimum_seperation)
+        if r >= self.column_width:
+            n += 1
+            r -= self.column_width
+
+        if n > 1:
+            if r > 1:
+                seperation = self.minimum_seperation + floor(r/(n-1))
+            else:
+                seperation = self.minimum_seperation
+        else:
+            seperation = self.minimum_seperation
 
         graph_map = {}
 
+        max_subgraph_width = self.column_width if n > 1 else self.max_width
+
         for k, v in self.values_map.items():
             graph = SummaryGraph(v) \
-                  .set_max_width(self.column_width) \
+                  .set_max_width(max_subgraph_width) \
                   .set_exclude_list(self.exclude_list) \
                   .set_key_transform_function(self.key_transform_func) \
                   .set_graph_header(self.header_transform_func(k)) \
                   .generate()
             graph_map[k] = graph
 
-        # Calculate the number of graphs that should appear on each row
-        n, r = divmod(self.max_width, self.column_width + len(self.graph_seperator))
-        if r >= self.column_width:
-            n += 1
         graph_keys = list(self.values_map.keys())
 
         combined_graphs = []
@@ -85,7 +97,7 @@ class SummaryMultiGraph(object):
             zipped_graphs = list(zip(*graphs))
 
             for g in zipped_graphs:
-                combined_graphs.append(self.graph_seperator.join(g))
+                combined_graphs.append((' '*seperation).join(g))
 
             if len(graph_keys) > 0:
                 combined_graphs.append('')
