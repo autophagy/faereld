@@ -82,7 +82,7 @@ class SummaryGraph(object):
         # Sort, if needed
 
         if self.sort:
-            graph_keys = sorted(bars, key=bars.get, reverse=self.reverse_sort)
+            graph_keys = sorted(values, key=values.get, reverse=self.reverse_sort)
         else:
             graph_keys = list(bars.keys())
 
