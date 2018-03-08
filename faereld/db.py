@@ -323,6 +323,11 @@ class FaereldProductivitySummary(object):
                          6: 'SUN'}
                 return dates[day_num]
 
+            def zero_pad_hour(hour):
+                if len(str(hour)) == 1:
+                    return '0{}'.format(str(hour))
+                return str(hour)
+
             print()
             utils.print_header("total time logged per day")
             print()
@@ -338,7 +343,7 @@ class FaereldProductivitySummary(object):
             print()
             graph = SummaryGraph(self.hour_delta_map) \
                   .set_max_width(utils.max_width(self.config.get_max_graph_width())) \
-                  .set_key_transform_function(str) \
+                  .set_key_transform_function(zero_pad_hour) \
                   .generate()
             for row in graph:
                 print(row)
