@@ -10,7 +10,8 @@ Various useful static functions and variables for use within Færeld.
 from math import floor
 from shutil import get_terminal_size
 from datetime import datetime
-from textwrap import fill
+from string import Formatter
+from .printer import Printer
 import re
 
 header = "FÆRELD :: {0} MODE"
@@ -26,13 +27,25 @@ def format_time_delta(time_delta):
     return "{0}h{1}m".format(floor(hours), minutes)
 
 def print_rendered_string(area_code, area, date_to_display, object_name, duration):
-    rendering_string = area['rendering_string'].format(area=highlight(area_code),
-                                                       area_name=highlight(area['name']),
-                                                       object=highlight(object_name),
-                                                       date=highlight(date_to_display),
-                                                       duration=highlight(duration))
 
-    print_wordwrap(rendering_string)
+    fields = {
+        'area': area_code,
+        'area_name': area['name'],
+        'object': object_name,
+        'date': date_to_display,
+        'duration': duration
+    }
+
+    printer = Printer()
+    for literal, field, _, _ in Formatter().parse(area['rendering_string']):
+        if len(literal) > 0:
+            printer.add(literal)
+        if field is not None:
+            if field not in fields:
+                raise ValueError("{0} is an invalid rendering string. ".format(area['rendering_string']) +
+                                 "Reason: '{1}' is an invalid field.".format(field))
+            printer.add_highlighted(fields[field])
+    printer.print()
 
 def highlight(item):
     return "\033[94m{0}\033[0m".format(item)
@@ -45,12 +58,6 @@ def terminal_width():
 
 def max_width(max_config_width):
     return min(terminal_width(), max_config_width)
-
-def print_wordwrap(*strings):
-    string = ''.join(strings)
-    for s in string.split('\n'):
-        stripped_len = len(strip_colour_codes(s))
-        print(fill(s, terminal_width() + (len(s) - stripped_len)))
 
 def strip_colour_codes(string):
     return re.sub('\x1b\[[0-9;]*m', '', string)

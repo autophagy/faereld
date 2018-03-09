@@ -8,6 +8,7 @@ faereld.controller
 
 from .db import FaereldData
 from . import utils
+from .printer import Printer
 
 from os import path
 import datarum
@@ -66,7 +67,10 @@ class Controller(object):
         summary.print()
 
         print()
-        utils.print_wordwrap("[ Areas :: {0} ]".format(' // '.join(self.config.get_areas().keys())))
+
+        Printer() \
+         .add("[ Areas :: {0} ]".format(' // '.join(self.config.get_areas().keys()))) \
+         .print()
         area = input('Area :: ').upper()
 
         while area not in self.config.get_areas():
@@ -134,7 +138,9 @@ class Controller(object):
         projects = self.config.get_projects()
 
         print()
-        utils.print_wordwrap("[ Objects :: {0} ]".format(' // '.join(sorted(projects.keys()))))
+        Printer() \
+         .add("[ Objects :: {0} ]".format(' // '.join(sorted(projects.keys())))) \
+         .print()
         object = input('Object :: ')
 
         while object not in projects:
@@ -164,7 +170,7 @@ class Controller(object):
                 last_objects_dict = {'[{0}]'.format(x): k for x, k in enumerate(last_objects)}
                 print("Last {0} {1} Objects :: ".format(len(last_objects), area))
                 for k, v in sorted(last_objects_dict.items()):
-                    utils.print_wordwrap("{0} {1}".format(k, v))
+                    Printer().add("{0} {1}".format(k, v)).print()
 
         object = input('Object :: ')
 
