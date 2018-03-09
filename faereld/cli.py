@@ -27,9 +27,9 @@ class Faereld(object):
             self.help(None)
             exit(1)
         else:
+            print("\x1b[2J\x1b[H", end="")
             config = Configuration(args.config)
             controller = Controller(config)
-            print("\x1b[2J\x1b[H", end="")
             getattr(self, args.mode.lower())(controller)
 
 

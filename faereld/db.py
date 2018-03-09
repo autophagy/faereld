@@ -29,7 +29,7 @@ class FaereldData(object):
             bisen = FaereldDatetimeEntry
         if not path.exists(hord_path):
             # Init the hord
-            return wisdomhord.cenann(hord_path, bisen=bisen)
+            return wisdomhord.cennan(hord_path, bisen=bisen)
         else:
             return wisdomhord.hladan(hord_path, bisen=bisen)
 

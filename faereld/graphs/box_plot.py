@@ -72,8 +72,11 @@ class BoxPlot(object):
         max_width_bar = self.max_width - len('KEY :: ')
 
         for key, values in box_plot_tuples.items():
-            positions = list(map(lambda x: int(round(max_width_bar*((x - overall_min) / (overall_max-overall_min)))), values))
-            box_plot_tuples[key] = self._create_box_plot(*positions)
+            if overall_min == overall_max:
+                box_plot_tuples[key] = self._create_box_plot(0, 0, 0, 0, 0)
+            else:
+                positions = list(map(lambda x: int(round(max_width_bar*((x - overall_min) / (overall_max-overall_min)))), values))
+                box_plot_tuples[key] = self._create_box_plot(*positions)
 
         # Merge the labels and the box plots into a single string
         returnable_list = list(map(lambda x: "{0} :: {1}\n".format(x[0], x[1]), box_plot_tuples.items()))

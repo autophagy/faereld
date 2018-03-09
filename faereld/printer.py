@@ -9,8 +9,8 @@ from . import utils
 
 class String(object):
 
-    def __init__(self, string):
-        self.string = string
+    def __init__(self, *string):
+        self.string = ''.join(string)
         self.final_line_length = len(string)
 
     def wrap(self, start, width):
@@ -59,8 +59,8 @@ class Printer(object):
     def __init__(self):
         self.strings = []
 
-    def add(self, text):
-        self.strings.append(String(text))
+    def add(self, *text):
+        self.strings.append(String(*text))
         return self
 
     def add_highlighted(self, text):
