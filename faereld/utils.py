@@ -11,7 +11,7 @@ from math import floor
 from shutil import get_terminal_size
 from datetime import datetime
 from string import Formatter
-from .printer import Printer
+from .printer import Printer, Highlight
 import re
 
 header = "FÆRELD :: {0} MODE"
@@ -36,16 +36,18 @@ def print_rendered_string(area_code, area, date_to_display, object_name, duratio
         'duration': duration
     }
 
-    printer = Printer()
+    elements = []
     for literal, field, _, _ in Formatter().parse(area['rendering_string']):
         if len(literal) > 0:
-            printer.add(literal)
+            elements.append(literal)
         if field is not None:
             if field not in fields:
                 raise ValueError("{0} is an invalid rendering string. ".format(area['rendering_string']) +
                                  "Reason: '{1}' is an invalid field.".format(field))
-            printer.add_highlighted(fields[field])
-    printer.print()
+            elements.append(Highlight(fields.get(field)))
+    p = Printer()
+    p.add(*elements)
+    p.print()
 
 def highlight(item):
     return "\033[94m{0}\033[0m".format(item)

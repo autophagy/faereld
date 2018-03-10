@@ -45,7 +45,7 @@ class String(object):
         return len(self.string)
 
 
-class HighlightedString(String):
+class Highlight(String):
 
     def _highlighted(self):
         return "\033[94m{0}\033[0m".format(self.string)
@@ -57,28 +57,39 @@ class HighlightedString(String):
 class Printer(object):
 
     def __init__(self):
-        self.strings = []
+        self.paragraphs = []
 
-    def add(self, *text):
-        self.strings.append(String(*text))
+    def add(self, *texts):
+        p = []
+        for text in texts:
+            if type(text) is Highlight:
+                p.append(text)
+            else:
+                p.append(String(text))
+        self.paragraphs.append(p)
         return self
 
-    def add_highlighted(self, text):
-        self.strings.append(HighlightedString(text))
-        return self
+    def newline(self):
+        self.paragraphs.append([String('')])
+
+    def add_header(self, text):
+        self.paragraphs.append([
+            Highlight("{0} {1}".format(text.upper(), "─"*(utils.terminal_width() - len(text) - 1)))
+        ])
 
     def print(self):
         width = utils.terminal_width()
-        c = 0
-        wrapped_strings = []
-        # First wrap all the strings according to the width
-        for string in self.strings:
-            if string.first_break() + c > width:
-                wrapped_strings.append('\n')
-                c = 0
-            string.wrap(c, width)
-            wrapped_strings.append(string)
-            c = string.final_line_length
-        # Combine the wrapped strings
-        final = ''.join(str(string) for string in wrapped_strings)
-        print(final)
+        for paragraph in self.paragraphs:
+            c = 0
+            wrapped_strings = []
+            # First wrap all the strings according to the width
+            for string in paragraph:
+                if string.first_break() + c > width:
+                    wrapped_strings.append('\n')
+                    c = 0
+                string.wrap(c, width)
+                wrapped_strings.append(string)
+                c = string.final_line_length
+            # Combine the wrapped strings
+            final = ''.join(str(string) for string in wrapped_strings)
+            print(final)

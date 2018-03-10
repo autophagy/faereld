@@ -169,8 +169,10 @@ class Controller(object):
             if len(last_objects) > 0:
                 last_objects_dict = {'[{0}]'.format(x): k for x, k in enumerate(last_objects)}
                 print("Last {0} {1} Objects :: ".format(len(last_objects), area))
+                p = Printer()
                 for k, v in sorted(last_objects_dict.items()):
-                    Printer().add("{0} {1}".format(k, v)).print()
+                    p.add("{0} {1}".format(k, v))
+                p.print()
 
         object = input('Object :: ')
 
