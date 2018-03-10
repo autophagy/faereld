@@ -57,7 +57,7 @@ class SummaryGraph(object):
             values = dict(map(lambda x: (self.key_transform_func(x[0]), x[1]), values.items()))
 
         longest_key = max(len(key) for key in values.keys())
-        labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(self._pad_key(x[0], longest_key), utils.format_time_delta(x[1]))), values.items()))
+        labels = dict(map(lambda x: (x[0], '{0} [{1}]'.format(self._pad_key(x[0], longest_key), self._format_time_delta(x[1]))), values.items()))
 
         # Get the length of the longest label
         longest_label = len(max(labels.values(), key=len))
@@ -97,6 +97,12 @@ class SummaryGraph(object):
                                                  '─'*(self.max_width - 1 - len(trimmed_header))))
 
         return graph_rows
+
+    def _format_time_delta(self, delta):
+        formatted = utils.format_time_delta(delta)
+        if formatted == "0h0m":
+            return "·"
+        return formatted
 
     def _pad_key(self, key, length):
         if len(key) < length:
