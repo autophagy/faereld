@@ -90,14 +90,17 @@ class Printer(object):
 
     def newline(self):
         self.paragraphs.append([String('')])
+        return self
 
     def add_header(self, text):
         self.paragraphs.append([
             Header("{0} {1}".format(text.upper(), "─"*(utils.terminal_width() - len(text) - 1)))
         ])
+        return self
 
     def add_nowrap(self, text):
         self.paragraphs.append([Unwrappable(text)])
+        return self
 
     def print(self):
         width = utils.terminal_width()

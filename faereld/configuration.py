@@ -54,7 +54,8 @@ class Configuration(object):
     DEFAULT_PROJECTS = {
         'faereld': {
             'name': 'Færeld',
-            'link': 'https://github.com/Autophagy/faereld'
+            'link': 'https://github.com/Autophagy/faereld',
+            'description': 'A time tracking tool. '
         }
     }
 
@@ -133,8 +134,10 @@ class Configuration(object):
 #
 # A project definition should be of the form
 # code:
+#   name: Project Name
 #   link: <link to project homepage>
-#   name: Project Name""",
+#   desc: Project description
+""",
 
         'general_areas': """# general_areas :: Definitions For General Areas
 #
@@ -307,8 +310,17 @@ class Configuration(object):
 
     def get_project_name(self, obj):
         if obj in self.projects:
-            return self.projects[obj]['name']
+            return self.projects[obj].get('name', obj)
         return obj
+
+    def get_project_description(self, obj):
+        if obj in self.projects:
+            desc = "{0} :: {1}".format(self.projects[obj].get('name', obj),
+                                       self.projects[obj].get('desc', 'no description'))
+            if 'link' in self.projects[obj]:
+                desc += " ({})".format(self.projects[obj]['link'])
+            return desc
+        return None
 
     def __validate_list(self, config_list):
         if config_list is None:

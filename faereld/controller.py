@@ -69,7 +69,10 @@ class Controller(object):
         print()
 
         Printer() \
-         .add("[ Areas :: {0} ]".format(' // '.join(self.config.get_areas().keys()))) \
+         .add_header('Area') \
+         .newline() \
+         .add("[ {0} ]".format(' // '.join(self.config.get_areas().keys()))) \
+         .newline() \
          .print()
         area = input('Area :: ').upper()
 
@@ -82,9 +85,15 @@ class Controller(object):
             area = input('Area :: ').upper()
 
         if area in self.config.get_project_areas():
-            object, link = self._project_object()
+            object = self._project_object()
         else:
-            object, link = self._non_project_object(area)
+            object = self._non_project_object(area)
+
+        Printer() \
+         .newline() \
+         .add_header('Duration') \
+         .newline() \
+         .print() \
 
         # Assume to be in the form [date // time]
         date_to_display = None
@@ -93,7 +102,6 @@ class Controller(object):
         to_date = None
 
         while from_date is None and to_date is None:
-            print()
             while from_date is None:
                 from_input = input('From :: ')
                 from_date = self.convert_input_date(from_input)
@@ -126,7 +134,6 @@ class Controller(object):
         if confirmation.lower() == 'y':
             self.db.create_entry(area,
                                  object,
-                                 link,
                                  from_date,
                                  to_date)
 
@@ -139,26 +146,30 @@ class Controller(object):
 
         print()
         Printer() \
-         .add("[ Objects :: {0} ]".format(' // '.join(sorted(projects.keys())))) \
+         .add_header('Project') \
+         .newline() \
+         .add("[ {0} ]".format(' // '.join(sorted(projects.keys())))) \
+         .newline() \
          .print()
-        object = input('Object :: ')
+        project = input('Project :: ')
 
-        while object not in projects:
+        while project not in projects:
             print()
-            if object == '?':
-                utils.print_projects_help(self.config.get_projects())
+            if project == '?':
+                utils.print_projects_help(sorted(projects.keys()), self.config)
             else:
-                print("Invalid Project :: {0}".format(object))
-            object = input('Object :: ')
+                print("Invalid Project :: {0}".format(project))
+            project = input('Object :: ')
 
-        link = projects[object]['link']
-
-        return (object, link)
+        return project
 
     def _non_project_object(self, area):
 
         use_last_objects = self.config.get_areas()[area]['use_last_objects']
         print()
+        p = Printer()
+        p.add_header('Object')
+        p.newline()
 
         if use_last_objects:
             last_objects = self.db.get_last_objects(area, self.config.get_num_last_objects())
@@ -168,11 +179,13 @@ class Controller(object):
             # Transform last objects into [x]: object tags
             if len(last_objects) > 0:
                 last_objects_dict = {'[{0}]'.format(x): k for x, k in enumerate(last_objects)}
-                print("Last {0} {1} Objects :: ".format(len(last_objects), area))
-                p = Printer()
+                p.add("Last {0} {1} Objects :: ".format(len(last_objects), area))
+                p.newline()
                 for k, v in sorted(last_objects_dict.items()):
                     p.add("{0} {1}".format(k, v))
-                p.print()
+                p.newline()
+
+        p.print()
 
         object = input('Object :: ')
 
@@ -180,7 +193,7 @@ class Controller(object):
             if object in last_objects_dict:
                 return (last_objects_dict[object], None)
 
-        return (object, None)
+        return object
 
     def convert_input_date(self, date_string):
         if self.config.get_use_wending():

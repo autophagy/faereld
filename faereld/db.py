@@ -191,7 +191,7 @@ class FaereldData(object):
 
         return filtered_obj[:limit]
 
-    def create_entry(self, area, object, link, start, end):
+    def create_entry(self, area, object, start, end):
         entry = {
             'AREA': area,
             'OBJECT': object,
