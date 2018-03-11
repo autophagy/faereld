@@ -54,6 +54,25 @@ class Highlight(String):
         return self._highlighted()
 
 
+class Header(String):
+
+    def _headerised(self):
+        return "\033[91m{0}\033[0m".format(self.string)
+
+    def __str__(self):
+        return self._headerised()
+
+
+class Unwrappable(String):
+
+    # Only use this class when you absolutely do not need the string to wrap.
+    # For example, in use with graphs, where the graph is already calculated
+    # to fit within the terminal.
+
+    def wrap(self, width, start):
+        pass
+
+
 class Printer(object):
 
     def __init__(self):
@@ -74,8 +93,11 @@ class Printer(object):
 
     def add_header(self, text):
         self.paragraphs.append([
-            Highlight("{0} {1}".format(text.upper(), "─"*(utils.terminal_width() - len(text) - 1)))
+            Header("{0} {1}".format(text.upper(), "─"*(utils.terminal_width() - len(text) - 1)))
         ])
+
+    def add_nowrap(self, text):
+        self.paragraphs.append([Unwrappable(text)])
 
     def print(self):
         width = utils.terminal_width()

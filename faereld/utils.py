@@ -27,6 +27,12 @@ def format_time_delta(time_delta):
     return "{0}h{1}m".format(floor(hours), minutes)
 
 def print_rendered_string(area_code, area, date_to_display, object_name, duration):
+    p = Printer()
+    e = get_rendered_string(area_code, area, date_to_display, object_name, duration)
+    p.add(*e)
+    p.print()
+
+def get_rendered_string(area_code, area, date_to_display, object_name, duration):
 
     fields = {
         'area': area_code,
@@ -45,9 +51,7 @@ def print_rendered_string(area_code, area, date_to_display, object_name, duratio
                 raise ValueError("{0} is an invalid rendering string. ".format(area['rendering_string']) +
                                  "Reason: '{1}' is an invalid field.".format(field))
             elements.append(Highlight(fields.get(field)))
-    p = Printer()
-    p.add(*elements)
-    p.print()
+    return elements
 
 def highlight(item):
     return "\033[94m{0}\033[0m".format(item)
