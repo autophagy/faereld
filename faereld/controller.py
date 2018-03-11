@@ -191,7 +191,7 @@ class Controller(object):
 
         if use_last_objects:
             if object in last_objects_dict:
-                return (last_objects_dict[object], None)
+                return (last_objects_dict[object])
 
         return object
 
@@ -205,8 +205,6 @@ class Controller(object):
         try:
             if date_string.lower() == "now":
                 now = datarum.wending.now().replace(second=0)
-                print("[{}]".format(now.strftime('{daeg} {month} {gere} // {tid_zero}.{minute_zero}')))
-                print()
                 return now
             else:
                 return datarum.wending.strptime(date_string,
@@ -221,8 +219,6 @@ class Controller(object):
         try:
             if date_string.lower() == "now":
                 now = datetime.datetime.now().replace(second=0)
-                print("[{}]".format(now.strftime('%d %b %Y // %H.%M')))
-                print()
                 return now
             else:
                 return datetime.datetime.strptime(date_string,
