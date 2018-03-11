@@ -2,10 +2,15 @@
 Modes
 =====
 
-Færeld has 3 usage modes: ``summary``, ``projects`` and ``insert``.
+Færeld has 4 usage modes: ``summary``, ``projects``, ``productivity`` and
+``insert``.
 
 Summary Mode
 ============
+
+.. image:: ../_static/summary-mode.jpg
+    :alt: An example of summary mode.
+    :align: center
 
 Summary mode can be used via:
 
@@ -24,6 +29,10 @@ including:
 Projects Mode
 =============
 
+.. image:: ../_static/projects-mode.jpg
+    :alt: An example of projects mode.
+    :align: center
+
 Projects mode can be used via:
 
 .. code-block:: bash
@@ -32,8 +41,28 @@ Projects mode can be used via:
 
 Projects mode will print a summary of the total time logged per project.
 
+Productivity Mode
+=================
+
+.. image:: ../_static/productivity-mode.jpg
+    :alt: An example of productivity mode.
+    :align: center
+
+Productivity mode can be used via:
+
+.. code-block:: bash
+
+    $ faereld productivity
+
+Productivity mode will print a summary of the total time logged per day of
+the week and total time logged per hour of the day.
+
 Insert Mode
 ===========
+
+.. image:: ../_static/insert-mode.jpg
+    :alt: An example of insert mode.
+    :align: center
 
 Insert mode can be used via:
 

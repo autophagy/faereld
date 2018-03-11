@@ -94,12 +94,14 @@ project must be defined in the following way:
 .. code-block:: yaml
 
     projects:
-      aerende:
-        name: Ærende
-        link: https://github.com/Autophagy/aerende
       hraew:
-        name: Hrǽw
+        desc: A project information & documentation engine.
         link: https://github.com/Autophagy/hraew
+        name: Hrǽw
+      scieldas:
+        desc: A service to provide metadata badges for Open Source projects.
+        link: https://github.com/Autophagy/scieldas
+        name: Scieldas
 
 General Areas
 -------------
