@@ -67,18 +67,3 @@ def max_width(max_config_width):
 
 def strip_colour_codes(string):
     return re.sub('\x1b\[[0-9;]*m', '', string)
-
-def print_areas_help(areas):
-    p = Printer()
-    for area_code, area in areas.items():
-        p.add('[{0}] {1}'.format(area_code, area['name']))
-    p.newline()
-    p.print()
-
-def print_projects_help(projects, config):
-    p = Printer()
-    for project in projects:
-        p.add('[{}]'.format(project))
-        p.add(config.get_project_description(project))
-        p.newline()
-    p.print()

@@ -9,6 +9,7 @@ faereld.controller
 from .db import FaereldData
 from . import utils
 from .printer import Printer
+from . import help
 
 from os import path
 import datarum
@@ -79,7 +80,7 @@ class Controller(object):
         while area not in self.config.get_areas():
             print()
             if area == '?':
-                utils.print_areas_help(self.config.get_areas())
+                help.areas_help(self.config.get_areas()).print()
             else:
                 print("Invalid Area :: {0}".format(area))
             area = input('Area :: ').upper()
@@ -156,7 +157,9 @@ class Controller(object):
         while project not in projects:
             print()
             if project == '?':
-                utils.print_projects_help(sorted(projects.keys()), self.config)
+                k = sorted(projects.keys())
+                f = self.config.get_project_description
+                help.projects_help(k, f).print()
             else:
                 print("Invalid Project :: {0}".format(project))
             project = input('Object :: ')
