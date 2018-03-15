@@ -5,7 +5,7 @@ faereld.printer
 ---------------
 """
 
-from . import utils
+from shutil import get_terminal_size
 
 class String(object):
 
@@ -94,16 +94,20 @@ class Printer(object):
 
     def add_header(self, text):
         self.paragraphs.append([
-            Header("{0} {1}".format(text.upper(), "─"*(utils.terminal_width() - len(text) - 1)))
+            Header("{0} {1}".format(text.upper(), "─"*(self._width() - len(text) - 1)))
         ])
         return self
+
+    def add_mode_header(self, text):
+        mode_header = "Færeld :: {0} Mode"
+        return self.add_header(mode_header.format(text))
 
     def add_nowrap(self, text):
         self.paragraphs.append([Unwrappable(text)])
         return self
 
     def print(self):
-        width = utils.terminal_width()
+        width = self._width()
         for paragraph in self.paragraphs:
             c = 0
             wrapped_strings = []
@@ -118,3 +122,6 @@ class Printer(object):
             # Combine the wrapped strings
             final = ''.join(str(string) for string in wrapped_strings)
             print(final)
+
+    def _width(self):
+        return get_terminal_size().columns

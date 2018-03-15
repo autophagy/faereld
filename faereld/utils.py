@@ -53,12 +53,6 @@ def get_rendered_string(area_code, area, date_to_display, object_name, duration)
             elements.append(Highlight(fields.get(field)))
     return elements
 
-def highlight(item):
-    return "\033[94m{0}\033[0m".format(item)
-
-def print_header(string):
-    print("\033[91m{0} {1}\033[0m".format(string.upper(), "─"*(terminal_width() - len(string) - 1)))
-
 def terminal_width():
     return get_terminal_size().columns
 

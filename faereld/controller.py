@@ -41,7 +41,7 @@ class Controller(object):
     @_time_function
     def summary(self):
         summary = self.db.get_summary(detailed=True)
-        utils.print_header(utils.header.format("SUMMARY"))
+        Printer().add_mode_header("Summary").print()
         summary.print()
 
     # Projects Summary Mode
@@ -49,7 +49,7 @@ class Controller(object):
     @_time_function
     def projects(self):
         projects_summary = self.db.get_projects_summary()
-        utils.print_header(utils.header.format("PROJECTS SUMMARY"))
+        Printer().add_mode_header("Projects Summary").print()
         projects_summary.print()
 
     # Productivity Summary Mode
@@ -57,14 +57,15 @@ class Controller(object):
     @_time_function
     def productivity(self):
         productivity_summary = self.db.get_productivity_summary()
-        utils.print_header(utils.header.format("PRODUCTIVITY SUMMARY"))
+        Printer().add_mode_header("Productivity Summary").print()
         productivity_summary.print()
 
     # Insert Mode
 
     def insert(self):
+        Printer().add_mode_header("Insert").print()
+
         summary = self.db.get_summary()
-        utils.print_header(utils.header.format("INSERT"))
         summary.print()
 
         print()
