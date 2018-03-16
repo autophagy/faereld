@@ -25,7 +25,8 @@ setup(
         'PyYAML==3.12',
         'datarum==0.5.0',
         'wisdomhord==0.2.3',
-        'numpy==1.13.3'
+        'numpy==1.13.3',
+        'prompt-toolkit==1.0.15'
     ],
     python_requires='>=3.6',
     classifiers=[

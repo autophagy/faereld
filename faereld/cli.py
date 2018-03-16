@@ -54,5 +54,5 @@ def main():
     try:
         Faereld()
     except KeyboardInterrupt:
-        print("\n\nExiting...\n")
+        print("\nExiting...\n")
         exit(0)

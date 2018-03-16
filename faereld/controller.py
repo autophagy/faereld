@@ -17,6 +17,8 @@ import datetime
 import time
 from functools import wraps
 
+from prompt_toolkit import prompt
+from prompt_toolkit.contrib.completers import WordCompleter
 
 class Controller(object):
 
@@ -76,7 +78,9 @@ class Controller(object):
          .add("[ {0} ]".format(' // '.join(self.config.get_areas().keys()))) \
          .newline() \
          .print()
-        area = input('Area :: ').upper()
+
+        area_completer = WordCompleter(self.config.get_areas().keys())
+        area = prompt('Area :: ', completer=area_completer)
 
         while area not in self.config.get_areas():
             print()
@@ -84,7 +88,7 @@ class Controller(object):
                 help.areas_help(self.config.get_areas()).print()
             else:
                 print("Invalid Area :: {0}".format(area))
-            area = input('Area :: ').upper()
+            area = prompt('Area :: ', completer=area_completer)
 
         if area in self.config.get_project_areas():
             object = self._project_object()
@@ -105,11 +109,11 @@ class Controller(object):
 
         while from_date is None and to_date is None:
             while from_date is None:
-                from_input = input('From :: ')
+                from_input = prompt('From :: ')
                 from_date = self.convert_input_date(from_input)
 
             while to_date is None:
-                to_input = input('To :: ')
+                to_input = prompt('To :: ')
                 to_date = self.convert_input_date(to_input)
 
             time_diff = utils.time_diff(from_date, to_date)
@@ -131,7 +135,7 @@ class Controller(object):
                                     self.config.get_object_name(area, object),
                                     time_diff)
 
-        confirmation = input("Is this correct? (y/n) :: ")
+        confirmation = prompt("Is this correct? (y/n) :: ")
 
         if confirmation.lower() == 'y':
             self.db.create_entry(area,
@@ -153,7 +157,9 @@ class Controller(object):
          .add("[ {0} ]".format(' // '.join(sorted(projects.keys())))) \
          .newline() \
          .print()
-        project = input('Project :: ')
+
+        project_completer = WordCompleter(sorted(projects.keys()))
+        project = prompt('Project :: ', completer=project_completer)
 
         while project not in projects:
             print()
@@ -163,17 +169,19 @@ class Controller(object):
                 help.projects_help(k, f).print()
             else:
                 print("Invalid Project :: {0}".format(project))
-            project = input('Object :: ')
+            project = prompt('Project :: ', completer=project_completer)
 
         return project
 
     def _non_project_object(self, area):
 
-        use_last_objects = self.config.get_areas()[area]['use_last_objects']
+        use_last_objects = self.config.get_area(area).get('use_last_objects', False)
         print()
         p = Printer()
         p.add_header('Object')
         p.newline()
+
+        last_objects = []
 
         if use_last_objects:
             last_objects = self.db.get_last_objects(area, self.config.get_num_last_objects())
@@ -191,7 +199,7 @@ class Controller(object):
 
         p.print()
 
-        object = input('Object :: ')
+        object = prompt('Object :: ', completer=WordCompleter(last_objects))
 
         if use_last_objects:
             if object in last_objects_dict:
