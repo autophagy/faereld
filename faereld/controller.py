@@ -80,7 +80,7 @@ class Controller(object):
          .print()
 
         area_completer = WordCompleter(self.config.get_areas().keys())
-        area = prompt('Area :: ', completer=area_completer)
+        area = prompt('Area :: ', completer=area_completer, vi_mode=True)
 
         while area not in self.config.get_areas():
             print()
@@ -88,7 +88,7 @@ class Controller(object):
                 help.areas_help(self.config.get_areas()).print()
             else:
                 print("Invalid Area :: {0}".format(area))
-            area = prompt('Area :: ', completer=area_completer)
+            area = prompt('Area :: ', completer=area_completer, vi_mode=True)
 
         if area in self.config.get_project_areas():
             object = self._project_object()
@@ -109,11 +109,11 @@ class Controller(object):
 
         while from_date is None and to_date is None:
             while from_date is None:
-                from_input = prompt('From :: ')
+                from_input = prompt('From :: ', vi_mode=True)
                 from_date = self.convert_input_date(from_input)
 
             while to_date is None:
-                to_input = prompt('To :: ')
+                to_input = prompt('To :: ', vi_mode=True)
                 to_date = self.convert_input_date(to_input)
 
             time_diff = utils.time_diff(from_date, to_date)
@@ -135,7 +135,7 @@ class Controller(object):
                                     self.config.get_object_name(area, object),
                                     time_diff)
 
-        confirmation = prompt("Is this correct? (y/n) :: ")
+        confirmation = prompt("Is this correct? (y/n) :: ", vi_mode=True)
 
         if confirmation.lower() == 'y':
             self.db.create_entry(area,
@@ -159,7 +159,7 @@ class Controller(object):
          .print()
 
         project_completer = WordCompleter(sorted(projects.keys()))
-        project = prompt('Project :: ', completer=project_completer)
+        project = prompt('Project :: ', completer=project_completer, vi_mode=True)
 
         while project not in projects:
             print()
@@ -169,7 +169,7 @@ class Controller(object):
                 help.projects_help(k, f).print()
             else:
                 print("Invalid Project :: {0}".format(project))
-            project = prompt('Project :: ', completer=project_completer)
+            project = prompt('Project :: ', completer=project_completer, vi_mode=True)
 
         return project
 
@@ -199,7 +199,7 @@ class Controller(object):
 
         p.print()
 
-        object = prompt('Object :: ', completer=WordCompleter(last_objects))
+        object = prompt('Object :: ', completer=WordCompleter(last_objects), vi_mode=True)
 
         if use_last_objects:
             if object in last_objects_dict:
