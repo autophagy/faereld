@@ -191,12 +191,5 @@ class FaereldData(object):
 
         return filtered_obj[:limit]
 
-    def create_entry(self, area, object, start, end):
-        entry = {
-            'AREA': area,
-            'OBJECT': object,
-            'START': start,
-            'END': end,
-        }
-
+    def create_entry(self, entry):
         self.hord.insert(entry)

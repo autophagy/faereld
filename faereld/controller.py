@@ -8,7 +8,7 @@ faereld.controller
 
 from .db import FaereldData
 from . import utils
-from .printer import Printer
+from .printer import Printer, Highlight
 from . import help
 
 from os import path
@@ -19,6 +19,28 @@ from functools import wraps
 
 from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
+
+class CategoryValidator(object):
+
+    HELP_CHAR = '?'
+
+    def __init__(self, categories, category_type="Object", help_generator=None):
+        self.categories = categories
+        self.category_type = category_type
+        self.help_generator = help_generator
+
+    def validate(self, input):
+        if self.help_generator is not None and input is self.HELP_CHAR:
+            Printer().newline().print()
+            self.help_generator().print()
+            return False
+
+        if input not in self.categories:
+            Printer().newline().add('Invalid {} :: '.format(self.category_type),
+                          Highlight(input)).print()
+            return False
+
+        return True
 
 class Controller(object):
 
@@ -65,63 +87,57 @@ class Controller(object):
     # Insert Mode
 
     def insert(self):
-        Printer().add_mode_header("Insert").print()
+        Printer() \
+          .add_mode_header("Insert") \
+          .print()
 
         summary = self.db.get_summary()
         summary.print()
 
-        print()
+        entry_inputs = None
+        while entry_inputs is None:
+            entry_inputs = self.gather_inputs()
+        self.db.create_entry(entry_inputs)
+        print("Færeld entry added")
 
+    def gather_inputs(self):
         Printer() \
-         .add_header('Area') \
-         .newline() \
-         .add("[ {0} ]".format(' // '.join(self.config.get_areas().keys()))) \
-         .newline() \
-         .print()
+          .newline() \
+          .add_header('Area') \
+          .newline() \
+          .add("[ {0} ]".format(' // '.join(self.config.get_areas().keys()))) \
+          .newline() \
+          .print() \
 
-        area_completer = WordCompleter(self.config.get_areas().keys())
-        area = prompt('Area :: ', completer=area_completer, vi_mode=True)
-
-        while area not in self.config.get_areas():
-            print()
-            if area == '?':
-                help.areas_help(self.config.get_areas()).print()
-            else:
-                print("Invalid Area :: {0}".format(area))
-            area = prompt('Area :: ', completer=area_completer, vi_mode=True)
+        area = self.input_area()
 
         if area in self.config.get_project_areas():
-            object = self._project_object()
+            Printer() \
+              .newline() \
+              .add_header('Project') \
+              .newline() \
+              .add("[ {0} ]".format(' // '.join(sorted(self.config.get_projects().keys())))) \
+              .newline() \
+              .print()
+
+            object = self.input_project_object()
         else:
-            object = self._non_project_object(area)
+            Printer() \
+              .newline() \
+              .add_header('Object') \
+              .newline() \
+              .print()
+
+            object = self.input_non_project_object(area)
 
         Printer() \
-         .newline() \
-         .add_header('Duration') \
-         .newline() \
-         .print() \
+          .newline() \
+          .add_header('Duration') \
+          .newline() \
+          .print()
 
-        # Assume to be in the form [date // time]
-        date_to_display = None
-
-        from_date = None
-        to_date = None
-
-        while from_date is None and to_date is None:
-            while from_date is None:
-                from_input = prompt('From :: ', vi_mode=True)
-                from_date = self.convert_input_date(from_input)
-
-            while to_date is None:
-                to_input = prompt('To :: ', vi_mode=True)
-                to_date = self.convert_input_date(to_input)
-
-            time_diff = utils.time_diff(from_date, to_date)
-
-            if from_date >= to_date:
-                print("Invalid Duration :: {0}".format(time_diff))
-                from_date = None
-                to_date = None
+        from_date, to_date = self.input_duration()
+        time_diff = utils.time_diff(from_date, to_date)
 
         print()
 
@@ -138,49 +154,49 @@ class Controller(object):
         confirmation = prompt("Is this correct? (y/n) :: ", vi_mode=True)
 
         if confirmation.lower() == 'y':
-            self.db.create_entry(area,
-                                 object,
-                                 from_date,
-                                 to_date)
-
-            print("Færeld entry added")
+            return {
+                'AREA': area,
+                'OBJECT': object,
+                'START': from_date,
+                'END': to_date
+            }
         else:
-            print("Færeld entry cancelled")
+            return None
 
-    def _project_object(self):
+    def input_area(self):
+        def area_help_generator():
+            return help.areas_help(self.config.get_areas())
+
+        area_completer = WordCompleter(self.config.get_areas().keys())
+        area_validator = CategoryValidator(self.config.get_areas().keys(), "Area", area_help_generator)
+        area = None
+
+        while area is None:
+            area_input = prompt('Area :: ', completer=area_completer, vi_mode=True).strip()
+            if area_validator.validate(area_input):
+                area = area_input
+        return area
+
+    def input_project_object(self):
+        def project_help_generator():
+            sorted_projects = sorted(self.config.get_projects().keys())
+            project_descriptions = self.config.get_project_description
+            return help.projects_help(sorted_projects, project_descriptions)
+
         projects = self.config.get_projects()
 
-        print()
-        Printer() \
-         .add_header('Project') \
-         .newline() \
-         .add("[ {0} ]".format(' // '.join(sorted(projects.keys())))) \
-         .newline() \
-         .print()
-
         project_completer = WordCompleter(sorted(projects.keys()))
-        project = prompt('Project :: ', completer=project_completer, vi_mode=True)
+        project_validator = CategoryValidator(projects.keys(), "Project", project_help_generator)
+        project = None
 
-        while project not in projects:
-            print()
-            if project == '?':
-                k = sorted(projects.keys())
-                f = self.config.get_project_description
-                help.projects_help(k, f).print()
-            else:
-                print("Invalid Project :: {0}".format(project))
-            project = prompt('Project :: ', completer=project_completer, vi_mode=True)
-
+        while project is None:
+            project_input = prompt('Project :: ', completer=project_completer, vi_mode=True)
+            if project_validator.validate(project_input):
+                project = project_input
         return project
 
-    def _non_project_object(self, area):
-
+    def input_non_project_object(self, area):
         use_last_objects = self.config.get_area(area).get('use_last_objects', False)
-        print()
-        p = Printer()
-        p.add_header('Object')
-        p.newline()
-
         last_objects = []
 
         if use_last_objects:
@@ -190,14 +206,14 @@ class Controller(object):
 
             # Transform last objects into [x]: object tags
             if len(last_objects) > 0:
+                p = Printer()
                 last_objects_dict = {'[{0}]'.format(x): k for x, k in enumerate(last_objects)}
                 p.add("Last {0} {1} Objects :: ".format(len(last_objects), area))
                 p.newline()
                 for k, v in sorted(last_objects_dict.items()):
                     p.add("{0} {1}".format(k, v))
                 p.newline()
-
-        p.print()
+                p.print()
 
         object = prompt('Object :: ', completer=WordCompleter(last_objects), vi_mode=True)
 
@@ -206,6 +222,25 @@ class Controller(object):
                 return (last_objects_dict[object])
 
         return object
+
+    def input_duration(self):
+        from_date = None
+        to_date = None
+        while from_date is None and to_date is None:
+            while from_date is None:
+                from_input = prompt('From :: ', vi_mode=True)
+                from_date = self.convert_input_date(from_input)
+
+            while to_date is None:
+                to_input = prompt('To :: ', vi_mode=True)
+                to_date = self.convert_input_date(to_input)
+
+            if from_date >= to_date:
+                print("Invalid Duration :: {0}".format(utils.time_diff(from_date, to_date)))
+                from_date = None
+                to_date = None
+        return from_date, to_date
+
 
     def convert_input_date(self, date_string):
         if self.config.get_use_wending():
