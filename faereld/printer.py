@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-
 """
 faereld.printer
 ---------------
 """
 
 from shutil import get_terminal_size
+
 
 class String(object):
 
@@ -21,7 +21,7 @@ class String(object):
             start = 0
         while len(s) > width - start:
             # Find the first space before where the break should be
-            pos = s[:width-start].rfind(' ')
+            pos = s[:width - start].rfind(' ')
             if pos == -1:
                 # If no space exists just break on the word.
                 pos = width - start - 1
@@ -36,6 +36,7 @@ class String(object):
         first = self.string.find(' ')
         if first == -1:
             return len(self)
+
         return first
 
     def __str__(self):
@@ -68,7 +69,6 @@ class Unwrappable(String):
     # Only use this class when you absolutely do not need the string to wrap.
     # For example, in use with graphs, where the graph is already calculated
     # to fit within the terminal.
-
     def wrap(self, width, start):
         pass
 
@@ -93,9 +93,15 @@ class Printer(object):
         return self
 
     def add_header(self, text):
-        self.paragraphs.append([
-            Header("{0} {1}".format(text.upper(), "─"*(self._width() - len(text) - 1)))
-        ])
+        self.paragraphs.append(
+            [
+                Header(
+                    "{0} {1}".format(
+                        text.upper(), "─" * (self._width() - len(text) - 1)
+                    )
+                )
+            ]
+        )
         return self
 
     def add_mode_header(self, text):

@@ -1,0 +1,13 @@
+sudo: false
+language: python
+cache: pip
+before_script:
+- pip install flake8 flake8-bugbear
+script:
+- flake8 faereld
+notifications:
+  email: false
+matrix:
+  include:
+    - python: 3.6
+

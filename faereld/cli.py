@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 faereld.cli
 -----------
@@ -7,25 +6,31 @@ faereld.cli
 
 import argparse
 
-from .configuration import Configuration
-from .controller import Controller
-from . import utils
-from .printer import Printer
-from . import help
+from faereld.configuration import Configuration
+from faereld.controller import Controller
+from faereld import help
+from faereld.printer import Printer, Highlight
+
 
 class Faereld(object):
+
     def __init__(self):
         parser = argparse.ArgumentParser(
             add_help=False,
-            description="Færeld :: A time tracking utility for effort optimisation and visualisation")
-
-        parser.add_argument('-c', '--config', default='~/.andgeloman/faereld/config.yml')
+            description=(
+                "Færeld :: A time tracking utility for effort optimisation ",
+                "and visualisation",
+            ),
+        )
+        parser.add_argument(
+            '-c', '--config', default='~/.andgeloman/faereld/config.yml'
+        )
         parser.add_argument('mode', help="Mode to run")
         args = parser.parse_args()
         if not hasattr(self, args.mode.lower()):
-            print(parser.description)
-            print()
-            print("\033[91m{0}\033[0m is an unrecognised mode.\n".format(args.mode))
+            Printer().add(*parser.description).newline().add(
+                Highlight(args.mode), " is an unrecognised mode."
+            ).newline().print()
             self.help(None)
             exit(1)
         else:
@@ -33,7 +38,6 @@ class Faereld(object):
             config = Configuration(args.config)
             controller = Controller(config)
             getattr(self, args.mode.lower())(controller)
-
 
     def insert(self, controller):
         controller.insert()
@@ -49,6 +53,7 @@ class Faereld(object):
 
     def help(self, _):
         help.cli_help().print()
+
 
 def main():
     try:

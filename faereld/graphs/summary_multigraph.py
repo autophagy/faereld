@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-
 """
 faereld.graphs.summary_multigraph
 ---------------------------------
 """
 
-from .. import utils
-from . import SummaryGraph
+from faereld import utils
+from faereld.graphs.summary_graph import SummaryGraph
 from math import floor
+
 
 # Summary MultiGraph is a graph that expects values map of the form
 # { key:
@@ -21,9 +21,7 @@ from math import floor
 # }
 # It will build a Summary graph for each of the graph definitions in the map
 # and sequentially display them, given the column width and max width.
-
 class SummaryMultiGraph(object):
-
     minimum_seperation = 3
 
     def __init__(self, values_map, column_width):
@@ -63,43 +61,33 @@ class SummaryMultiGraph(object):
         if r >= self.column_width:
             n += 1
             r -= self.column_width
-
         if n > 1:
             if r > 1:
-                seperation = self.minimum_seperation + floor(r/(n-1))
+                seperation = self.minimum_seperation + floor(r / (n - 1))
             else:
                 seperation = self.minimum_seperation
         else:
             seperation = self.minimum_seperation
-
         graph_map = {}
-
         max_subgraph_width = self.column_width if n > 1 else self.max_width
-
         for k, v in self.values_map.items():
-            graph = SummaryGraph(v) \
-                  .set_max_width(max_subgraph_width) \
-                  .set_exclude_list(self.exclude_list) \
-                  .set_key_transform_function(self.key_transform_func) \
-                  .set_graph_header(self.header_transform_func(k)) \
-                  .generate()
+            graph = SummaryGraph(v).set_max_width(max_subgraph_width).set_exclude_list(
+                self.exclude_list
+            ).set_key_transform_function(
+                self.key_transform_func
+            ).set_graph_header(
+                self.header_transform_func(k)
+            ).generate()
             graph_map[k] = graph
-
         graph_keys = list(self.values_map.keys())
-
         combined_graphs = []
-
         while len(graph_keys) != 0:
             row_keys = graph_keys[:n]
             del graph_keys[:n]
-
             graphs = list(map(lambda x: graph_map[x], row_keys))
             zipped_graphs = list(zip(*graphs))
-
             for g in zipped_graphs:
-                combined_graphs.append((' '*seperation).join(g))
-
+                combined_graphs.append((' ' * seperation).join(g))
             if len(graph_keys) > 0:
                 combined_graphs.append('')
-
         return combined_graphs

@@ -6,6 +6,10 @@ Færeld
     :target: http://faereld.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
+.. image:: http://scieldas.autophagy.io/travis/Autophagy/faereld.png
+    :target: https://travis-ci.org/Autophagy/faereld
+    :alt: Build Status
+
 .. image:: http://scieldas.autophagy.io/licenses/MIT.png
    :target: LICENSE
    :alt: MIT License
