@@ -49,13 +49,10 @@ class FaereldData(object):
         first_day = None
         last_day = None
         for result in entries:
-            if first_day is None:
+            if first_day is None or result['START'] < first_day:
                 first_day = result['START']
-                last_day = result['START']
-            if result['START'] < first_day:
-                first_day = result['START']
-            elif result['START'] > last_day:
-                last_day = result['START']
+            if last_day is None or result['END'] > last_day:
+                last_day = result['END']
             result_time = result['END'] - result['START']
             total_time += result_time
             if detailed:
@@ -87,13 +84,10 @@ class FaereldData(object):
         first_day = None
         last_day = None
         for result in entries:
-            if first_day is None:
+            if first_day is None or result['START'] < first_day:
                 first_day = result['START']
-                last_day = result['START']
-            if result['START'] < first_day:
-                first_day = result['START']
-            elif result['START'] > last_day:
-                last_day = result['START']
+            if last_day is None or result['END'] > last_day:
+                last_day = result['END']
             result_time = result['END'] - result['START']
             total_time += result_time
             if result['OBJECT'] not in project_time_map:
@@ -146,13 +140,10 @@ class FaereldData(object):
         first_day = None
         last_day = None
         for result in entries:
-            if first_day is None:
+            if first_day is None or result['START'] < first_day:
                 first_day = result['START']
-                last_day = result['START']
-            if result['START'] < first_day:
-                first_day = result['START']
-            elif result['START'] > last_day:
-                last_day = result['START']
+            if last_day is None or result['END'] > last_day:
+                last_day = result['END']
             result_time = result['END'] - result['START']
             total_time += result_time
             hour = determine_dominant_hour(result['START'], result['END'])
