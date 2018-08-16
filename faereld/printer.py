@@ -8,20 +8,19 @@ from shutil import get_terminal_size
 
 
 class String(object):
-
     def __init__(self, *string):
-        self.string = ''.join(string)
+        self.string = "".join(string)
         self.final_line_length = len(string)
 
     def wrap(self, start, width):
         s = self.string
         strings = []
         if self.first_break() > width - start:
-            strings.append('')
+            strings.append("")
             start = 0
         while len(s) > width - start:
             # Find the first space before where the break should be
-            pos = s[:width - start].rfind(' ')
+            pos = s[: width - start].rfind(" ")
             if pos == -1:
                 # If no space exists just break on the word.
                 pos = width - start - 1
@@ -30,10 +29,10 @@ class String(object):
             start = 0
         strings.append(s)
         self.final_line_length = start + len(s)
-        self.string = '\n'.join(strings)
+        self.string = "\n".join(strings)
 
     def first_break(self):
-        first = self.string.find(' ')
+        first = self.string.find(" ")
         if first == -1:
             return len(self)
 
@@ -47,7 +46,6 @@ class String(object):
 
 
 class Highlight(String):
-
     def _highlighted(self):
         return "\033[94m{0}\033[0m".format(self.string)
 
@@ -56,7 +54,6 @@ class Highlight(String):
 
 
 class Header(String):
-
     def _headerised(self):
         return "\033[91m{0}\033[0m".format(self.string)
 
@@ -74,7 +71,6 @@ class Unwrappable(String):
 
 
 class Printer(object):
-
     def __init__(self):
         self.paragraphs = []
 
@@ -89,7 +85,7 @@ class Printer(object):
         return self
 
     def newline(self):
-        self.paragraphs.append([String('')])
+        self.paragraphs.append([String("")])
         return self
 
     def add_header(self, text):
@@ -112,22 +108,31 @@ class Printer(object):
         self.paragraphs.append([Unwrappable(text)])
         return self
 
-    def print(self):
+    def _format_printer_contents(self):
         width = self._width()
+        lines = []
         for paragraph in self.paragraphs:
             c = 0
             wrapped_strings = []
             # First wrap all the strings according to the width
             for string in paragraph:
                 if string.first_break() + c > width:
-                    wrapped_strings.append('\n')
+                    wrapped_strings.append("\n")
                     c = 0
                 string.wrap(c, width)
                 wrapped_strings.append(string)
                 c = string.final_line_length
             # Combine the wrapped strings
-            final = ''.join(str(string) for string in wrapped_strings)
-            print(final)
+            lines.append("".join(str(string) for string in wrapped_strings))
+        return lines
+
+    def print(self):
+        lines = self._format_printer_contents()
+        for line in lines:
+            print(line)
+
+    def __str__(self):
+        return "\n".join(self._format_printer_contents())
 
     def _width(self):
         return get_terminal_size().columns

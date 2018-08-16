@@ -8,8 +8,8 @@ from faereld import utils
 
 
 class SummaryGraph(object):
-    bar_character = '━'
-    label_seperator = '  '
+    bar_character = "━"
+    label_seperator = "  "
 
     def __init__(self, values_map):
         self.values_map = values_map
@@ -41,10 +41,9 @@ class SummaryGraph(object):
         return self
 
     def generate(self):
-
         def compose_row(label, bar):
             num_spaces = self.max_width - (len(label) + len(bar))
-            return "{0}{1}{2}".format(label, bar, ' ' * num_spaces)
+            return "{0}{1}{2}".format(label, bar, " " * num_spaces)
 
         # Filter out areas that are invalid for this analysis
         values = dict(
@@ -61,7 +60,7 @@ class SummaryGraph(object):
             map(
                 lambda x: (
                     x[0],
-                    '{0} [{1}]'.format(
+                    "{0} [{1}]".format(
                         self._pad_key(x[0], longest_key), self._format_time_delta(x[1])
                     ),
                 ),
@@ -72,7 +71,7 @@ class SummaryGraph(object):
         longest_label = len(max(labels.values(), key=len))
         for k, v in labels.items():
             if len(v) < longest_label:
-                labels[k] = v + ' ' * (longest_label - len(v)) + self.label_seperator
+                labels[k] = v + " " * (longest_label - len(v)) + self.label_seperator
             else:
                 labels[k] = v + self.label_seperator
         max_bar_width = self.max_width - (longest_label + len(self.label_seperator))
@@ -93,13 +92,13 @@ class SummaryGraph(object):
             graph_keys = list(bars.keys())
         graph_rows = list(map(lambda t: compose_row(labels[t], bars[t]), graph_keys))
         if self.graph_header:
-            trimmed_header = self.graph_header[:self.max_width - 1]
+            trimmed_header = self.graph_header[: self.max_width - 1]
             header_format = "\033[91m{0} {1}\033[0m"
-            graph_rows.insert(0, '')
+            graph_rows.insert(0, "")
             graph_rows.insert(
                 0,
                 header_format.format(
-                    trimmed_header, '─' * (self.max_width - 1 - len(trimmed_header))
+                    trimmed_header, "─" * (self.max_width - 1 - len(trimmed_header))
                 ),
             )
         return graph_rows
@@ -113,7 +112,7 @@ class SummaryGraph(object):
 
     def _pad_key(self, key, length):
         if len(key) < length:
-            return key + ' ' * (length - len(key))
+            return key + " " * (length - len(key))
 
         else:
             return key

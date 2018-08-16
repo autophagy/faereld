@@ -12,7 +12,7 @@ from faereld.printer import Printer
 def projects_help(projects, project_description_func):
     p = Printer()
     for project in projects:
-        p.add('[{}]'.format(project))
+        p.add("[{}]".format(project))
         p.add(project_description_func(project))
         p.newline()
     return p
@@ -21,7 +21,7 @@ def projects_help(projects, project_description_func):
 def areas_help(areas):
     p = Printer()
     for area_code, area in areas.items():
-        p.add('[{0}] {1}'.format(area_code, area['name']))
+        p.add("[{0}] {1}".format(area_code, area["name"]))
     p.newline()
     return p
 
@@ -37,7 +37,7 @@ def cli_help():
         "projects and self-improvement.",
     )
     p.newline()
-    p.add("faereld [-c CONFIG] MODE")
+    p.add("faereld [-c CONFIG] MODE [TARGET]")
     p.newline()
     p.add("Færeld has 5 modes:")
     p.add("INSERT       Insert a time tracking record into Færeld")

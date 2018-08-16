@@ -22,10 +22,10 @@ setup(
     },
     packages=['faereld'],
     install_requires=[
-        'PyYAML==3.12',
+        'PyYAML==3.13',
         'datarum==0.5.0',
         'wisdomhord==0.2.3',
-        'numpy==1.13.3',
+        'numpy==1.15.0',
         'prompt-toolkit==1.0.15'
     ],
     python_requires='>=3.6',
@@ -34,6 +34,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     use_scm_version=True
 )

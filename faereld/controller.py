@@ -21,7 +21,7 @@ from prompt_toolkit.contrib.completers import WordCompleter
 
 
 class CategoryValidator(object):
-    HELP_CHAR = '?'
+    HELP_CHAR = "?"
 
     def __init__(self, categories, category_type="Object", help_generator=None):
         self.categories = categories
@@ -36,7 +36,7 @@ class CategoryValidator(object):
 
         if input not in self.categories:
             Printer().newline().add(
-                'Invalid {} :: '.format(self.category_type), Highlight(input)
+                "Invalid {} :: ".format(self.category_type), Highlight(input)
             ).print()
             return False
 
@@ -44,14 +44,12 @@ class CategoryValidator(object):
 
 
 class Controller(object):
-
     def __init__(self, config):
         self.config = config
         self.data_path = path.expanduser(self.config.get_data_path())
         self.db = FaereldData(self.data_path, self.config)
 
     def _time_function(self):
-
         @wraps(self)
         def wrapper(*args, **kwargs):
             begin = time.time()
@@ -64,9 +62,21 @@ class Controller(object):
 
     # Summary Mode
     @_time_function
-    def summary(self):
-        summary = self.db.get_summary(detailed=True)
-        Printer().add_mode_header("Summary").print()
+    def summary(self, target):
+        summary = self.db.get_summary(target=target, detailed=True)
+        if target is None:
+            Printer().add_mode_header("Summary").print()
+        else:
+            if target not in self.config.get_areas():
+                p = Printer()
+                p.add("ERROR: No area found for: [", Highlight(target), "]")
+                p.newline()
+                p.add("Valid areas are: ")
+                for area in self.config.get_areas():
+                    p.add(f"[{area}]")
+                p.print()
+                return
+            Printer().add_mode_header(f"Summary [{target}]").print()
         summary.print()
 
     # Projects Summary Mode
@@ -95,26 +105,26 @@ class Controller(object):
         print("Færeld entry added")
 
     def gather_inputs(self):
-        Printer().newline().add_header('Area').newline().add(
-            "[ {0} ]".format(' // '.join(self.config.get_areas().keys()))
+        Printer().newline().add_header("Area").newline().add(
+            "[ {0} ]".format(" // ".join(self.config.get_areas().keys()))
         ).newline().print()
         area = self.input_area()
         if area in self.config.get_project_areas():
-            Printer().newline().add_header('Project').newline().add(
-                "[ {0} ]".format(' // '.join(sorted(self.config.get_projects().keys())))
+            Printer().newline().add_header("Project").newline().add(
+                "[ {0} ]".format(" // ".join(sorted(self.config.get_projects().keys())))
             ).newline().print()
             object = self.input_project_object()
         else:
-            Printer().newline().add_header('Object').newline().print()
+            Printer().newline().add_header("Object").newline().print()
             object = self.input_non_project_object(area)
-        Printer().newline().add_header('Duration').newline().print()
+        Printer().newline().add_header("Duration").newline().print()
         from_date, to_date = self.input_duration()
         time_diff = utils.time_diff(from_date, to_date)
         print()
         if self.config.get_use_wending:
-            date_display = from_date.strftime('{daeg} {month} {gere}')
+            date_display = from_date.strftime("{daeg} {month} {gere}")
         else:
-            date_display = from_date.strftime('%d %b %Y')
+            date_display = from_date.strftime("%d %b %Y")
         utils.print_rendered_string(
             area,
             self.config.get_areas()[area],
@@ -123,14 +133,13 @@ class Controller(object):
             time_diff,
         )
         confirmation = prompt("Is this correct? (y/n) :: ", vi_mode=True)
-        if confirmation.lower() == 'y':
-            return {'AREA': area, 'OBJECT': object, 'START': from_date, 'END': to_date}
+        if confirmation.lower() == "y":
+            return {"AREA": area, "OBJECT": object, "START": from_date, "END": to_date}
 
         else:
             return None
 
     def input_area(self):
-
         def area_help_generator():
             return help.areas_help(self.config.get_areas())
 
@@ -141,14 +150,13 @@ class Controller(object):
         area = None
         while area is None:
             area_input = prompt(
-                'Area :: ', completer=area_completer, vi_mode=True
+                "Area :: ", completer=area_completer, vi_mode=True
             ).strip()
             if area_validator.validate(area_input):
                 area = area_input
         return area
 
     def input_project_object(self):
-
         def project_help_generator():
             sorted_projects = sorted(self.config.get_projects().keys())
             project_descriptions = self.config.get_project_description
@@ -162,27 +170,27 @@ class Controller(object):
         project = None
         while project is None:
             project_input = prompt(
-                'Project :: ', completer=project_completer, vi_mode=True
+                "Project :: ", completer=project_completer, vi_mode=True
             )
             if project_validator.validate(project_input):
                 project = project_input
         return project
 
     def input_non_project_object(self, area):
-        use_last_objects = self.config.get_area(area).get('use_last_objects', False)
+        use_last_objects = self.config.get_area(area).get("use_last_objects", False)
         last_objects = []
         if use_last_objects:
             last_objects = self.db.get_last_objects(
                 area, self.config.get_num_last_objects()
             )
             last_objects_dict = {
-                '[{0}]'.format(x): k[0] for x, k in enumerate(last_objects)
+                "[{0}]".format(x): k[0] for x, k in enumerate(last_objects)
             }
             # Transform last objects into [x]: object tags
             if len(last_objects) > 0:
                 p = Printer()
                 last_objects_dict = {
-                    '[{0}]'.format(x): k for x, k in enumerate(last_objects)
+                    "[{0}]".format(x): k for x, k in enumerate(last_objects)
                 }
                 p.add("Last {0} {1} Objects :: ".format(len(last_objects), area))
                 p.newline()
@@ -191,11 +199,11 @@ class Controller(object):
                 p.newline()
                 p.print()
         object = prompt(
-            'Object :: ', completer=WordCompleter(last_objects), vi_mode=True
+            "Object :: ", completer=WordCompleter(last_objects), vi_mode=True
         )
         if use_last_objects:
             if object in last_objects_dict:
-                return (last_objects_dict[object])
+                return last_objects_dict[object]
 
         return object
 
@@ -204,10 +212,10 @@ class Controller(object):
         to_date = None
         while from_date is None and to_date is None:
             while from_date is None:
-                from_input = prompt('From :: ', vi_mode=True)
+                from_input = prompt("From :: ", vi_mode=True)
                 from_date = self.convert_input_date(from_input)
             while to_date is None:
-                to_input = prompt('To :: ', vi_mode=True)
+                to_input = prompt("To :: ", vi_mode=True)
                 to_date = self.convert_input_date(to_input)
             if from_date >= to_date:
                 print(

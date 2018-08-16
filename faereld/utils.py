@@ -35,23 +35,23 @@ def print_rendered_string(area_code, area, date_to_display, object_name, duratio
 
 def get_rendered_string(area_code, area, date_to_display, object_name, duration):
     fields = {
-        'area': area_code,
-        'area_name': area['name'],
-        'object': object_name,
-        'date': date_to_display,
-        'duration': duration,
+        "area": area_code,
+        "area_name": area["name"],
+        "object": object_name,
+        "date": date_to_display,
+        "duration": duration,
     }
     elements = []
-    for literal, field, _, _ in Formatter().parse(area['rendering_string']):
+    for literal, field, _, _ in Formatter().parse(area["rendering_string"]):
         if len(literal) > 0:
             elements.append(literal)
         if field is not None:
             if field not in fields:
                 raise ValueError(
                     "{0} is an invalid rendering string. ".format(
-                        area['rendering_string']
-                    ) +
-                    "Reason: '{1}' is an invalid field.".format(field)
+                        area["rendering_string"]
+                    )
+                    + "Reason: '{1}' is an invalid field.".format(field)
                 )
 
             elements.append(Highlight(fields.get(field)))
@@ -67,4 +67,4 @@ def max_width(max_config_width):
 
 
 def strip_colour_codes(string):
-    return re.sub('\x1b\[[0-9;]*m', '', string)
+    return re.sub("\x1b\[[0-9;]*m", "", string)

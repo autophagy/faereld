@@ -13,7 +13,6 @@ from faereld.printer import Printer, Highlight
 
 
 class Faereld(object):
-
     def __init__(self):
         parser = argparse.ArgumentParser(
             add_help=False,
@@ -21,11 +20,13 @@ class Faereld(object):
                 "Færeld :: A time tracking utility for effort optimisation ",
                 "and visualisation",
             ),
+            usage="\n" + str(help.cli_help()),
         )
         parser.add_argument(
-            '-c', '--config', default='~/.andgeloman/faereld/config.yml'
+            "-c", "--config", default="~/.andgeloman/faereld/config.yml"
         )
-        parser.add_argument('mode', help="Mode to run")
+        parser.add_argument("mode", help="Mode to run")
+        parser.add_argument("target", nargs="?", help="Target for the mode")
         args = parser.parse_args()
         if not hasattr(self, args.mode.lower()):
             Printer().add(*parser.description).newline().add(
@@ -37,21 +38,21 @@ class Faereld(object):
             print("\x1b[2J\x1b[H", end="")
             config = Configuration(args.config)
             controller = Controller(config)
-            getattr(self, args.mode.lower())(controller)
+            getattr(self, args.mode.lower())(controller, args.target)
 
-    def insert(self, controller):
+    def insert(self, controller, _):
         controller.insert()
 
-    def summary(self, controller):
-        controller.summary()
+    def summary(self, controller, target):
+        controller.summary(target)
 
-    def projects(self, controller):
+    def projects(self, controller, _):
         controller.projects()
 
-    def productivity(self, controller):
+    def productivity(self, controller, _):
         controller.productivity()
 
-    def help(self, _):
+    def help(self, _, t):
         help.cli_help().print()
 
 

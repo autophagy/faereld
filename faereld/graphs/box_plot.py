@@ -58,7 +58,7 @@ class BoxPlot(object):
                 overall_max = max_val
         # Transform the values to character positions from the minimum
         # Max width is reduced by 7 for 'KEY :: '
-        max_width_bar = self.max_width - len('KEY :: ')
+        max_width_bar = self.max_width - len("KEY :: ")
         for key, values in box_plot_tuples.items():
             if overall_min == overall_max:
                 box_plot_tuples[key] = self._create_box_plot(0, 0, 0, 0, 0)
@@ -67,8 +67,8 @@ class BoxPlot(object):
                     map(
                         lambda x: int(
                             round(
-                                max_width_bar *
-                                ((x - overall_min) / (overall_max - overall_min))
+                                max_width_bar
+                                * ((x - overall_min) / (overall_max - overall_min))
                             )
                         ),
                         values,

@@ -71,13 +71,14 @@ class SummaryMultiGraph(object):
         graph_map = {}
         max_subgraph_width = self.column_width if n > 1 else self.max_width
         for k, v in self.values_map.items():
-            graph = SummaryGraph(v).set_max_width(max_subgraph_width).set_exclude_list(
-                self.exclude_list
-            ).set_key_transform_function(
-                self.key_transform_func
-            ).set_graph_header(
-                self.header_transform_func(k)
-            ).generate()
+            graph = (
+                SummaryGraph(v)
+                .set_max_width(max_subgraph_width)
+                .set_exclude_list(self.exclude_list)
+                .set_key_transform_function(self.key_transform_func)
+                .set_graph_header(self.header_transform_func(k))
+                .generate()
+            )
             graph_map[k] = graph
         graph_keys = list(self.values_map.keys())
         combined_graphs = []
@@ -87,7 +88,7 @@ class SummaryMultiGraph(object):
             graphs = list(map(lambda x: graph_map[x], row_keys))
             zipped_graphs = list(zip(*graphs))
             for g in zipped_graphs:
-                combined_graphs.append((' ' * seperation).join(g))
+                combined_graphs.append((" " * seperation).join(g))
             if len(graph_keys) > 0:
-                combined_graphs.append('')
+                combined_graphs.append("")
         return combined_graphs

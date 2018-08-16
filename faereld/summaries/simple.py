@@ -10,7 +10,6 @@ from faereld.printer import Printer
 
 
 class SimpleSummary(object):
-
     def __init__(self, days, entries, formatted_time):
         self.days = days
         self.entries = entries
