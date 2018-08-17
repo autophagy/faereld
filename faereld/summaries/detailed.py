@@ -62,16 +62,16 @@ class DetailedSummary(object):
         p.newline()
         for entry in self.last_entries:
             if self.config.get_use_wending():
-                start_date = entry["START"].strftime("{daeg} {month} {gere}")
+                start_date = entry.start.strftime("{daeg} {month} {gere}")
             else:
-                start_date = entry["START"].strftime("%d %b %Y")
+                start_date = entry.start.strftime("%d %b %Y")
             p.add(
                 *utils.get_rendered_string(
-                    entry["AREA"],
-                    self.config.get_area(entry["AREA"]),
+                    entry.area,
+                    self.config.get_area(entry.area),
                     start_date,
-                    self.config.get_object_name(entry["AREA"], entry["OBJECT"]),
-                    utils.time_diff(entry["START"], entry["END"]),
+                    self.config.get_object_name(entry.area, entry.obj),
+                    utils.time_diff(entry.start, entry.end),
                 )
             )
         p.print()
@@ -108,15 +108,15 @@ class DetailedAreaSummary(object):
 
         p.add(
             f"The lowest recorded entry for {self.area_name} is ",
-            f"{utils.format_time_delta(minimum)}."
+            f"{utils.format_time_delta(minimum)}.",
         )
         p.add(
             f"The highest recorded entry for {self.area_name} is ",
-            f"{utils.format_time_delta(maximum)}."
+            f"{utils.format_time_delta(maximum)}.",
         )
         p.add(
             f"The average entry for {self.area_name} is ",
-            f"{utils.format_time_delta(average)}."
+            f"{utils.format_time_delta(average)}.",
         )
 
         p.newline()
@@ -135,16 +135,16 @@ class DetailedAreaSummary(object):
         p.newline()
         for entry in self.last_entries:
             if self.config.get_use_wending():
-                start_date = entry["START"].strftime("{daeg} {month} {gere}")
+                start_date = entry.start.strftime("{daeg} {month} {gere}")
             else:
-                start_date = entry["START"].strftime("%d %b %Y")
+                start_date = entry.start.strftime("%d %b %Y")
             p.add(
                 *utils.get_rendered_string(
-                    entry["AREA"],
-                    self.config.get_area(entry["AREA"]),
+                    entry.area,
+                    self.config.get_area(entry.area),
                     start_date,
-                    self.config.get_object_name(entry["AREA"], entry["OBJECT"]),
-                    utils.time_diff(entry["START"], entry["END"]),
+                    self.config.get_object_name(entry.area, entry.obj),
+                    utils.time_diff(entry.start, entry.end),
                 )
             )
         p.print()

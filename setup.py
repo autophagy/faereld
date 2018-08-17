@@ -24,7 +24,7 @@ setup(
     install_requires=[
         'PyYAML==3.13',
         'datarum==0.5.0',
-        'wisdomhord==0.2.3',
+        'wisdomhord==0.2.4',
         'numpy==1.15.0',
         'prompt-toolkit==1.0.15'
     ],
