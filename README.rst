@@ -6,8 +6,8 @@ Færeld
     :target: http://faereld.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: http://scieldas.autophagy.io/travis/Autophagy/faereld.png
-    :target: https://travis-ci.org/Autophagy/faereld
+.. image:: http://scieldas.autophagy.io/travis/autophagy/faereld.png
+    :target: https://travis-ci.org/autophagy/faereld
     :alt: Build Status
 
 .. image:: http://scieldas.autophagy.io/licenses/MIT.png
