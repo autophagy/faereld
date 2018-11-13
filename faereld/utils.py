@@ -26,20 +26,27 @@ def format_time_delta(time_delta):
     return "{0}h{1}m".format(floor(hours), minutes)
 
 
-def print_rendered_string(area_code, area, date_to_display, object_name, duration):
+def print_rendered_string(
+    area_code, area, date_to_display, object_name, duration, purpose
+):
     p = Printer()
-    e = get_rendered_string(area_code, area, date_to_display, object_name, duration)
+    e = get_rendered_string(
+        area_code, area, date_to_display, object_name, duration, purpose
+    )
     p.add(*e)
     p.print()
 
 
-def get_rendered_string(area_code, area, date_to_display, object_name, duration):
+def get_rendered_string(
+    area_code, area, date_to_display, object_name, duration, purpose
+):
     fields = {
         "area": area_code,
         "area_name": area["name"],
         "object": object_name,
         "date": date_to_display,
         "duration": duration,
+        "purpose": purpose,
     }
     elements = []
     for literal, field, _, _ in Formatter().parse(area["rendering_string"]):

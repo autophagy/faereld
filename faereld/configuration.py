@@ -19,7 +19,9 @@ class Configuration(object):
         "num_last_objects": 5,
     }
     # Default Project Areas
-    DEFAULT_RENDERING = "On {date} I worked on {object} ({area_name}) for {duration}"
+    DEFAULT_RENDERING = (
+        "On {date} I worked on {object} ({area_name}) for {duration} - {purpose}"
+    )
     DEFAULT_PROJECT_AREAS = {
         "RES": {"name": "Research", "rendering_string": DEFAULT_RENDERING},
         "DES": {"name": "Design", "rendering_string": DEFAULT_RENDERING},

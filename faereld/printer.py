@@ -9,7 +9,7 @@ from shutil import get_terminal_size
 
 class String(object):
     def __init__(self, *string):
-        self.string = "".join(string)
+        self.string = "".join(map(str, string))
         self.final_line_length = len(string)
 
     def wrap(self, start, width):

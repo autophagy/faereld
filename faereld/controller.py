@@ -101,7 +101,7 @@ class Controller(object):
         entry_inputs = None
         while entry_inputs is None:
             entry_inputs = self.gather_inputs()
-        self.db.create_entry(entry_inputs)
+        self.db.create_entry(**entry_inputs)
         print("Færeld entry added")
 
     def gather_inputs(self):
@@ -125,16 +125,28 @@ class Controller(object):
             date_display = from_date.strftime("{daeg} {month} {gere}")
         else:
             date_display = from_date.strftime("%d %b %Y")
+        if area in self.config.get_project_areas():
+            Printer().newline().add_header("Purpose").newline().print()
+            purpose = self.input_purpose()
+        else:
+            purpose = None
         utils.print_rendered_string(
             area,
             self.config.get_areas()[area],
             date_display,
             self.config.get_object_name(area, object),
             time_diff,
+            purpose,
         )
         confirmation = prompt("Is this correct? (y/n) :: ", vi_mode=True)
         if confirmation.lower() == "y":
-            return {"AREA": area, "OBJECT": object, "START": from_date, "END": to_date}
+            return {
+                "area": area,
+                "object": object,
+                "start": from_date,
+                "end": to_date,
+                "purpose": purpose,
+            }
 
         else:
             return None
@@ -226,6 +238,9 @@ class Controller(object):
                 from_date = None
                 to_date = None
         return from_date, to_date
+
+    def input_purpose(self):
+        return prompt("Purpose :: ", vi_mode=True)
 
     def convert_input_date(self, date_string):
         if self.config.get_use_wending():

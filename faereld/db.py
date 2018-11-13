@@ -168,16 +168,13 @@ class FaereldData(object):
                 filtered_obj.append(obj.obj)
         return filtered_obj[:limit]
 
-    def create_entry(self, entry):
+    def create_entry(self, area, object, start, end, purpose):
         if self.config.get_use_wending():
             bisen = FaereldWendingEntry
         else:
             bisen = FaereldDatetimeEntry
         insert_entry = bisen(
-            area=entry["AREA"],
-            obj=entry["OBJECT"],
-            start=entry["START"],
-            end=entry["END"],
+            area=area, obj=object, start=start, end=end, purpose=purpose
         )
 
         self.hord.insert(insert_entry)
