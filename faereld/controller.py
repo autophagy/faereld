@@ -279,6 +279,6 @@ class Controller(object):
             print()
             print(
                 "{} is an invalid date string. For example, it must be of"
-                " the form: 3 Dec 226 // 16.15".format(date_string)
+                " the form: 3 Dec 2018 // 16.15".format(date_string)
             )
             return None
