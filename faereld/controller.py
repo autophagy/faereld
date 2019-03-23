@@ -136,8 +136,8 @@ class Controller(object):
             time_diff,
             purpose,
         )
-        confirmation = prompt("Is this correct? (y/n) :: ", vi_mode=True)
-        if confirmation.lower() == "y":
+        confirmation = prompt("Is this correct? (Y/n) :: ", vi_mode=True)
+        if confirmation in ["Y", "y", ""]:
             return {
                 "area": area,
                 "object": object,
