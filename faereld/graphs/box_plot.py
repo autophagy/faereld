@@ -4,9 +4,10 @@ faereld.graphs.box_plot
 -----------
 """
 
+from datetime import timedelta
+
 from faereld import utils
 from numpy import percentile
-from datetime import timedelta
 
 
 class BoxPlot(object):

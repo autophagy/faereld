@@ -2,9 +2,12 @@ sudo: false
 language: python
 cache: pip
 before_script:
-- pip install flake8 flake8-bugbear
+- pip install -e '.[testing]'
 script:
-- flake8 faereld
+- flake8 *.py faereld
+- black *.py faereld --check
+- isort -c
+- mypy faereld
 notifications:
   email: false
 matrix:

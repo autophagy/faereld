@@ -11,11 +11,12 @@ ENTRY TIME DISTRIBUTION PER AREA :: Distribution of time spent over all areas
 LAST 10 ENTRIES                  :: The last 10 entries logged
 """
 
-from faereld.printer import Printer
-from faereld.graphs.summary_graph import SummaryGraph
-from faereld.graphs.box_plot import BoxPlot
-from faereld import utils
 import datetime
+
+from faereld import utils
+from faereld.graphs.box_plot import BoxPlot
+from faereld.graphs.summary_graph import SummaryGraph
+from faereld.printer import Printer
 
 
 class DetailedSummary(object):

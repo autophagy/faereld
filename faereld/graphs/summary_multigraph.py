@@ -4,9 +4,10 @@ faereld.graphs.summary_multigraph
 ---------------------------------
 """
 
+from math import floor
+
 from faereld import utils
 from faereld.graphs.summary_graph import SummaryGraph
-from math import floor
 
 
 # Summary MultiGraph is a graph that expects values map of the form

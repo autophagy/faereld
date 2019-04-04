@@ -15,7 +15,7 @@ which returns the standard python datetime object. Or it can use the Wending
 datetime, which returns a Wending object as defined in Datarum.
 """
 
-from wisdomhord import Bisen, Sweor, String, Wending, DateTime
+from wisdomhord import Bisen, DateTime, String, Sweor, Wending
 
 
 class FaereldWendingEntry(Bisen):

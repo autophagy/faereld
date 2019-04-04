@@ -6,10 +6,10 @@ faereld.cli
 
 import argparse
 
+from faereld import help
 from faereld.configuration import Configuration
 from faereld.controller import Controller
-from faereld import help
-from faereld.printer import Printer, Highlight
+from faereld.printer import Highlight, Printer
 
 
 class Faereld(object):

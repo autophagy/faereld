@@ -5,17 +5,15 @@ faereld.controller
 
 """
 
-from faereld.db import FaereldData
-from faereld import utils
-from faereld.printer import Printer, Highlight
-from faereld import help
-
-from os import path
-import datarum
 import datetime
 import time
 from functools import wraps
+from os import path
 
+import datarum
+from faereld import help, utils
+from faereld.db import FaereldData
+from faereld.printer import Highlight, Printer
 from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
 

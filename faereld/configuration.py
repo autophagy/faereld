@@ -5,10 +5,11 @@ faereld.configuration
 
 """
 
-from os import path, makedirs
 from collections import OrderedDict
+from os import makedirs, path
+
 import yaml
-from faereld.printer import Printer, Highlight
+from faereld.printer import Highlight, Printer
 
 
 class Configuration(object):

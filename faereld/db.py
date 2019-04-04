@@ -4,18 +4,17 @@ faereld.db
 ----------
 """
 
-from faereld.models import FaereldWendingEntry, FaereldDatetimeEntry
-from faereld.summaries.simple import SimpleSummary
-from faereld.summaries.empty import EmptySummary
-from faereld.summaries.detailed import DetailedSummary, DetailedAreaSummary
-from faereld.summaries.projects import ProjectsSummary
-from faereld.summaries.productivity import ProductivitySummary
-from faereld import utils
-
+from datetime import timedelta
 from os import path
 
 import wisdomhord
-from datetime import timedelta
+from faereld import utils
+from faereld.models import FaereldDatetimeEntry, FaereldWendingEntry
+from faereld.summaries.detailed import DetailedAreaSummary, DetailedSummary
+from faereld.summaries.empty import EmptySummary
+from faereld.summaries.productivity import ProductivitySummary
+from faereld.summaries.projects import ProjectsSummary
+from faereld.summaries.simple import SimpleSummary
 
 
 class FaereldData(object):

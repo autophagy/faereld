@@ -6,11 +6,12 @@ faereld.utils
 Various useful static functions and variables for use within Færeld.
 """
 
+import re
 from math import floor
 from shutil import get_terminal_size
 from string import Formatter
-from faereld.printer import Printer, Highlight
-import re
+
+from faereld.printer import Highlight, Printer
 
 header = "FÆRELD :: {0} MODE"
 

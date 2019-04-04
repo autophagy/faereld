@@ -7,9 +7,9 @@ A summary of productivity, measured in time spent per day of the week and
 hour of the day.
 """
 
-from faereld.printer import Printer
-from faereld.graphs.summary_graph import SummaryGraph
 from faereld import utils
+from faereld.graphs.summary_graph import SummaryGraph
+from faereld.printer import Printer
 
 
 class ProductivitySummary(object):
