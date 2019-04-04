@@ -75,4 +75,4 @@ def max_width(max_config_width):
 
 
 def strip_colour_codes(string):
-    return re.sub("\x1b\[[0-9;]*m", "", string)
+    return re.sub(r"\x1b\[[0-9;]*m", "", string)
