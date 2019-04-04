@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
+from faereld import version
 
 try:
     with open("README.rst", "r", encoding="utf-8") as f:
@@ -13,6 +14,7 @@ setup(
     name="faereld",
     author="Mika Naylor (Autophagy)",
     author_email="mail@autophagy.io",
+    version=version,
     description="Time tracking tool",
     long_description=readme,
     entry_points={"console_scripts": ["faereld = faereld.__main__:main"]},
@@ -35,5 +37,4 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
-    use_scm_version=True,
 )
