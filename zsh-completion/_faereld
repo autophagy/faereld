@@ -1,0 +1,8 @@
+#compdef faereld
+local -a subcmds
+subcmds=('insert:Insert a time tracking record into Færeld'
+        'summary:Produce a summary of time spent on all areas'
+        'projects:Produce a summary of time spent on project specific areas'
+        'productivity:Produce a summary of productivity aggregated over hours and days of the week'
+        'help:Print the help')
+_describe 'command' subcmds
