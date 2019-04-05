@@ -119,7 +119,7 @@ class Controller(object):
         from_date, to_date = self.input_duration()
         time_diff = utils.time_diff(from_date, to_date)
         print()
-        if self.config.get_use_wending:
+        if self.config.get_use_wending():
             date_display = from_date.strftime("{daeg} {month} {gere}")
         else:
             date_display = from_date.strftime("%d %b %Y")
