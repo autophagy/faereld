@@ -33,3 +33,11 @@ Contents
    usage/modes
    usage/areas
    usage/configuration
+
+.. _zsh-completion:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: ZSH-Completion
+
+   zsh-completion
