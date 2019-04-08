@@ -271,7 +271,11 @@ class Controller(object):
             if date_string.lower() == "now":
                 now = datetime.datetime.now().replace(second=0)
                 return now
-
+            elif "//" not in date_string:
+                parsed = datetime.datetime.strptime(date_string, "%H.%M")
+                return datetime.datetime.today().replace(
+                    hour=parsed.hour, minute=parsed.minute, second=0
+                )
             else:
                 return datetime.datetime.strptime(date_string, "%d %b %Y // %H.%M")
 
@@ -279,6 +283,6 @@ class Controller(object):
             print()
             print(
                 "{} is an invalid date string. For example, it must be of"
-                " the form: 3 Dec 2018 // 16.15".format(date_string)
+                " the form: '3 Dec 2018 // 16.15' or just '16.15'".format(date_string)
             )
             return None
