@@ -274,9 +274,7 @@ class Controller(object):
             elif "//" not in date_string:
                 parsed = datetime.datetime.strptime(date_string, "%H.%M")
                 return datetime.datetime.today().replace(
-                    hour=parsed.hour,
-                    minute=parsed.minute,
-                    second=0,
+                    hour=parsed.hour, minute=parsed.minute, second=0
                 )
             else:
                 return datetime.datetime.strptime(date_string, "%d %b %Y // %H.%M")
