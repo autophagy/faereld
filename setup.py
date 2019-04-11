@@ -20,7 +20,7 @@ setup(
     entry_points={"console_scripts": ["faereld = faereld.__main__:main"]},
     packages=["faereld"],
     install_requires=[
-        "PyYAML==3.13",
+        "PyYAML==5.1",
         "datarum==0.5.0",
         "wisdomhord==0.2.4",
         "numpy==1.15.0",

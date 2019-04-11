@@ -173,7 +173,7 @@ class Configuration(object):
             "general_areas": self.general_areas,
         }
         with open(path, "r") as config_file:
-            config_dict = yaml.load(config_file)
+            config_dict = yaml.load(config_file, Loader=yaml.FullLoader)
             if config_dict is None:
                 config_dict = {}
             for key, value in config_variables.items():
