@@ -32,27 +32,32 @@ class Faereld(object):
             Printer().add(*parser.description).newline().add(
                 Highlight(args.mode), " is an unrecognised mode."
             ).newline().print()
-            self.help(None)
+            self.help()
             exit(1)
         else:
             print("\x1b[2J\x1b[H", end="")
             config = Configuration(args.config)
             controller = Controller(config)
-            getattr(self, args.mode.lower())(controller, args.target)
+            getattr(self, args.mode.lower())(controller=controller, target=args.target)
 
-    def insert(self, controller, _):
+    @staticmethod
+    def insert(controller, *args, **kwargs):
         controller.insert()
 
-    def summary(self, controller, target):
-        controller.summary(target)
+    @staticmethod
+    def summary(controller, *args, **kwargs):
+        controller.summary(kwargs.get("target"))
 
-    def projects(self, controller, _):
+    @staticmethod
+    def projects(controller, *args, **kwargs):
         controller.projects()
 
-    def productivity(self, controller, _):
+    @staticmethod
+    def productivity(controller, *args, **kwargs):
         controller.productivity()
 
-    def help(self, _, t):
+    @staticmethod
+    def help(*args, **kwargs):
         help.cli_help().print()
 
 
