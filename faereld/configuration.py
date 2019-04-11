@@ -7,6 +7,7 @@ faereld.configuration
 
 from collections import OrderedDict
 from os import makedirs, path
+from typing import Dict, List
 
 import yaml
 from faereld.printer import Highlight, Printer
@@ -123,8 +124,8 @@ class Configuration(object):
         defaults.
         """
         self.data_options = self.DEFAULT_DATA_OPTIONS
-        self.project_areas = self.DEFAULT_PROJECT_AREAS
-        self.projects = self.DEFAULT_PROJECTS
+        self.configured_project_areas = self.DEFAULT_PROJECT_AREAS
+        self.configured_projects = self.DEFAULT_PROJECTS
         self.general_areas = self.DEFAULT_GENERAL_AREAS
         self.summary_options = self.DEFAULT_SUMMARY_OPTIONS
         yaml.SafeDumper.add_representer(OrderedDict, self.__rep_odict)
@@ -167,8 +168,8 @@ class Configuration(object):
         config_variables = {
             "data_options": self.data_options,
             "summary_options": self.summary_options,
-            "project_areas": self.project_areas,
-            "projects": self.projects,
+            "project_areas": self.configured_project_areas,
+            "projects": self.configured_projects,
             "general_areas": self.general_areas,
         }
         with open(path, "r") as config_file:
@@ -217,71 +218,88 @@ class Configuration(object):
                 )
                 config_file.write("\n")
 
-    def get_data_path(self):
+    @property
+    def data_path(self) -> str:
+        """ Returns the path to the Faereld data hord. """
         return self.data_options["data_path"]
 
-    def get_use_wending(self):
+    @property
+    def use_wending(self) -> bool:
+        """ Returns whether or not wending dates should be used. """
         return self.data_options["use_wending"]
 
-    def get_num_last_objects(self):
+    @property
+    def num_last_objects(self) -> int:
+        """ Returns how many of the previously referenced objects for that specific area should be returned
+        as shorthand.
+        """
         return self.data_options["num_last_objects"]
 
-    def get_max_graph_width(self):
+    @property
+    def max_graph_width(self) -> int:
+        """ Returns the maximum width in characters that a Faereldian graph should be. """
         return self.summary_options["max_graph_width"]
 
-    def get_exclude_from_total_time(self):
+    @property
+    def exclude_from_total_time(self) -> List[str]:
+        """ Returns a list of areas that should be excluded from the total time summary graph. """
         return self.__validate_list(self.summary_options["exclude_from_total_time"])
 
-    def get_exclude_from_entry_time_distribution(self):
+    @property
+    def exclude_from_entry_time_distribution(self) -> List[str]:
+        """ Returns a list of areas that should be excluded from the entry time distribution summary graph. """
         return self.__validate_list(
             self.summary_options["exclude_from_entry_time_distribution"]
         )
 
-    def get_project_areas(self):
-        return self.__validate_list(self.project_areas)
+    @property
+    def project_areas(self) -> List[str]:
+        """ Returns the list of project-specific areas. """
+        return self.__validate_list(self.configured_project_areas)
 
-    def get_projects(self):
-        return self.__validate_list(self.projects)
+    @property
+    def projects(self) -> List[str]:
+        """ Returns the list of configured projects. """
+        return self.__validate_list(self.configured_projects)
 
-    def get_general_areas(self):
-        return self.__validate_list(self.general_areas)
-
-    def get_areas(self):
-        return {**self.project_areas, **self.general_areas}
+    @property
+    def areas(self) -> Dict:
+        """ Returns a dictionary of configured project and general areas, as well as their associated
+        configurations.
+        """
+        return {**self.configured_project_areas, **self.general_areas}
 
     def get_area(self, area):
-        areas = self.get_areas()
-        if area in areas:
-            return areas[area]
-
-        else:
-            return {
+        return self.areas.get(
+            area,
+            {
                 "name": area,
                 "rendering_string": self.DEFAULT_RENDERING,
                 "use_last_objects": False,
-            }
+            },
+        )
 
     def get_object_name(self, area, obj):
-        if area in self.project_areas:
-            if obj in self.projects:
+        if area in self.configured_project_areas:
+            if obj in self.configured_projects:
                 return self.get_project_name(obj)
 
         return obj
 
     def get_project_name(self, obj):
-        if obj in self.projects:
-            return self.projects[obj].get("name", obj)
+        if obj in self.configured_projects:
+            return self.configured_projects[obj].get("name", obj)
 
         return obj
 
     def get_project_description(self, obj):
-        if obj in self.projects:
+        if obj in self.configured_projects:
             desc = "{0} :: {1}".format(
-                self.projects[obj].get("name", obj),
-                self.projects[obj].get("desc", "no description"),
+                self.configured_projects[obj].get("name", obj),
+                self.configured_projects[obj].get("desc", "no description"),
             )
-            if "link" in self.projects[obj]:
-                desc += " ({})".format(self.projects[obj]["link"])
+            if "link" in self.configured_projects[obj]:
+                desc += " ({})".format(self.configured_projects[obj]["link"])
             return desc
 
         return None

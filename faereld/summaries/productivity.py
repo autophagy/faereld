@@ -46,7 +46,7 @@ class ProductivitySummary(object):
         p.newline()
         graph = (
             SummaryGraph(self.day_delta_map)
-            .set_max_width(utils.max_width(self.config.get_max_graph_width()))
+            .set_max_width(utils.max_width(self.config.max_graph_width))
             .set_key_transform_function(day_num_to_string)
             .generate()
         )
@@ -57,7 +57,7 @@ class ProductivitySummary(object):
         p.newline()
         graph = (
             SummaryGraph(self.hour_delta_map)
-            .set_max_width(utils.max_width(self.config.get_max_graph_width()))
+            .set_max_width(utils.max_width(self.config.max_graph_width))
             .set_key_transform_function(zero_pad_hour)
             .generate()
         )

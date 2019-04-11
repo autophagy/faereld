@@ -24,7 +24,7 @@ class FaereldData(object):
 
     def _create_session(self, data_path):
         hord_path = path.expanduser(data_path)
-        if self.config.get_use_wending():
+        if self.config.use_wending:
             self.bisen = FaereldWendingEntry
         else:
             self.bisen = FaereldDatetimeEntry
@@ -45,7 +45,7 @@ class FaereldData(object):
             return EmptySummary()
 
         total_time = timedelta(0)
-        area_time_map = dict(map(lambda x: (x, []), self.config.get_areas().keys()))
+        area_time_map = dict(map(lambda x: (x, []), self.config.areas.keys()))
         last_entries = entries[:10]
         first_day = None
         last_day = None
@@ -75,7 +75,7 @@ class FaereldData(object):
 
     def get_projects_summary(self):
         def projects_filter(entry):
-            return entry.area in list(self.config.get_project_areas().keys())
+            return entry.area in list(self.config.project_areas.keys())
 
         entries = self.hord.get_rows(filter_func=projects_filter)
         entries_count = len(entries)
@@ -100,10 +100,7 @@ class FaereldData(object):
                 project_time_map[result.obj] += result_time
             if result.obj not in project_area_time_map:
                 empty_map = dict(
-                    map(
-                        lambda x: (x, timedelta(0)),
-                        self.config.get_project_areas().keys(),
-                    )
+                    map(lambda x: (x, timedelta(0)), self.config.project_areas.keys())
                 )
                 project_area_time_map[result.obj] = empty_map
                 project_area_time_map[result.obj][result.area] += result_time
@@ -168,7 +165,7 @@ class FaereldData(object):
         return filtered_obj[:limit]
 
     def create_entry(self, area, object, start, end, purpose):
-        if self.config.get_use_wending():
+        if self.config.use_wending:
             bisen = FaereldWendingEntry
         else:
             bisen = FaereldDatetimeEntry

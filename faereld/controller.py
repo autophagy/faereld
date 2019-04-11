@@ -44,7 +44,7 @@ class CategoryValidator(object):
 class Controller(object):
     def __init__(self, config):
         self.config = config
-        self.data_path = path.expanduser(self.config.get_data_path())
+        self.data_path = path.expanduser(self.config.data_path)
         self.db = FaereldData(self.data_path, self.config)
 
     def _time_function(self):
@@ -65,12 +65,12 @@ class Controller(object):
         if target is None:
             Printer().add_mode_header("Summary").print()
         else:
-            if target not in self.config.get_areas():
+            if target not in self.config.areas:
                 p = Printer()
                 p.add("ERROR: No area found for: [", Highlight(target), "]")
                 p.newline()
                 p.add("Valid areas are: ")
-                for area in self.config.get_areas():
+                for area in self.config.areas:
                     p.add(f"[{area}]")
                 p.print()
                 return
@@ -104,12 +104,12 @@ class Controller(object):
 
     def gather_inputs(self):
         Printer().newline().add_header("Area").newline().add(
-            "[ {0} ]".format(" // ".join(self.config.get_areas().keys()))
+            "[ {0} ]".format(" // ".join(self.config.areas.keys()))
         ).newline().print()
         area = self.input_area()
-        if area in self.config.get_project_areas():
+        if area in self.config.project_areas:
             Printer().newline().add_header("Project").newline().add(
-                "[ {0} ]".format(" // ".join(sorted(self.config.get_projects().keys())))
+                "[ {0} ]".format(" // ".join(sorted(self.config.projects.keys())))
             ).newline().print()
             object = self.input_project_object()
         else:
@@ -119,18 +119,18 @@ class Controller(object):
         from_date, to_date = self.input_duration()
         time_diff = utils.time_diff(from_date, to_date)
         print()
-        if self.config.get_use_wending():
+        if self.config.use_wending:
             date_display = from_date.strftime("{daeg} {month} {gere}")
         else:
             date_display = from_date.strftime("%d %b %Y")
-        if area in self.config.get_project_areas():
+        if area in self.config.project_areas:
             Printer().newline().add_header("Purpose").newline().print()
             purpose = self.input_purpose()
         else:
             purpose = None
         utils.print_rendered_string(
             area,
-            self.config.get_areas()[area],
+            self.config.areas[area],
             date_display,
             self.config.get_object_name(area, object),
             time_diff,
@@ -151,11 +151,11 @@ class Controller(object):
 
     def input_area(self):
         def area_help_generator():
-            return help.areas_help(self.config.get_areas())
+            return help.areas_help(self.config.areas)
 
-        area_completer = WordCompleter(self.config.get_areas().keys())
+        area_completer = WordCompleter(self.config.areas.keys())
         area_validator = CategoryValidator(
-            self.config.get_areas().keys(), "Area", area_help_generator
+            self.config.areas.keys(), "Area", area_help_generator
         )
         area = None
         while area is None:
@@ -168,11 +168,11 @@ class Controller(object):
 
     def input_project_object(self):
         def project_help_generator():
-            sorted_projects = sorted(self.config.get_projects().keys())
+            sorted_projects = sorted(self.config.projects.keys())
             project_descriptions = self.config.get_project_description
             return help.projects_help(sorted_projects, project_descriptions)
 
-        projects = self.config.get_projects()
+        projects = self.config.projects
         project_completer = WordCompleter(sorted(projects.keys()))
         project_validator = CategoryValidator(
             projects.keys(), "Project", project_help_generator
@@ -190,9 +190,7 @@ class Controller(object):
         use_last_objects = self.config.get_area(area).get("use_last_objects", False)
         last_objects = []
         if use_last_objects:
-            last_objects = self.db.get_last_objects(
-                area, self.config.get_num_last_objects()
-            )
+            last_objects = self.db.get_last_objects(area, self.config.num_last_objects)
             last_objects_dict = {
                 "[{0}]".format(x): k[0] for x, k in enumerate(last_objects)
             }
@@ -241,7 +239,7 @@ class Controller(object):
         return prompt("Purpose :: ", vi_mode=True)
 
     def convert_input_date(self, date_string):
-        if self.config.get_use_wending():
+        if self.config.use_wending:
             return self._convert_wending_date(date_string)
 
         else:

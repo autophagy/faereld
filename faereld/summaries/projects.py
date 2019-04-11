@@ -32,7 +32,7 @@ class ProjectsSummary(object):
         p.newline()
         graph = (
             SummaryGraph(self.project_time_map)
-            .set_max_width(utils.max_width(self.config.get_max_graph_width()))
+            .set_max_width(utils.max_width(self.config.max_graph_width))
             .set_key_transform_function(self.config.get_project_name)
             .sort_graph(reverse=True)
             .generate()

@@ -41,8 +41,8 @@ class DetailedSummary(object):
         )
         graph = (
             SummaryGraph(summary_time_map)
-            .set_max_width(utils.max_width(self.config.get_max_graph_width()))
-            .set_exclude_list(self.config.get_exclude_from_total_time())
+            .set_max_width(utils.max_width(self.config.max_graph_width))
+            .set_exclude_list(self.config.exclude_from_total_time)
             .generate()
         )
         for row in graph:
@@ -52,8 +52,8 @@ class DetailedSummary(object):
         p.newline()
         box = (
             BoxPlot(self.area_time_map)
-            .set_max_width(utils.max_width(self.config.get_max_graph_width()))
-            .set_exclude_list(self.config.get_exclude_from_entry_time_distribution())
+            .set_max_width(utils.max_width(self.config.max_graph_width))
+            .set_exclude_list(self.config.exclude_from_entry_time_distribution)
             .generate()
         )
         for row in box:
@@ -62,7 +62,7 @@ class DetailedSummary(object):
         p.add_header("LAST {0} ENTRIES".format(len(self.last_entries)))
         p.newline()
         for entry in self.last_entries:
-            if self.config.get_use_wending():
+            if self.config.use_wending:
                 start_date = entry.start.strftime("{daeg} {month} {gere}")
             else:
                 start_date = entry.start.strftime("%d %b %Y")
@@ -126,8 +126,8 @@ class DetailedAreaSummary(object):
         p.newline()
         box = (
             BoxPlot(self.area_time_map)
-            .set_max_width(utils.max_width(self.config.get_max_graph_width()))
-            .set_exclude_list(self.config.get_exclude_from_entry_time_distribution())
+            .set_max_width(utils.max_width(self.config.max_graph_width))
+            .set_exclude_list(self.config.exclude_from_entry_time_distribution)
             .generate()
         )
         for row in box:
@@ -136,7 +136,7 @@ class DetailedAreaSummary(object):
         p.add_header("LAST {0} ENTRIES".format(len(self.last_entries)))
         p.newline()
         for entry in self.last_entries:
-            if self.config.get_use_wending():
+            if self.config.use_wending:
                 start_date = entry.start.strftime("{daeg} {month} {gere}")
             else:
                 start_date = entry.start.strftime("%d %b %Y")
