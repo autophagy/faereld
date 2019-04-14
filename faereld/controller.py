@@ -5,14 +5,13 @@ faereld.controller
 
 """
 
-import datetime
 import time
 from functools import wraps
 from os import path
 
-import datarum
 from faereld import help, utils
 from faereld.db import FaereldData
+from faereld.input import DurationInput, Input
 from faereld.printer import Highlight, Printer
 from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
@@ -39,6 +38,34 @@ class CategoryValidator(object):
             return False
 
         return True
+
+
+class Entry:
+    area = None
+    object = None
+    from_date = None
+    to_date = None
+    purpose = None
+
+    def __init__(self, config):
+        self.config = config
+
+    def __str__(self):
+        date_display = (
+            self.from_date.strftime("{daeg} {month} {gere}")
+            if self.config.use_wending
+            else self.from_date.strftime("%d %b %Y")
+        )
+        duration = utils.time_diff(self.from_date, self.to_date)
+        rendered_string = utils.get_rendered_string(
+            self.area,
+            self.config.get_area(self.area),
+            date_display,
+            self.config.get_object_name(self.area, self.object),
+            duration,
+            self.purpose,
+        )
+        return "".join(str(s) for s in rendered_string)
 
 
 class Controller(object):
@@ -96,58 +123,42 @@ class Controller(object):
         Printer().add_mode_header("Insert").print()
         summary = self.db.get_summary()
         summary.print()
-        entry_inputs = None
-        while entry_inputs is None:
-            entry_inputs = self.gather_inputs()
-        self.db.create_entry(**entry_inputs)
-        print("Færeld entry added")
+        entry = None
+        while entry is None:
+            entry = Entry(self.config)
 
-    def gather_inputs(self):
-        Printer().newline().add_header("Area").newline().add(
-            "[ {0} ]".format(" // ".join(self.config.areas.keys()))
-        ).newline().print()
-        area = self.input_area()
-        if area in self.config.project_areas:
-            Printer().newline().add_header("Project").newline().add(
-                "[ {0} ]".format(" // ".join(sorted(self.config.projects.keys())))
+            Printer().newline().add_header("Area").newline().add(
+                "[ {0} ]".format(" // ".join(self.config.areas.keys()))
             ).newline().print()
-            object = self.input_project_object()
-        else:
-            Printer().newline().add_header("Object").newline().print()
-            object = self.input_non_project_object(area)
-        Printer().newline().add_header("Duration").newline().print()
-        from_date, to_date = self.input_duration()
-        time_diff = utils.time_diff(from_date, to_date)
-        print()
-        if self.config.use_wending:
-            date_display = from_date.strftime("{daeg} {month} {gere}")
-        else:
-            date_display = from_date.strftime("%d %b %Y")
-        if area in self.config.project_areas:
-            Printer().newline().add_header("Purpose").newline().print()
-            purpose = self.input_purpose()
-        else:
-            purpose = None
-        utils.print_rendered_string(
-            area,
-            self.config.areas[area],
-            date_display,
-            self.config.get_object_name(area, object),
-            time_diff,
-            purpose,
-        )
-        confirmation = prompt("Is this correct? (Y/n) :: ", vi_mode=True)
-        if confirmation in ["Y", "y", ""]:
-            return {
-                "area": area,
-                "object": object,
-                "start": from_date,
-                "end": to_date,
-                "purpose": purpose,
-            }
+            entry.area = self.input_area()
+            if entry.area in self.config.project_areas:
+                Printer().newline().add_header("Project").newline().add(
+                    "[ {0} ]".format(" // ".join(sorted(self.config.projects.keys())))
+                ).newline().print()
+                entry.object = self.input_project_object()
+            else:
+                Printer().newline().add_header("Object").newline().print()
+                entry.object = self.input_non_project_object(entry.area)
 
-        else:
-            return None
+            duration_input = DurationInput(
+                name="Duration", use_wending=self.config.use_wending
+            )
+            entry.from_date, entry.to_date = duration_input.gather()
+
+            if entry.area in self.config.project_areas:
+                purpose = Input(name="Purpose")
+                entry.purpose = purpose.gather()
+            else:
+                entry.purpose = None
+            print()
+            print(str(entry))
+            confirmation = prompt("Is this correct? (Y/n) :: ", vi_mode=True)
+            if confirmation in ["Y", "y", ""]:
+                break
+            else:
+                entry = None
+        self.db.create_entry(entry)
+        print("Færeld entry added")
 
     def input_area(self):
         def area_help_generator():
@@ -214,73 +225,3 @@ class Controller(object):
                 return last_objects_dict[object]
 
         return object
-
-    def input_duration(self):
-        from_date = None
-        to_date = None
-        while from_date is None and to_date is None:
-            while from_date is None:
-                from_input = prompt("From :: ", vi_mode=True)
-                from_date = self.convert_input_date(from_input)
-            while to_date is None:
-                to_input = prompt("To :: ", vi_mode=True)
-                to_date = self.convert_input_date(to_input)
-            if from_date >= to_date:
-                print(
-                    "Invalid Duration :: {0}".format(
-                        utils.time_diff(from_date, to_date)
-                    )
-                )
-                from_date = None
-                to_date = None
-        return from_date, to_date
-
-    def input_purpose(self):
-        return prompt("Purpose :: ", vi_mode=True)
-
-    def convert_input_date(self, date_string):
-        if self.config.use_wending:
-            return self._convert_wending_date(date_string)
-
-        else:
-            return self._convert_gregorian_date(date_string)
-
-    def _convert_wending_date(self, date_string):
-        try:
-            if date_string.lower() == "now":
-                now = datarum.wending.now().replace(second=0)
-                return now
-
-            else:
-                return datarum.wending.strptime(
-                    date_string, "{daeg} {month} {gere} // {tid_zero}.{minute_zero}"
-                )
-
-        except (ValueError, AttributeError):
-            print()
-            print(
-                "{} is an invalid date string. For example, it must be of"
-                " the form: 13 Forst 226 // 16.15".format(date_string)
-            )
-            return None
-
-    def _convert_gregorian_date(self, date_string):
-        try:
-            if date_string.lower() == "now":
-                now = datetime.datetime.now().replace(second=0)
-                return now
-            elif "//" not in date_string:
-                parsed = datetime.datetime.strptime(date_string, "%H.%M")
-                return datetime.datetime.today().replace(
-                    hour=parsed.hour, minute=parsed.minute, second=0
-                )
-            else:
-                return datetime.datetime.strptime(date_string, "%d %b %Y // %H.%M")
-
-        except (ValueError, TypeError):
-            print()
-            print(
-                "{} is an invalid date string. For example, it must be of"
-                " the form: '3 Dec 2018 // 16.15' or just '16.15'".format(date_string)
-            )
-            return None

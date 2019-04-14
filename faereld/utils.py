@@ -11,7 +11,7 @@ from math import floor
 from shutil import get_terminal_size
 from string import Formatter
 
-from faereld.printer import Highlight, Printer
+from faereld.printer import Highlight
 
 header = "FÆRELD :: {0} MODE"
 
@@ -25,17 +25,6 @@ def format_time_delta(time_delta):
     hours, remainder = divmod(time_delta.total_seconds(), 3600)
     minutes = floor(remainder / 60)
     return "{0}h{1}m".format(floor(hours), minutes)
-
-
-def print_rendered_string(
-    area_code, area, date_to_display, object_name, duration, purpose
-):
-    p = Printer()
-    e = get_rendered_string(
-        area_code, area, date_to_display, object_name, duration, purpose
-    )
-    p.add(*e)
-    p.print()
 
 
 def get_rendered_string(
