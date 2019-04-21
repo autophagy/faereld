@@ -2,15 +2,23 @@
 Færeld
 ======
 
-.. image:: http://scieldas.autophagy.io/rtd/faereld.png
+.. image:: http://scieldas.autophagy.io/rtd/build/faereld.png
     :target: http://faereld.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: http://scieldas.autophagy.io/travis/autophagy/faereld.png
+.. image:: http://scieldas.autophagy.io/travis/build/autophagy/faereld.png
     :target: https://travis-ci.org/autophagy/faereld
     :alt: Build Status
 
-.. image:: http://scieldas.autophagy.io/licenses/MIT.png
+.. image:: https://scieldas.autophagy.io/lgtm/grade/python/autophagy/faereld.png
+    :target: https://lgtm.com/projects/g/autophagy/scieldas)
+    :alt: LGTM Grade
+
+.. image:: https://scieldas.autophagy.io/misc/styles/black.png
+    :target: https://black.readthedocs.io/en/stable/
+    :alt: Black
+
+.. image:: https://scieldas.autophagy.io/misc/licenses/mit.png
    :target: LICENSE
    :alt: MIT License
 
