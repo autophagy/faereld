@@ -47,7 +47,7 @@ class String(object):
 
 class Highlight(String):
     def _highlighted(self):
-        return "\033[94m{0}\033[0m".format(self.string)
+        return f"\033[94m{self.string}\033[0m"
 
     def __str__(self):
         return self._highlighted()
@@ -55,7 +55,7 @@ class Highlight(String):
 
 class Header(String):
     def _headerised(self):
-        return "\033[91m{0}\033[0m".format(self.string)
+        return f"\033[91m{self.string}\033[0m"
 
     def __str__(self):
         return self._headerised()
@@ -90,19 +90,12 @@ class Printer(object):
 
     def add_header(self, text):
         self.paragraphs.append(
-            [
-                Header(
-                    "{0} {1}".format(
-                        text.upper(), "─" * (self._width() - len(text) - 1)
-                    )
-                )
-            ]
+            [Header(f"{text.upper()} {'─' * (self._width() - len(text) - 1)}")]
         )
         return self
 
     def add_mode_header(self, text):
-        mode_header = "Færeld :: {0} Mode"
-        return self.add_header(mode_header.format(text))
+        return self.add_header(f"Færeld :: {text} Mode")
 
     def add_nowrap(self, text):
         self.paragraphs.append([Unwrappable(text)])

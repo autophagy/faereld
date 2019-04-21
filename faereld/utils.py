@@ -24,7 +24,7 @@ def time_diff(from_date, to_date):
 def format_time_delta(time_delta):
     hours, remainder = divmod(time_delta.total_seconds(), 3600)
     minutes = floor(remainder / 60)
-    return "{0}h{1}m".format(floor(hours), minutes)
+    return f"{floor(hours)}h{minutes}m"
 
 
 def get_rendered_string(
@@ -45,10 +45,7 @@ def get_rendered_string(
         if field is not None:
             if field not in fields:
                 raise ValueError(
-                    "{0} is an invalid rendering string. ".format(
-                        area["rendering_string"]
-                    )
-                    + "Reason: '{1}' is an invalid field.".format(field)
+                    f"{area['rendering_string']} is an invalid rendering string. Reason: '{field}' is an invalid field."
                 )
 
             elements.append(Highlight(fields.get(field)))

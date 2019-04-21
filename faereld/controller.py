@@ -33,7 +33,7 @@ class CategoryValidator(object):
 
         if input not in self.categories:
             Printer().newline().add(
-                "Invalid {} :: ".format(self.category_type), Highlight(input)
+                f"Invalid {self.category_type} :: ", Highlight(input)
             ).print()
             return False
 
@@ -80,7 +80,7 @@ class Controller(object):
             begin = time.time()
             result = self(*args, **kwargs)
             end = time.time()
-            print("\n[ {}ms ]".format(round((end - begin) * 100)))
+            print(f"\n[ {round((end - begin) * 100)}ms ]")
             return result
 
         return wrapper
@@ -128,12 +128,12 @@ class Controller(object):
             entry = Entry(self.config)
 
             Printer().newline().add_header("Area").newline().add(
-                "[ {0} ]".format(" // ".join(self.config.areas.keys()))
+                f"[ {' // '.join(self.config.areas.keys())} ]"
             ).newline().print()
             entry.area = self.input_area()
             if entry.area in self.config.project_areas:
                 Printer().newline().add_header("Project").newline().add(
-                    "[ {0} ]".format(" // ".join(sorted(self.config.projects.keys())))
+                    f"[ {' // '.join(sorted(self.config.projects.keys()))} ]"
                 ).newline().print()
                 entry.object = self.input_project_object()
             else:
@@ -202,19 +202,15 @@ class Controller(object):
         last_objects = []
         if use_last_objects:
             last_objects = self.db.get_last_objects(area, self.config.num_last_objects)
-            last_objects_dict = {
-                "[{0}]".format(x): k[0] for x, k in enumerate(last_objects)
-            }
+            last_objects_dict = {f"[{x}]": k[0] for x, k in enumerate(last_objects)}
             # Transform last objects into [x]: object tags
             if len(last_objects) > 0:
                 p = Printer()
-                last_objects_dict = {
-                    "[{0}]".format(x): k for x, k in enumerate(last_objects)
-                }
-                p.add("Last {0} {1} Objects :: ".format(len(last_objects), area))
+                last_objects_dict = {f"[{x}]": k for x, k in enumerate(last_objects)}
+                p.add(f"Last {len(last_objects)} {area} Objects :: ")
                 p.newline()
                 for k, v in sorted(last_objects_dict.items()):
-                    p.add("{0} {1}".format(k, v))
+                    p.add(f"{k} {v}")
                 p.newline()
                 p.print()
         object = prompt(
