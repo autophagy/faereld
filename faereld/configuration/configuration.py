@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-faereld.configuration
-------------------
-
-"""
 
 from collections import OrderedDict
 from os import makedirs, path
@@ -12,122 +7,19 @@ from typing import Dict, List
 import yaml
 from faereld.printer import Highlight, Printer
 
+from .defaults import Defaults
+
 
 class Configuration(object):
-    # Default Configuration Options
-    DEFAULT_DATA_OPTIONS = {
-        "data_path": "~/.andgeloman/faereld/faereld.hord",
-        "use_wending": False,
-        "num_last_objects": 5,
-    }
-    # Default Project Areas
-    DEFAULT_RENDERING = (
-        "On {date} I worked on {object} ({area_name}) for {duration} - {purpose}"
-    )
-    DEFAULT_PROJECT_AREAS = {
-        "RES": {"name": "Research", "rendering_string": DEFAULT_RENDERING},
-        "DES": {"name": "Design", "rendering_string": DEFAULT_RENDERING},
-        "DEV": {"name": "Development", "rendering_string": DEFAULT_RENDERING},
-        "DOC": {"name": "Documentation", "rendering_string": DEFAULT_RENDERING},
-        "TST": {"name": "Testing", "rendering_string": DEFAULT_RENDERING},
-    }
-    # Default Projects
-    DEFAULT_PROJECTS = {
-        "faereld": {
-            "name": "Færeld",
-            "link": "https://github.com/Autophagy/faereld",
-            "description": "A time tracking tool. ",
-        }
-    }
-    # Default General Areas
-    DEFAULT_GENERAL_AREAS = {
-        "IRL": {
-            "name": "Real life engagements (confs/talks/meetups)",
-            "rendering_string": "On {date} I was at {object} for {duration}",
-            "use_last_objects": False,
-        },
-        "RDG": {
-            "name": "Reading",
-            "rendering_string": "On {date} I read {object} for {duration}",
-            "use_last_objects": True,
-        },
-        "LNG": {
-            "name": "Languages",
-            "rendering_string": "On {date} I studied {object} for {duration}",
-            "use_last_objects": True,
-        },
-        "TSK": {
-            "name": "Tasks",
-            "rendering_string": "On {date} I worked on {object} for {duration}",
-            "use_last_objects": False,
-        },
-    }
-    # Default Summary Options
-    DEFAULT_SUMMARY_OPTIONS = {
-        "max_graph_width": 100,
-        "exclude_from_total_time": ["TSK"],
-        "exclude_from_entry_time_distribution": ["IRL"],
-    }
-    DEFAULT_CONFIG = {
-        "data_options": DEFAULT_DATA_OPTIONS,
-        "summary_options": DEFAULT_SUMMARY_OPTIONS,
-        "project_areas": DEFAULT_PROJECT_AREAS,
-        "projects": DEFAULT_PROJECTS,
-        "general_areas": DEFAULT_GENERAL_AREAS,
-    }
-    # The configs defined here must have values set for their defaults.
-    # For configs excluded from this group, the defaults are just examples.
-    MUST_BE_PRESENT_CONFIGS = ["data_options", "summary_options"]
-    # Banner to prepend to the default configuration if it does not exist.
-    CONFIG_BANNER = """# Færeld :: Configuration File
-#
-# Please see
-# https://faereld.readthedocs.io/en/latest/usage/configuration.html for a
-# complete reference of configuration options, as well as their effects.
-
-"""
-    # Headers to prepend each config section
-    CONFIG_AREA_HEADERS = {
-        "data_options": """# data_options :: Settings For Data Options""",
-        "summary_options": """# summary_options :: Settings For Summary Mode""",
-        "project_areas": """# project_areas :: Definitions For Project-Specific Areas
-#
-# Project area definitions should be in the form:
-# code:
-#   name: Area Name
-#   rendering_string: On {date} I worked on {object} for {duration}
-#
-# See https://faereld.readthedocs.io/en/latest/usage/configuration.html#project-areas
-# for more information.""",
-        "projects": """# projects :: Project Object Definitions
-#
-# A project definition should be of the form
-# code:
-#   name: Project Name
-#   link: <link to project homepage>
-#   desc: Project description
-""",
-        "general_areas": """# general_areas :: Definitions For General Areas
-#
-# Area definitions should be in the form:
-# code:
-#   name: Area Name
-#   rendering_string: On {date} I worked on {object} for {duration}
-#   use_last_objects: false
-#
-# See https://faereld.readthedocs.io/en/latest/usage/configuration.html#general-areas
-# for more information.""",
-    }
-
     def __init__(self, configuration_path):
         """ On initialisation, preload the configuration options from the
         defaults.
         """
-        self.data_options = self.DEFAULT_DATA_OPTIONS
-        self.configured_project_areas = self.DEFAULT_PROJECT_AREAS
-        self.configured_projects = self.DEFAULT_PROJECTS
-        self.general_areas = self.DEFAULT_GENERAL_AREAS
-        self.summary_options = self.DEFAULT_SUMMARY_OPTIONS
+        self.data_options = Defaults.DEFAULT_DATA_OPTIONS
+        self.configured_project_areas = Defaults.DEFAULT_PROJECT_AREAS
+        self.configured_projects = Defaults.DEFAULT_PROJECTS
+        self.general_areas = Defaults.DEFAULT_GENERAL_AREAS
+        self.summary_options = Defaults.DEFAULT_SUMMARY_OPTIONS
         yaml.SafeDumper.add_representer(OrderedDict, self.__rep_odict)
         self.__load_configuration(configuration_path)
 
@@ -139,7 +31,7 @@ class Configuration(object):
         if not path.exists(path.dirname(expanded_path)):
             makedirs(path.dirname(expanded_path))
         if not path.exists(expanded_path):
-            self.__write_config_file(expanded_path, self.DEFAULT_CONFIG)
+            self.__write_config_file(expanded_path, Defaults.DEFAULT_CONFIG)
             p = Printer()
             p.add_header("Wilcume on Færeld")
             p.newline()
@@ -184,7 +76,7 @@ class Configuration(object):
         """ Update a config dictionary given a category key
         """
         if config_key in config_dict:
-            if config_key in self.MUST_BE_PRESENT_CONFIGS:
+            if config_key in Defaults.MUST_BE_PRESENT_CONFIGS:
                 # The values defined in the defaults must be present for these
                 # config options.
                 var.update(config_dict[config_key])
@@ -206,9 +98,9 @@ class Configuration(object):
 
     def __write_config_file(self, path, config):
         with open(path, "w") as config_file:
-            config_file.write(self.CONFIG_BANNER)
+            config_file.write(Defaults.CONFIG_BANNER)
             for key, value in config.items():
-                config_file.write(self.CONFIG_AREA_HEADERS[key])
+                config_file.write(Defaults.CONFIG_AREA_HEADERS[key])
                 config_file.write("\n")
                 yaml.safe_dump(
                     {key: OrderedDict(value)},
@@ -274,7 +166,7 @@ class Configuration(object):
             area,
             {
                 "name": area,
-                "rendering_string": self.DEFAULT_RENDERING,
+                "rendering_string": Defaults.DEFAULT_RENDERING,
                 "use_last_objects": False,
             },
         )
@@ -304,14 +196,16 @@ class Configuration(object):
 
         return None
 
-    def __validate_list(self, config_list):
+    @staticmethod
+    def __validate_list(config_list):
         if config_list is None:
             return []
 
         else:
             return config_list
 
-    def __validate_dict(self, config_dict):
+    @staticmethod
+    def __validate_dict(config_dict):
         if config_dict is None:
             return {}
 
