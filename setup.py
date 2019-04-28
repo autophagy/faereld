@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from faereld import version
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 try:
     with open("README.rst", "r", encoding="utf-8") as f:
