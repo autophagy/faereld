@@ -10,11 +10,14 @@ from os import path
 import wisdomhord
 from faereld import utils
 from faereld.models import FaereldDatetimeEntry, FaereldWendingEntry
-from faereld.summaries.detailed import DetailedAreaSummary, DetailedSummary
-from faereld.summaries.empty import EmptySummary
-from faereld.summaries.productivity import ProductivitySummary
-from faereld.summaries.projects import ProjectsSummary
-from faereld.summaries.simple import SimpleSummary
+from faereld.summaries import (
+    DetailedAreaSummary,
+    DetailedSummary,
+    EmptySummary,
+    ProductivitySummary,
+    ProjectsSummary,
+    SimpleSummary,
+)
 
 
 class FaereldData(object):

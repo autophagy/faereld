@@ -10,8 +10,7 @@ TOTAL TIME LOGGED PER AREA    :: Aggregation of time spent on individual areas
                                  within a project.
 """
 
-from faereld.graphs.summary_graph import SummaryGraph
-from faereld.graphs.summary_multigraph import SummaryMultiGraph
+from faereld.graphs import SummaryGraph, SummaryMultiGraph
 from faereld.printer import Printer
 
 from .. import utils

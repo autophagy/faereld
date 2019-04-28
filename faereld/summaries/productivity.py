@@ -8,7 +8,7 @@ hour of the day.
 """
 
 from faereld import utils
-from faereld.graphs.summary_graph import SummaryGraph
+from faereld.graphs import SummaryGraph
 from faereld.printer import Printer
 
 

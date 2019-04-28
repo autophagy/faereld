@@ -14,8 +14,7 @@ LAST 10 ENTRIES                  :: The last 10 entries logged
 import datetime
 
 from faereld import utils
-from faereld.graphs.box_plot import BoxPlot
-from faereld.graphs.summary_graph import SummaryGraph
+from faereld.graphs import BoxPlot, SummaryGraph
 from faereld.printer import Printer
 
 

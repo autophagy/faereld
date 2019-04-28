@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from faereld import version
-from setuptools import setup
+from setuptools import setup, find_packages
 
 try:
     with open("README.rst", "r", encoding="utf-8") as f:
@@ -18,7 +18,7 @@ setup(
     description="Time tracking tool",
     long_description=readme,
     entry_points={"console_scripts": ["faereld = faereld.__main__:main"]},
-    packages=["faereld"],
+    packages=find_packages(),
     install_requires=[
         "PyYAML==5.1",
         "datarum==0.5.0",
