@@ -24,6 +24,8 @@ def cli_help():
     p = Printer()
     p.add_mode_header("Help")
     p.newline()
+    p.add(" ━━━━┓┏━━━━\n━━━━ ┃┃ ━━━━\n ━━━━┫┣━━━━\n   ╺ ┃┃ ╸")
+    p.newline()
     p.add(
         "Færeld (an Old English word meaning journey or ",
         "progession) is a time tracking utility built for ",
