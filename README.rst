@@ -1,6 +1,7 @@
-======
-Færeld
-======
+.. image:: seonu/_static/github-header.png
+    :alt: faereld-logo
+    :align: center
+
 
 .. image:: http://scieldas.autophagy.io/rtd/build/faereld.png
     :target: http://faereld.readthedocs.io/en/latest/?badge=latest
@@ -22,9 +23,12 @@ Færeld
    :target: LICENSE
    :alt: MIT License
 
-Færeld is a tool to facilitate time tracking of what I'm working on.
-Goal is to then visualise this data in Hrǽw and use that to examine and
-optimise what I spend my time on.
+
+Færeld is a CLI tool to to track time spent on productive activites in order to
+visualise, integrate and optimise that time. It is focused primarily on tracking
+time spent on Project work (such as research, design, development, etc), but can
+be configured to track any arbitrary task-area over any arbitrary project or
+subject.
 
 Documentation is available on `ReadTheDocs`_.
 
