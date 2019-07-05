@@ -80,7 +80,7 @@ class Controller(object):
             begin = time.time()
             result = self(*args, **kwargs)
             end = time.time()
-            print(f"\n[ {round((end - begin) * 100)}ms ]")
+            print(f"\n[ {round((end - begin) * 1000)}ms ]")
             return result
 
         return wrapper
