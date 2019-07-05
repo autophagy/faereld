@@ -2,6 +2,6 @@
 __title__ = "faereld"
 __author__ = "Mika Naylor (Autophagy)"
 __license__ = "MIT"
-__version__ = (0, 1, 1)
+__version__ = (0, 1, 2)
 version = "%s.%s.%s" % __version__
 title = __title__
