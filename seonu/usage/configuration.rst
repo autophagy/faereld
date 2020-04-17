@@ -84,6 +84,8 @@ The valid substitution options for a project area's rendering string are:
 - ``{object}`` :: The name of the object of the entry (e.g. Project A)
 - ``{date}`` :: The date of the start date of the entry (e.g. 02 Jan 2017)
 - ``{duration}`` :: The duration of the entry (e.g. 30m)
+- ``{start}`` :: The start time of the entry (e.g. 18:00)
+- ``{end}`` :: The end time of the entry (e.g. 23:42)
 
 Projects
 --------
@@ -151,6 +153,9 @@ The valid substitution options for a project area's rendering string are:
 - ``{object}`` :: The name of the object of the entry (e.g. Book A)
 - ``{date}`` :: The date of the start date of the entry (e.g. 02 Jan 2017)
 - ``{duration}`` :: The duration of the entry (e.g. 30m)
+- ``{start}`` :: The start time of the entry (e.g. 18:00)
+- ``{end}`` :: The end time of the entry (e.g. 23:42)
+
 
 The ``use_last_objects`` option defines that, upon insertion of that area,
 whether the last x objects (x being the defined value in
