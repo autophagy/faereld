@@ -24,7 +24,7 @@ def time_diff(from_date, to_date):
 def format_time_delta(time_delta):
     hours, remainder = divmod(time_delta.total_seconds(), 3600)
     minutes = floor(remainder / 60)
-    return f"{floor(hours)}h{minutes}m"
+    return f"{floor(hours)}h{minutes:02}m"
 
 
 def get_rendered_string(
