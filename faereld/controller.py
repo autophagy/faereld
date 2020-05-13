@@ -63,6 +63,8 @@ class Entry:
             date_display,
             self.config.get_object_name(self.area, self.object),
             duration,
+            self.from_date,
+            self.to_date,
             self.purpose,
         )
         return "".join(str(s) for s in rendered_string)
