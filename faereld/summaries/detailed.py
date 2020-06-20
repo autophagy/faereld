@@ -148,6 +148,8 @@ class DetailedAreaSummary(object):
                     start_date,
                     self.config.get_object_name(entry.area, entry.obj),
                     utils.time_diff(entry.start, entry.end),
+                    entry.start,
+                    entry.end,
                     entry.purpose,
                 )
             )

@@ -28,8 +28,7 @@ def format_time_delta(time_delta):
 
 
 def get_rendered_string(
-    area_code, area, date_to_display, object_name, duration, start, end,
-    purpose
+    area_code, area, date_to_display, object_name, duration, start, end, purpose
 ):
     fields = {
         "area": area_code,
